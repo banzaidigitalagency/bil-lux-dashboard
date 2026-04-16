@@ -358,9 +358,105 @@
             .nav-tabs { overflow-x: auto; }
             .donut-container { width: 160px; height: 160px; }
         }
+        /* ===== LOCK SCREEN ===== */
+        .lock-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(135deg, #2E1048 0%, #421A65 40%, #702F8A 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .lock-screen.hidden { display: none; }
+        .lock-logo { filter: brightness(0) invert(1); height: 60px; }
+        .lock-box {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            max-width: 360px;
+            width: 90%;
+            backdrop-filter: blur(12px);
+        }
+        .lock-box h2 {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        .lock-box p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.78rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+        .lock-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.06);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 0.3em;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .lock-input::placeholder { color: rgba(255,255,255,0.3); letter-spacing: 0.15em; font-size: 0.85rem; }
+        .lock-input:focus { border-color: rgba(255,255,255,0.5); }
+        .lock-input.error { border-color: #F87171; animation: shake 0.4s ease; }
+        .lock-btn {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .lock-btn:hover { background: rgba(255,255,255,0.25); }
+        .lock-error {
+            color: #F87171;
+            font-size: 0.72rem;
+            margin-top: 0.75rem;
+            min-height: 1rem;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .app-content { display: none; }
+        .app-content.visible { display: block; }
     </style>
 </head>
 <body>
+
+<!-- ===== LOCK SCREEN ===== -->
+<div class="lock-screen" id="lockScreen">
+    <img src="bil-logo.png" alt="BIL" class="lock-logo">
+    <div class="lock-box">
+        <h2>Dashboard de suivi</h2>
+        <p>Saisissez le code d'acces pour consulter le dashboard</p>
+        <input type="password" class="lock-input" id="lockInput" placeholder="Code d'acces" maxlength="20" autocomplete="off">
+        <button class="lock-btn" id="lockBtn">Acceder</button>
+        <div class="lock-error" id="lockError"></div>
+    </div>
+</div>
+
+<!-- ===== APP CONTENT ===== -->
+<div class="app-content" id="appContent">
 
 <!-- ===== HEADER ===== -->
 <header class="header">
@@ -814,8 +910,45 @@
     Dashboard de suivi - <strong>BIL - Campagne Branding Belgique 2026</strong> &bull; Agence SMART
 </footer>
 
-<!-- ===== SUPABASE + CHARTS ===== -->
+</div><!-- /app-content -->
+
+<!-- ===== LOCK + SUPABASE + CHARTS ===== -->
 <script>
+// ===== LOCK SCREEN =====
+const ACCESS_CODE = 'BIL2026';
+const SESSION_KEY = 'bil_dashboard_auth';
+
+function checkAccess() {
+    if (sessionStorage.getItem(SESSION_KEY) === 'ok') {
+        unlock();
+    }
+}
+
+function unlock() {
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('appContent').classList.add('visible');
+    sessionStorage.setItem(SESSION_KEY, 'ok');
+    loadDashboard();
+}
+
+document.getElementById('lockBtn').addEventListener('click', tryUnlock);
+document.getElementById('lockInput').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+
+function tryUnlock() {
+    const input = document.getElementById('lockInput');
+    const error = document.getElementById('lockError');
+    if (input.value === ACCESS_CODE) {
+        unlock();
+    } else {
+        input.classList.add('error');
+        error.textContent = 'Code incorrect';
+        setTimeout(() => { input.classList.remove('error'); error.textContent = ''; }, 1500);
+    }
+}
+
+checkAccess();
+
+// ===== SUPABASE =====
 const SUPABASE_URL = 'https://mfqbhpxsuawujnfbcojr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcWJocHhzdWF3dWpuZmJjb2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4MzcxMzAsImV4cCI6MjA4NzQxMzEzMH0.loz9e9PTAbCailoBebjHR3cJ1ho_ge3p3d9FtgVkPfI';
 const CLIENT_CODE = 'bil';
@@ -1087,7 +1220,6 @@ async function loadDashboard() {
 
 // ===== INIT =====
 initCharts();
-loadDashboard();
 </script>
 
 </body>
