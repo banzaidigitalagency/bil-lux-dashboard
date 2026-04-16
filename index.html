@@ -487,7 +487,7 @@
                     <div class="funnel-stat-label">Vues 100%</div>
                 </div>
             </div>
-            <div class="funnel-channels">pDOOH Business/Outdoor/Transports &bull; DV360 Video &bull; YouTube Instream</div>
+            <div class="funnel-channels">DOOH Business/Outdoor/Transports &bull; DV360 Video &bull; YouTube Instream</div>
         </div>
         <div class="funnel-card acquisition">
             <div class="funnel-header">
@@ -540,7 +540,7 @@
                     <canvas id="budgetDonut"></canvas>
                 </div>
                 <div class="donut-legend">
-                    <div class="legend-item"><span class="legend-dot" style="background:#FF6B00"></span><span class="legend-label">pDOOH</span><span class="legend-value">27 085 &euro;</span></div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#FF6B00"></span><span class="legend-label">DOOH</span><span class="legend-value">27 085 &euro;</span></div>
                     <div class="legend-item"><span class="legend-dot" style="background:#0A66C2"></span><span class="legend-label">LinkedIn</span><span class="legend-value">15 200 &euro;</span></div>
                     <div class="legend-item"><span class="legend-dot" style="background:#0084FF"></span><span class="legend-label">Meta</span><span class="legend-value">15 200 &euro;</span></div>
                     <div class="legend-item"><span class="legend-dot" style="background:#34A853"></span><span class="legend-label">DV360 Video</span><span class="legend-value">15 000 &euro;</span></div>
@@ -579,7 +579,7 @@
                     <td>
                         <div class="channel-name">
                             <div class="channel-icon pdooh">Do</div>
-                            <div class="channel-info"><strong>pDOOH Business</strong><span>Spot video 10s - Bruxelles</span></div>
+                            <div class="channel-info"><strong>DOOH Business</strong><span>Spot video 10s - Bruxelles</span></div>
                         </div>
                     </td>
                     <td class="td-objective">9 085 &euro;</td>
@@ -594,7 +594,7 @@
                     <td>
                         <div class="channel-name">
                             <div class="channel-icon pdooh">Do</div>
-                            <div class="channel-info"><strong>pDOOH Outdoor</strong><span>Spot video 10s - Bruxelles</span></div>
+                            <div class="channel-info"><strong>DOOH Outdoor</strong><span>Spot video 10s - Bruxelles</span></div>
                         </div>
                     </td>
                     <td class="td-objective">9 000 &euro;</td>
@@ -609,7 +609,7 @@
                     <td>
                         <div class="channel-name">
                             <div class="channel-icon pdooh">Do</div>
-                            <div class="channel-info"><strong>pDOOH Transports</strong><span>Spot video 10s - Bruxelles</span></div>
+                            <div class="channel-info"><strong>DOOH Transports</strong><span>Spot video 10s - Bruxelles</span></div>
                         </div>
                     </td>
                     <td class="td-objective">9 000 &euro;</td>
@@ -727,7 +727,7 @@
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
-                    <span class="progress-label">pDOOH (Business + Outdoor + Transports)</span>
+                    <span class="progress-label">DOOH (Business + Outdoor + Transports)</span>
                     <span class="progress-value">0 / 902 833</span>
                 </div>
                 <div class="progress-bar"><div class="progress-fill navy" style="width: 0%"></div></div>
@@ -854,7 +854,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Mapping plateforme -> ligne du tableau
 const PLATFORM_MAP = {
-    displayce: { rows: [0, 1, 2], label: 'pDOOH', progressIdx: 0 },
+    displayce: { rows: [0, 1, 2], label: 'DOOH', progressIdx: 0 },
     linkedin:  { rows: [3], label: 'LinkedIn', progressIdx: 1 },
     meta:      { rows: [4], label: 'Meta', progressIdx: 2 },
     dv360:     { rows: [5], label: 'DV360', progressIdx: 3 },
@@ -940,7 +940,7 @@ function initCharts() {
     donutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-            labels: ['pDOOH', 'LinkedIn', 'Meta', 'DV360 Video', 'YouTube', 'Teads', 'Prog. Display'],
+            labels: ['DOOH', 'LinkedIn', 'Meta', 'DV360 Video', 'YouTube', 'Teads', 'Prog. Display'],
             datasets: [{ data: [27085, 15200, 15200, 15000, 15000, 17000, 8500],
                 backgroundColor: ['#FF6B00', '#0A66C2', '#0084FF', '#34A853', '#FF0000', '#1A1A2E', '#702F8A'],
                 borderWidth: 2, borderColor: '#FFF', hoverOffset: 6 }]
@@ -1019,7 +1019,7 @@ function updateTable(platforms) {
 
     platforms.forEach(p => {
         if (p.platform === 'displayce') {
-            // pDOOH : repartir sur les 3 lignes (Business, Outdoor, Transports)
+            // DOOH : repartir sur les 3 lignes (Business, Outdoor, Transports)
             // On affiche le total agrege sur chaque ligne (meme valeurs)
             [0, 1, 2].forEach(i => fillRow(i, p.spend / 3, p.impressions / 3, p.clicks, p.ctr, p.cpm));
         } else if (p.platform === 'linkedin') {
