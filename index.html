@@ -579,43 +579,13 @@
                     <td>
                         <div class="channel-name">
                             <div class="channel-icon pdooh">Do</div>
-                            <div class="channel-info"><strong>DOOH Business</strong><span>Spot video 10s - Bruxelles</span></div>
+                            <div class="channel-info"><strong>DOOH</strong><span>Business + Outdoor + Transports - Bruxelles</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">9 085 &euro;</td>
+                    <td class="td-objective">27 085 &euro;</td>
                     <td class="td-placeholder">-</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-objective">302 833</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">30 &euro;</td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="channel-name">
-                            <div class="channel-icon pdooh">Do</div>
-                            <div class="channel-info"><strong>DOOH Outdoor</strong><span>Spot video 10s - Bruxelles</span></div>
-                        </div>
-                    </td>
-                    <td class="td-objective">9 000 &euro;</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">300 000</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">30 &euro;</td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="channel-name">
-                            <div class="channel-icon pdooh">Do</div>
-                            <div class="channel-info"><strong>DOOH Transports</strong><span>Spot video 10s - Bruxelles</span></div>
-                        </div>
-                    </td>
-                    <td class="td-objective">9 000 &euro;</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">300 000</td>
+                    <td class="td-objective">902 833</td>
                     <td class="td-placeholder">-</td>
                     <td class="td-placeholder">-</td>
                     <td class="td-objective">30 &euro;</td>
@@ -1019,19 +989,17 @@ function updateTable(platforms) {
 
     platforms.forEach(p => {
         if (p.platform === 'displayce') {
-            // DOOH : repartir sur les 3 lignes (Business, Outdoor, Transports)
-            // On affiche le total agrege sur chaque ligne (meme valeurs)
-            [0, 1, 2].forEach(i => fillRow(i, p.spend / 3, p.impressions / 3, p.clicks, p.ctr, p.cpm));
+            fillRow(0, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
         } else if (p.platform === 'linkedin') {
-            fillRow(3, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
+            fillRow(1, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
         } else if (p.platform === 'meta') {
-            fillRow(4, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
+            fillRow(2, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
         } else if (p.platform === 'dv360') {
-            fillRow(5, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
+            fillRow(3, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
         } else if (p.platform === 'google') {
-            fillRow(6, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
+            fillRow(4, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
         } else if (p.platform === 'teads') {
-            fillRow(7, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
+            fillRow(5, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
         }
         // Prog. Display (row 8) et Presse (row 9) : pas de données Supabase directes
     });
