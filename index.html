@@ -396,11 +396,11 @@
     <div class="campaign-banner">
         <div class="campaign-banner-left">
             <h2>Campagne Branding Belgique</h2>
-            <p>Campagne multi-canal du 10 avril au 29 novembre 2026 &bull; 8 leviers actives &bull; Budget media : 132 985 &euro;</p>
+            <p>Campagne digitale du 10 avril au 29 novembre 2026 &bull; 7 leviers actives &bull; Budget media : 112 985 &euro;</p>
         </div>
         <div class="campaign-banner-right">
             <div class="banner-stat">
-                <div class="banner-stat-value">8</div>
+                <div class="banner-stat-value">7</div>
                 <div class="banner-stat-label">Canaux</div>
             </div>
             <div class="banner-stat">
@@ -422,7 +422,7 @@
             </div>
             <div class="kpi-label">Depenses</div>
             <div class="kpi-value placeholder">-</div>
-            <div class="kpi-change">Budget : 132 985 &euro;</div>
+            <div class="kpi-change">Budget : 112 985 &euro;</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-icon impressions">
@@ -467,7 +467,7 @@
     </div>
 
     <!-- Funnel Breakdown -->
-    <div class="grid-3">
+    <div class="grid-2">
         <div class="funnel-card notoriete">
             <div class="funnel-header">
                 <span class="funnel-title">Notoriete</span>
@@ -510,27 +510,6 @@
             </div>
             <div class="funnel-channels">LinkedIn &bull; Meta Facebook/Instagram &bull; Teads &bull; Programmatique Display</div>
         </div>
-        <div class="funnel-card consideration">
-            <div class="funnel-header">
-                <span class="funnel-title">Consideration</span>
-                <span class="funnel-badge">Bas de funnel</span>
-            </div>
-            <div class="funnel-stats">
-                <div>
-                    <div class="funnel-stat-value">20 000 &euro;</div>
-                    <div class="funnel-stat-label">Budget media</div>
-                </div>
-                <div>
-                    <div class="funnel-stat-value">1</div>
-                    <div class="funnel-stat-label">Insertion</div>
-                </div>
-                <div>
-                    <div class="funnel-stat-value">Presse</div>
-                    <div class="funnel-stat-label">Canal</div>
-                </div>
-            </div>
-            <div class="funnel-channels">Knack &amp; Le Vif Week-End - Publiredactionnel</div>
-        </div>
     </div>
 
     <!-- Charts Row -->
@@ -568,7 +547,6 @@
                     <div class="legend-item"><span class="legend-dot" style="background:#FF0000"></span><span class="legend-label">YouTube</span><span class="legend-value">15 000 &euro;</span></div>
                     <div class="legend-item"><span class="legend-dot" style="background:#1A1A2E"></span><span class="legend-label">Teads</span><span class="legend-value">17 000 &euro;</span></div>
                     <div class="legend-item"><span class="legend-dot" style="background:#702F8A"></span><span class="legend-label">Prog. Display</span><span class="legend-value">8 500 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#8B6F47"></span><span class="legend-label">Presse</span><span class="legend-value">20 000 &euro;</span></div>
                 </div>
             </div>
         </div>
@@ -732,21 +710,6 @@
                     <td class="td-objective">0,50 %</td>
                     <td class="td-objective">20 &euro;</td>
                 </tr>
-                <tr>
-                    <td>
-                        <div class="channel-name">
-                            <div class="channel-icon presse">Pr</div>
-                            <div class="channel-info"><strong>Presse</strong><span>Knack &amp; Le Vif Week-End</span></div>
-                        </div>
-                    </td>
-                    <td class="td-objective">20 000 &euro;</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                </tr>
             </tbody>
         </table>
         </div>
@@ -852,14 +815,14 @@
                 <div class="progress-wrapper">
                     <div class="progress-header">
                         <span class="progress-label">Budget media consomme</span>
-                        <span class="progress-value">0 &euro; / 132 985 &euro;</span>
+                        <span class="progress-value">0 &euro; / 112 985 &euro;</span>
                     </div>
                     <div class="progress-bar"><div class="progress-fill navy" style="width: 0%"></div></div>
                 </div>
                 <div class="progress-wrapper" style="margin-top: 1rem;">
                     <div class="progress-header">
                         <span class="progress-label">Budget total HT consomme</span>
-                        <span class="progress-value">0 &euro; / 170 933 &euro;</span>
+                        <span class="progress-value">0 &euro; / 152 933 &euro;</span>
                     </div>
                     <div class="progress-bar"><div class="progress-fill gold" style="width: 0%"></div></div>
                 </div>
@@ -910,8 +873,8 @@ const OBJECTIVES = {
     display_prog: 425000,
 };
 const TOTAL_IMPR_OBJ = 10370000;
-const TOTAL_BUDGET = 132985;
-const TOTAL_BUDGET_HT = 170933;
+const TOTAL_BUDGET = 112985;
+const TOTAL_BUDGET_HT = 152933;
 const CAMPAIGN_DAYS = 234;
 const CAMPAIGN_START = new Date(2026, 3, 10); // 10 avril 2026
 
@@ -977,9 +940,9 @@ function initCharts() {
     donutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-            labels: ['pDOOH', 'LinkedIn', 'Meta', 'DV360 Video', 'YouTube', 'Teads', 'Prog. Display', 'Presse'],
-            datasets: [{ data: [27085, 15200, 15200, 15000, 15000, 17000, 8500, 20000],
-                backgroundColor: ['#FF6B00', '#0A66C2', '#0084FF', '#34A853', '#FF0000', '#1A1A2E', '#702F8A', '#8B6F47'],
+            labels: ['pDOOH', 'LinkedIn', 'Meta', 'DV360 Video', 'YouTube', 'Teads', 'Prog. Display'],
+            datasets: [{ data: [27085, 15200, 15200, 15000, 15000, 17000, 8500],
+                backgroundColor: ['#FF6B00', '#0A66C2', '#0084FF', '#34A853', '#FF0000', '#1A1A2E', '#702F8A'],
                 borderWidth: 2, borderColor: '#FFF', hoverOffset: 6 }]
         },
         options: {
