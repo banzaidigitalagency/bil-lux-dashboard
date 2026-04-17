@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#702F8A">
+    <meta name="description" content="Dashboard de suivi de la campagne Branding BIL Belgique 2026">
     <title>BIL - Campagne Branding Belgique - Dashboard de suivi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -86,18 +90,6 @@
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
         .header-date { color: rgba(255, 255, 255, 0.7); font-size: 0.75rem; }
-
-        .nav-tabs { display: flex; padding: 0 2rem; max-width: 1440px; margin: 0 auto; }
-        .nav-tab {
-            padding: 0.65rem 1.25rem;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.8rem; font-weight: 500;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.2s;
-        }
-        .nav-tab:hover { color: rgba(255, 255, 255, 0.9); }
-        .nav-tab.active { color: var(--white); border-bottom-color: var(--bil-bright); }
 
         /* ===== MAIN ===== */
         .main { max-width: 1440px; margin: 0 auto; padding: 1.75rem 2rem 3rem; }
@@ -355,9 +347,71 @@
             .phase-grid { grid-template-columns: 1fr; }
             .header-top { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
             .main { padding: 1.25rem 1rem; }
-            .nav-tabs { overflow-x: auto; }
             .donut-container { width: 160px; height: 160px; }
         }
+
+        /* ===== LOAD STATES ===== */
+        .load-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            z-index: 200;
+            pointer-events: none;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        body.is-loading .load-bar { opacity: 1; }
+        .load-bar::before {
+            content: "";
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 35%;
+            background: linear-gradient(90deg, transparent 0%, var(--bil-bright) 50%, transparent 100%);
+            animation: loadSlide 1.4s ease-in-out infinite;
+        }
+        @keyframes loadSlide {
+            0% { left: -35%; }
+            100% { left: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .load-bar::before { animation: none; left: 0; width: 100%; opacity: 0.35; }
+        }
+        body.is-loading .app-content { opacity: 0.6; transition: opacity 0.2s ease; }
+
+        .load-toast {
+            position: fixed;
+            bottom: 1.25rem; right: 1.25rem;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: var(--white);
+            border: 1px solid rgba(45, 10, 78, 0.08);
+            border-left: 3px solid var(--danger);
+            padding: 0.75rem 0.9rem 0.75rem 1rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(45, 10, 78, 0.12);
+            font-size: 0.8rem;
+            max-width: 360px;
+        }
+        .load-toast[hidden] { display: none; }
+        .load-toast-msg { color: var(--text-dark); font-weight: 500; }
+        .load-toast-btn {
+            background: transparent;
+            border: 1px solid rgba(45, 10, 78, 0.12);
+            border-radius: 6px;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--bil-purple);
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .load-toast-btn:hover { background: var(--bil-lighter); border-color: var(--bil-accent); }
+        .load-toast-btn:focus-visible { outline: 2px solid var(--bil-accent); outline-offset: 2px; }
+
         /* ===== LOCK SCREEN ===== */
         .lock-screen {
             position: fixed;
@@ -426,6 +480,8 @@
             transition: background 0.2s;
         }
         .lock-btn:hover { background: rgba(255,255,255,0.25); }
+        .lock-btn:focus-visible { outline: 2px solid rgba(255,255,255,0.65); outline-offset: 2px; }
+        .lock-input:focus-visible { border-color: rgba(255,255,255,0.65); }
         .lock-error {
             color: #F87171;
             font-size: 0.72rem;
@@ -439,6 +495,16 @@
         }
         .app-content { display: none; }
         .app-content.visible { display: block; }
+
+        /* ===== REDUCED MOTION ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -448,9 +514,9 @@
     <img src="bil-logo.png" alt="BIL" class="lock-logo">
     <div class="lock-box">
         <h2>Dashboard de suivi</h2>
-        <p>Saisissez le code d'acces pour consulter le dashboard</p>
-        <input type="password" class="lock-input" id="lockInput" placeholder="Code d'acces" maxlength="20" autocomplete="off">
-        <button class="lock-btn" id="lockBtn">Acceder</button>
+        <p>Saisissez le code d'accès pour consulter le dashboard</p>
+        <input type="password" class="lock-input" id="lockInput" placeholder="Code d'accès" maxlength="20" autocomplete="off" aria-label="Code d'accès">
+        <button class="lock-btn" id="lockBtn">Accéder</button>
         <div class="lock-error" id="lockError"></div>
     </div>
 </div>
@@ -477,12 +543,6 @@
             <div class="header-date">Avril - Novembre 2026</div>
         </div>
     </div>
-    <nav class="nav-tabs">
-        <div class="nav-tab active">Vue d'ensemble</div>
-        <div class="nav-tab">Par canal</div>
-        <div class="nav-tab">Budget</div>
-        <div class="nav-tab">Exports</div>
-    </nav>
 </header>
 
 <!-- ===== MAIN ===== -->
@@ -492,7 +552,7 @@
     <div class="campaign-banner">
         <div class="campaign-banner-left">
             <h2>Campagne Branding Belgique</h2>
-            <p>Campagne digitale du 10 avril au 29 novembre 2026 &bull; 7 leviers actives &bull; Budget media : 112 985 &euro;</p>
+            <p>Campagne digitale du 10 avril au 29 novembre 2026 &bull; 7 leviers activés &bull; Budget média : 112 985 &euro;</p>
         </div>
         <div class="campaign-banner-right">
             <div class="banner-stat">
@@ -514,15 +574,15 @@
     <div class="kpi-grid">
         <div class="kpi-card">
             <div class="kpi-icon spend">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
             </div>
-            <div class="kpi-label">Depenses</div>
+            <div class="kpi-label">Dépenses</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Budget : 112 985 &euro;</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-icon impressions">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </div>
             <div class="kpi-label">Impressions</div>
             <div class="kpi-value placeholder">-</div>
@@ -530,7 +590,7 @@
         </div>
         <div class="kpi-card">
             <div class="kpi-icon clicks">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
             </div>
             <div class="kpi-label">Clics</div>
             <div class="kpi-value placeholder">-</div>
@@ -538,7 +598,7 @@
         </div>
         <div class="kpi-card">
             <div class="kpi-icon ctr">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
             </div>
             <div class="kpi-label">CTR moyen</div>
             <div class="kpi-value placeholder">-</div>
@@ -546,7 +606,7 @@
         </div>
         <div class="kpi-card">
             <div class="kpi-icon cpm">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
             </div>
             <div class="kpi-label">CPM moyen</div>
             <div class="kpi-value placeholder">-</div>
@@ -554,7 +614,7 @@
         </div>
         <div class="kpi-card">
             <div class="kpi-icon views">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </div>
             <div class="kpi-label">Vues 100%</div>
             <div class="kpi-value placeholder">-</div>
@@ -566,13 +626,13 @@
     <div class="grid-2">
         <div class="funnel-card notoriete">
             <div class="funnel-header">
-                <span class="funnel-title">Notoriete</span>
+                <span class="funnel-title">Notoriété</span>
                 <span class="funnel-badge">Haut de funnel</span>
             </div>
             <div class="funnel-stats">
                 <div>
                     <div class="funnel-stat-value">57 085 &euro;</div>
-                    <div class="funnel-stat-label">Budget media</div>
+                    <div class="funnel-stat-label">Budget média</div>
                 </div>
                 <div>
                     <div class="funnel-stat-value">3,9M</div>
@@ -593,7 +653,7 @@
             <div class="funnel-stats">
                 <div>
                     <div class="funnel-stat-value">55 900 &euro;</div>
-                    <div class="funnel-stat-label">Budget media</div>
+                    <div class="funnel-stat-label">Budget média</div>
                 </div>
                 <div>
                     <div class="funnel-stat-value">6,5M</div>
@@ -614,9 +674,9 @@
         <div class="card">
             <div class="card-title">
                 <span class="icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
                 </span>
-                Evolution des impressions cumulees
+                Évolution des impressions cumulées
             </div>
             <div class="chart-container">
                 <canvas id="timelineChart"></canvas>
@@ -627,9 +687,9 @@
         <div class="card" style="display: flex; flex-direction: column;">
             <div class="card-title">
                 <span class="icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0110 10"/></svg>
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0110 10"/></svg>
                 </span>
-                Repartition budgetaire
+                Répartition budgétaire
             </div>
             <div class="donut-wrapper">
                 <div class="donut-container">
@@ -651,19 +711,19 @@
     <!-- Channels Detail Table -->
     <div class="card" style="margin-bottom: 1.75rem;">
         <div class="card-title">
-            <span class="icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span class="icon" aria-hidden="true">
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
             </span>
-            Detail par canal
+            Détail par canal
         </div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
         <table class="channels-table" style="min-width: 800px;">
             <thead>
                 <tr>
                     <th>Canal</th>
-                    <th>Budget media</th>
-                    <th>Depense</th>
-                    <th>Impr. real.</th>
+                    <th>Budget média</th>
+                    <th>Dépense</th>
+                    <th>Impr. réal.</th>
                     <th>Impr. obj.</th>
                     <th>Clics est.</th>
                     <th>CTR est.</th>
@@ -720,7 +780,7 @@
                     <td>
                         <div class="channel-name">
                             <div class="channel-icon dv360">Dv</div>
-                            <div class="channel-info"><strong>DV360 Video</strong><span>Instream non-desactivable</span></div>
+                            <div class="channel-info"><strong>DV360 Video</strong><span>Instream non-désactivable</span></div>
                         </div>
                     </td>
                     <td class="td-objective">15 000 &euro;</td>
@@ -735,7 +795,7 @@
                     <td>
                         <div class="channel-name">
                             <div class="channel-icon youtube">Yt</div>
-                            <div class="channel-info"><strong>YouTube</strong><span>Instream non-desactivable</span></div>
+                            <div class="channel-info"><strong>YouTube</strong><span>Instream non-désactivable</span></div>
                         </div>
                     </td>
                     <td class="td-objective">15 000 &euro;</td>
@@ -787,7 +847,7 @@
         <div class="card">
             <div class="card-title">
                 <span class="icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 </span>
                 Avancement des objectifs impressions
             </div>
@@ -846,9 +906,9 @@
         <div class="card">
             <div class="card-title">
                 <span class="icon">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                 </span>
-                Pacing budgetaire par phase
+                Pacing budgétaire par phase
             </div>
             <div class="phase-grid">
                 <div class="phase-card current">
@@ -859,35 +919,35 @@
                 </div>
                 <div class="phase-card">
                     <div class="phase-label">Phase 2</div>
-                    <div class="phase-dates">Juil - Aout 2026</div>
+                    <div class="phase-dates">Juil - Août 2026</div>
                     <div class="phase-amount">14 260 &euro;</div>
-                    <div class="phase-status upcoming">A venir</div>
+                    <div class="phase-status upcoming">À venir</div>
                 </div>
                 <div class="phase-card">
                     <div class="phase-label">Phase 3</div>
                     <div class="phase-dates">Sep - Nov 2026</div>
                     <div class="phase-amount">70 725 &euro;</div>
-                    <div class="phase-status upcoming">A venir</div>
+                    <div class="phase-status upcoming">À venir</div>
                 </div>
             </div>
 
             <div style="margin-top: 1.5rem;">
                 <div class="card-title" style="margin-bottom: 1rem;">
                     <span class="icon">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
                     </span>
-                    Consommation budgetaire
+                    Consommation budgétaire
                 </div>
                 <div class="progress-wrapper">
                     <div class="progress-header">
-                        <span class="progress-label">Budget media consomme</span>
+                        <span class="progress-label">Budget média consommé</span>
                         <span class="progress-value">0 &euro; / 112 985 &euro;</span>
                     </div>
                     <div class="progress-bar"><div class="progress-fill navy" style="width: 0%"></div></div>
                 </div>
                 <div class="progress-wrapper" style="margin-top: 1rem;">
                     <div class="progress-header">
-                        <span class="progress-label">Budget total HT consomme</span>
+                        <span class="progress-label">Budget total HT consommé</span>
                         <span class="progress-value">0 &euro; / 152 933 &euro;</span>
                     </div>
                     <div class="progress-bar"><div class="progress-fill gold" style="width: 0%"></div></div>
@@ -911,6 +971,13 @@
 </footer>
 
 </div><!-- /app-content -->
+
+<!-- ===== LOAD STATES ===== -->
+<div class="load-bar" id="loadBar" aria-hidden="true"></div>
+<div class="load-toast" id="loadToast" role="alert" aria-live="polite" hidden>
+    <span class="load-toast-msg">Impossible de charger les données</span>
+    <button type="button" class="load-toast-btn" id="loadRetryBtn">Réessayer</button>
+</div>
 
 <!-- ===== LOCK + SUPABASE + CHARTS ===== -->
 <script>
@@ -981,8 +1048,8 @@ const TOTAL_BUDGET_HT = 152933;
 const CAMPAIGN_DAYS = 234;
 const CAMPAIGN_START = new Date(2026, 3, 10); // 10 avril 2026
 
-// Objectifs cumules par mois
-const MONTHS = ['Avr', 'Mai', 'Juin', 'Juil', 'Aout', 'Sep', 'Oct', 'Nov'];
+// Objectifs cumulés par mois
+const MONTHS = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov'];
 const CUM_TARGETS = [1300000, 3250000, 5200000, 5945000, 6690000, 7890000, 9090000, 10370000];
 
 function fmt(n) { return n == null ? '-' : Math.round(n).toLocaleString('fr-FR'); }
@@ -1000,7 +1067,7 @@ function initCharts() {
             labels: MONTHS,
             datasets: [
                 {
-                    label: 'Objectif cumule',
+                    label: 'Objectif cumulé',
                     data: CUM_TARGETS,
                     borderColor: '#ECDAF3',
                     backgroundColor: 'rgba(232, 214, 245, 0.2)',
@@ -1011,7 +1078,7 @@ function initCharts() {
                     tension: 0.3,
                 },
                 {
-                    label: 'Impressions realisees',
+                    label: 'Impressions réalisées',
                     data: new Array(8).fill(null),
                     borderColor: '#702F8A',
                     backgroundColor: 'rgba(112, 47, 138, 0.12)',
@@ -1028,7 +1095,7 @@ function initCharts() {
             plugins: {
                 legend: { display: true, position: 'top', align: 'end', labels: { boxWidth: 12, boxHeight: 2, padding: 16, font: { family: 'Poppins', size: 11 }, color: '#6B5B7B' } },
                 tooltip: { backgroundColor: '#4A1D6B', titleFont: { family: 'Poppins', size: 12 }, bodyFont: { family: 'Poppins', size: 11 }, padding: 10, cornerRadius: 8,
-                    callbacks: { label: ctx => ctx.raw === null ? 'Donnees a venir' : ctx.dataset.label + ' : ' + ctx.raw.toLocaleString('fr-FR') }
+                    callbacks: { label: ctx => ctx.raw === null ? 'Données à venir' : ctx.dataset.label + ' : ' + ctx.raw.toLocaleString('fr-FR') }
                 }
             },
             scales: {
@@ -1062,16 +1129,20 @@ function initCharts() {
 // ===== MISE A JOUR DU DOM =====
 function updateKpis(data) {
     const cards = document.querySelectorAll('.kpi-card .kpi-value');
-    cards[0].textContent = fmtEur(data.total_spend);
-    cards[0].classList.remove('placeholder');
-    cards[1].textContent = fmt(data.total_impressions);
-    cards[1].classList.remove('placeholder');
-    cards[2].textContent = fmt(data.total_clicks);
-    cards[2].classList.remove('placeholder');
-    cards[3].textContent = fmtPct(data.avg_ctr);
-    cards[3].classList.remove('placeholder');
-    cards[4].textContent = fmtEur(data.avg_cpm);
-    cards[4].classList.remove('placeholder');
+    const hasData = data && (data.total_impressions > 0 || data.total_spend > 0);
+
+    if (hasData) {
+        cards[0].textContent = fmtEur(data.total_spend);
+        cards[0].classList.remove('placeholder');
+        cards[1].textContent = fmt(data.total_impressions);
+        cards[1].classList.remove('placeholder');
+        cards[2].textContent = fmt(data.total_clicks);
+        cards[2].classList.remove('placeholder');
+        cards[3].textContent = fmtPct(data.avg_ctr);
+        cards[3].classList.remove('placeholder');
+        cards[4].textContent = fmtEur(data.avg_cpm);
+        cards[4].classList.remove('placeholder');
+    }
 
     // Mise à jour du badge header
     if (data.total_impressions > 0) {
@@ -1082,10 +1153,10 @@ function updateKpis(data) {
     // Mise à jour date
     if (data.last_date) {
         const d = new Date(data.last_date);
-        document.querySelector('.header-date').textContent = 'Derniere MAJ : ' + d.toLocaleDateString('fr-FR');
+        document.querySelector('.header-date').textContent = 'Dernière MAJ : ' + d.toLocaleDateString('fr-FR');
     }
 
-    // Pacing budgetaire - selectionner les barres dans la section "Consommation budgetaire"
+    // Pacing budgétaire - sélectionner les barres dans la section "Consommation budgétaire"
     const spendPct = (data.total_spend / TOTAL_BUDGET * 100);
     const spendHtPct = (data.total_spend / TOTAL_BUDGET_HT * 100);
     const now = new Date();
@@ -1095,7 +1166,7 @@ function updateKpis(data) {
     const pacingCard = document.querySelectorAll('.grid-2 > .card')[1];
     const pacingBars = pacingCard.querySelectorAll('.progress-fill');
     const pacingValues = pacingCard.querySelectorAll('.progress-value');
-    // Budget media (idx 0)
+    // Budget média (idx 0)
     pacingBars[0].style.width = Math.min(spendPct, 100) + '%';
     pacingValues[0].textContent = fmtEur(data.total_spend) + ' / ' + fmtEur(TOTAL_BUDGET);
     // Budget total HT (idx 1)
@@ -1120,21 +1191,12 @@ function updateTable(platforms) {
         fill(7, fmtEur(cpm));
     }
 
+    const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5 };
     platforms.forEach(p => {
-        if (p.platform === 'displayce') {
-            fillRow(0, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
-        } else if (p.platform === 'linkedin') {
-            fillRow(1, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
-        } else if (p.platform === 'meta') {
-            fillRow(2, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
-        } else if (p.platform === 'dv360') {
-            fillRow(3, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
-        } else if (p.platform === 'google') {
-            fillRow(4, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
-        } else if (p.platform === 'teads') {
-            fillRow(5, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
-        }
-        // Prog. Display (row 8) et Presse (row 9) : pas de données Supabase directes
+        if (!(p.impressions > 0 || p.spend > 0)) return; // pas encore de donnees : conserver le placeholder
+        const rowIdx = rowByPlatform[p.platform];
+        if (rowIdx == null) return;
+        fillRow(rowIdx, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
     });
 
     // Progress bars objectifs impressions (card gauche)
@@ -1162,7 +1224,7 @@ function updateTable(platforms) {
 
 function updateTimeline(daily) {
     if (!daily || daily.length === 0) return;
-    // Agreger par mois et calculer le cumul
+    // Agréger par mois et calculer le cumul
     const monthMap = {}; // index mois -> total impressions
     daily.forEach(d => {
         const date = new Date(d.date);
@@ -1200,6 +1262,10 @@ function updateVideoViews(data) {
 
 // ===== FETCH SUPABASE =====
 async function loadDashboard() {
+    const toast = document.getElementById('loadToast');
+    document.body.classList.add('is-loading');
+    toast.hidden = true;
+
     try {
         const [kpiRes, platRes, dailyRes, videoRes] = await Promise.all([
             sb.rpc('get_dashboard_kpis', { p_client_code: CLIENT_CODE }),
@@ -1208,6 +1274,9 @@ async function loadDashboard() {
             sb.rpc('get_dashboard_video_views', { p_client_code: CLIENT_CODE }),
         ]);
 
+        const rpcError = kpiRes.error || platRes.error || dailyRes.error || videoRes.error;
+        if (rpcError) throw rpcError;
+
         if (kpiRes.data) updateKpis(kpiRes.data);
         if (platRes.data) updateTable(platRes.data);
         if (dailyRes.data) updateTimeline(dailyRes.data);
@@ -1215,8 +1284,13 @@ async function loadDashboard() {
 
     } catch (err) {
         console.error('Erreur chargement dashboard:', err);
+        toast.hidden = false;
+    } finally {
+        document.body.classList.remove('is-loading');
     }
 }
+
+document.getElementById('loadRetryBtn').addEventListener('click', loadDashboard);
 
 // ===== INIT =====
 initCharts();
