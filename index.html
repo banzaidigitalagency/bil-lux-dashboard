@@ -400,15 +400,31 @@
         @media (max-width: 1100px) {
             .kpi-grid { grid-template-columns: repeat(3, 1fr); }
             .grid-2, .grid-3-2, .grid-3 { grid-template-columns: 1fr; }
-            .campaign-banner { flex-direction: column; gap: 1.5rem; align-items: flex-start; }
+            .campaign-banner { flex-direction: column; gap: 1.5rem; align-items: flex-start; padding: 1.5rem 1.75rem; }
+            .campaign-banner-right { gap: 1.75rem; }
         }
 
         @media (max-width: 768px) {
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .kpi-card { padding: 0.95rem 1.1rem; }
+            .kpi-value { font-size: 1.35rem; }
             .phase-grid { grid-template-columns: 1fr; }
-            .header-top { flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+            .header-top { flex-wrap: wrap; gap: 0.65rem 1rem; padding: 0.9rem 1rem; }
+            .header-meta { gap: 0.85rem; flex-wrap: wrap; }
             .main { padding: 1.25rem 1rem; }
+            .campaign-banner { padding: 1.25rem 1.35rem; border-radius: 12px; }
+            .campaign-banner-left h2 { font-size: 1.35rem; }
+            .campaign-banner-right { gap: 1.25rem; width: 100%; justify-content: space-between; }
+            .funnel-stats { gap: 1.25rem; }
             .donut-container { width: 160px; height: 160px; }
+            .donut-wrapper { gap: 1.25rem; }
+            .card { padding: 1.15rem 1.15rem; }
+            .channels-table tbody td { padding: 0.7rem 0.6rem; }
+        }
+
+        @media (max-width: 380px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .campaign-banner-right { justify-content: flex-start; gap: 1.5rem; }
         }
 
         /* ===== LOAD STATES ===== */
