@@ -1,0 +1,19 @@
+# Environnement Claude Code (local, non versionne)
+.claude/
+.agents/
+skills-lock.json
+
+# Documents de travail interne
+*.pdf
+*.xlsx
+*.xls
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editeurs
+.vscode/
+.idea/
+*.swp
+*.swo
