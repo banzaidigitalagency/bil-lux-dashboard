@@ -1,7 +1,5 @@
-# Environnement Claude Code (local, non versionne)
-.claude/
-.agents/
-skills-lock.json
+# Claude Code : permissions locales (par machine), reste versionne
+.claude/settings.local.json
 
 # Documents de travail interne
 *.pdf
