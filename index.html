@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#702F8A">
     <meta name="description" content="Dashboard de suivi de la campagne Branding BIL Belgique 2026">
     <title>BIL - Campagne Branding Belgique - Dashboard de suivi</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23702F8A'/%3E%3Ctext x='16' y='22.5' font-family='Poppins,Helvetica,sans-serif' font-size='20' font-weight='700' fill='white' text-anchor='middle' letter-spacing='-0.5'%3EB%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -29,8 +30,21 @@
             --success: #34D399;
             --warning: #FBBF24;
             --danger: #F87171;
-            --card-shadow: 0 1px 3px rgba(45, 10, 78, 0.08), 0 4px 12px rgba(45, 10, 78, 0.04);
-            --card-shadow-hover: 0 4px 12px rgba(45, 10, 78, 0.12), 0 8px 24px rgba(45, 10, 78, 0.06);
+
+            /* Echelle typographique */
+            --fs-xxs: 0.6875rem;  /* 11 - petits labels, badges */
+            --fs-xs: 0.75rem;     /* 12 - meta, values progress */
+            --fs-sm: 0.8125rem;   /* 13 - cellules table, texte courant */
+            --fs-md: 0.875rem;    /* 14 - titres cards */
+            --fs-lg: 1.125rem;    /* 18 - stats secondaires */
+            --fs-xl: 1.5rem;      /* 24 - KPI values */
+            --fs-2xl: 1.6rem;     /* banner title */
+
+            /* Hairlines & surfaces */
+            --hairline: rgba(45, 10, 78, 0.08);
+            --hairline-strong: rgba(45, 10, 78, 0.14);
+            --card-shadow: 0 1px 2px rgba(45, 10, 78, 0.04);
+            --card-shadow-hover: 0 4px 14px rgba(45, 10, 78, 0.07);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,78 +54,93 @@
             background: var(--bil-bg);
             color: var(--text-dark);
             min-height: 100vh;
+            font-variant-numeric: tabular-nums;
+            font-feature-settings: "tnum" 1, "ss01" 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* ===== HEADER ===== */
         .header {
-            background: var(--bil-purple);
+            background: linear-gradient(180deg, var(--bil-purple) 0%, var(--bil-deep) 100%);
             padding: 0;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(45, 10, 78, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 1px 0 rgba(45, 10, 78, 0.12);
         }
 
         .header-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 1rem 2rem;
+            padding: 1.1rem 2rem;
             max-width: 1440px;
             margin: 0 auto;
         }
 
         .header-logo { display: flex; align-items: center; gap: 1rem; }
-        .header-divider { width: 1px; height: 32px; background: rgba(255, 255, 255, 0.3); }
+        .header-divider { width: 1px; height: 32px; background: rgba(255, 255, 255, 0.25); }
         .header-campaign { color: var(--white); }
-        .header-campaign h1 { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.02em; }
-        .header-campaign span { font-size: 0.75rem; font-weight: 300; opacity: 0.7; }
-        .header-meta { display: flex; align-items: center; gap: 1.5rem; }
+        .header-campaign h1 { font-size: var(--fs-md); font-weight: 600; letter-spacing: 0.01em; }
+        .header-campaign span { font-size: var(--fs-xs); font-weight: 300; opacity: 0.7; }
+        .header-meta { display: flex; align-items: center; gap: 1.25rem; }
 
         .header-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             color: var(--white);
-            padding: 0.35rem 0.85rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            font-size: var(--fs-xs);
             font-weight: 500;
         }
 
         .header-badge .dot {
-            width: 7px; height: 7px; border-radius: 50%;
+            width: 6px; height: 6px; border-radius: 50%;
             background: var(--warning);
             animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-        .header-date { color: rgba(255, 255, 255, 0.7); font-size: 0.75rem; }
+        .header-date { color: rgba(255, 255, 255, 0.65); font-size: var(--fs-xs); }
 
         /* ===== MAIN ===== */
         .main { max-width: 1440px; margin: 0 auto; padding: 1.75rem 2rem 3rem; }
 
         /* ===== CAMPAIGN BANNER ===== */
         .campaign-banner {
-            background: linear-gradient(135deg, var(--bil-purple) 0%, var(--bil-deep) 100%);
-            border-radius: 16px;
-            padding: 2rem 2.5rem;
+            background: linear-gradient(120deg, var(--bil-deep) 0%, var(--bil-purple) 55%, var(--bil-mid) 100%);
+            border-radius: 14px;
+            padding: 1.75rem 2.25rem;
             margin-bottom: 1.75rem;
             color: var(--white);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            overflow: hidden;
         }
+        .campaign-banner::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at top right, rgba(176, 124, 200, 0.25), transparent 55%);
+            pointer-events: none;
+        }
+        .campaign-banner > * { position: relative; }
 
-        .campaign-banner-left h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.3rem; }
-        .campaign-banner-left p { font-size: 0.85rem; opacity: 0.75; font-weight: 300; }
-        .campaign-banner-right { display: flex; gap: 2rem; }
+        .campaign-banner-left h2 { font-size: var(--fs-2xl); font-weight: 600; margin-bottom: 0.35rem; letter-spacing: -0.01em; }
+        .campaign-banner-left p { font-size: var(--fs-sm); opacity: 0.72; font-weight: 300; }
+        .campaign-banner-right { display: flex; gap: 2.25rem; }
         .banner-stat { text-align: center; }
-        .banner-stat-value { font-size: 1.6rem; font-weight: 700; color: var(--bil-light); }
-        .banner-stat-label { font-size: 0.7rem; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.06em; }
+        .banner-stat-value { font-size: var(--fs-xl); font-weight: 600; color: var(--bil-light); letter-spacing: -0.01em; }
+        .banner-stat-label { font-size: var(--fs-xxs); opacity: 0.6; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
 
         /* ===== KPI CARDS ===== */
         .kpi-grid {
@@ -123,57 +152,58 @@
 
         .kpi-card {
             background: var(--white);
+            border: 1px solid var(--hairline);
             border-radius: 12px;
-            padding: 1.25rem 1.5rem;
+            padding: 1.1rem 1.35rem;
             box-shadow: var(--card-shadow);
-            transition: box-shadow 0.2s, transform 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
             position: relative;
             overflow: hidden;
         }
 
         .kpi-card:hover {
+            border-color: var(--hairline-strong);
             box-shadow: var(--card-shadow-hover);
-            transform: translateY(-1px);
         }
 
         .kpi-card::after {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 3px;
+            height: 2px;
             background: var(--bil-accent);
-            opacity: 0;
-            transition: opacity 0.2s;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.25s ease;
         }
 
-        .kpi-card:hover::after { opacity: 1; }
+        .kpi-card:hover::after { transform: scaleX(1); }
 
         .kpi-icon {
-            width: 36px; height: 36px; border-radius: 10px;
+            width: 32px; height: 32px; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            margin-bottom: 0.75rem; font-size: 1rem;
+            margin-bottom: 0.7rem;
         }
 
-        .kpi-icon.impressions { background: rgba(112, 47, 138, 0.1); color: var(--bil-purple); }
+        .kpi-icon.impressions { background: rgba(112, 47, 138, 0.08); color: var(--bil-purple); }
         .kpi-icon.clicks { background: rgba(154, 92, 181, 0.1); color: var(--bil-accent); }
-        .kpi-icon.spend { background: rgba(123, 61, 166, 0.1); color: var(--bil-mid); }
+        .kpi-icon.spend { background: rgba(123, 61, 166, 0.08); color: var(--bil-mid); }
         .kpi-icon.ctr { background: rgba(52, 211, 153, 0.1); color: var(--success); }
-        .kpi-icon.cpm { background: rgba(160, 108, 208, 0.1); color: var(--bil-bright); }
-        .kpi-icon.views { background: rgba(61, 21, 102, 0.1); color: var(--bil-deep); }
+        .kpi-icon.cpm { background: rgba(176, 124, 200, 0.14); color: var(--bil-bright); }
+        .kpi-icon.views { background: rgba(61, 21, 102, 0.08); color: var(--bil-deep); }
 
         .kpi-label {
-            font-size: 0.7rem; font-weight: 500; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.35rem;
+            font-size: var(--fs-xxs); font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem;
         }
 
-        .kpi-value { font-size: 1.65rem; font-weight: 700; color: var(--text-dark); line-height: 1.1; }
-        .kpi-value.placeholder { color: var(--text-light); }
+        .kpi-value { font-size: var(--fs-xl); font-weight: 600; color: var(--text-dark); line-height: 1.15; letter-spacing: -0.01em; }
+        .kpi-value.placeholder { color: var(--text-light); font-weight: 400; }
 
         .kpi-change {
             display: inline-flex; align-items: center; gap: 0.2rem;
-            font-size: 0.7rem; font-weight: 500; margin-top: 0.4rem;
-            padding: 0.15rem 0.5rem; border-radius: 10px;
-            background: rgba(45, 10, 78, 0.05); color: var(--text-muted);
+            font-size: var(--fs-xxs); font-weight: 500; margin-top: 0.45rem;
+            color: var(--text-muted);
         }
 
         /* ===== SECTION / CARD ===== */
@@ -183,33 +213,37 @@
 
         .card {
             background: var(--white);
+            border: 1px solid var(--hairline);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.35rem 1.5rem;
             box-shadow: var(--card-shadow);
             overflow: hidden;
             min-width: 0;
         }
 
         .card-title {
-            font-size: 0.85rem; font-weight: 600; color: var(--text-dark);
+            font-size: var(--fs-md); font-weight: 600; color: var(--text-dark);
             margin-bottom: 1.25rem;
-            display: flex; align-items: center; gap: 0.5rem;
+            padding-bottom: 0.85rem;
+            border-bottom: 1px solid var(--hairline);
+            display: flex; align-items: center; gap: 0.55rem;
+            letter-spacing: -0.005em;
         }
 
         .card-title .icon {
-            width: 28px; height: 28px; border-radius: 8px;
-            background: var(--bil-light); color: var(--bil-purple);
+            width: 26px; height: 26px; border-radius: 7px;
+            background: var(--bil-lighter); color: var(--bil-purple);
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.8rem;
         }
 
         /* ===== FUNNEL CARDS ===== */
         .funnel-card {
             background: var(--white);
+            border: 1px solid var(--hairline);
             border-radius: 12px;
-            padding: 1.25rem 1.5rem;
+            padding: 1.15rem 1.4rem;
             box-shadow: var(--card-shadow);
-            border-left: 4px solid;
+            border-left: 3px solid;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
@@ -223,46 +257,47 @@
             display: flex; align-items: center; justify-content: space-between;
         }
 
-        .funnel-title { font-size: 0.8rem; font-weight: 600; }
+        .funnel-title { font-size: var(--fs-sm); font-weight: 600; }
         .funnel-badge {
-            font-size: 0.6rem; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.05em; padding: 0.2rem 0.6rem; border-radius: 10px;
+            font-size: var(--fs-xxs); font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; padding: 0.2rem 0.55rem; border-radius: 999px;
         }
 
         .funnel-card.notoriete .funnel-badge { background: rgba(154, 92, 181, 0.1); color: var(--bil-accent); }
         .funnel-card.acquisition .funnel-badge { background: rgba(112, 47, 138, 0.1); color: var(--bil-purple); }
-        .funnel-card.consideration .funnel-badge { background: rgba(52, 211, 153, 0.1); color: var(--success); }
+        .funnel-card.consideration .funnel-badge { background: rgba(52, 211, 153, 0.12); color: #059669; }
 
-        .funnel-stats { display: flex; gap: 1.5rem; }
-        .funnel-stat-value { font-size: 1.1rem; font-weight: 700; }
-        .funnel-stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-        .funnel-channels { font-size: 0.68rem; color: var(--text-muted); line-height: 1.5; }
+        .funnel-stats { display: flex; gap: 1.75rem; }
+        .funnel-stat-value { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.01em; }
+        .funnel-stat-label { font-size: var(--fs-xxs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-top: 0.1rem; }
+        .funnel-channels { font-size: var(--fs-xs); color: var(--text-muted); line-height: 1.55; }
 
         /* ===== CHANNELS TABLE ===== */
         .channels-table { width: 100%; border-collapse: collapse; }
 
         .channels-table thead th {
-            font-size: 0.65rem; font-weight: 600; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 0.06em;
-            padding: 0.5rem 0.75rem; text-align: left;
-            border-bottom: 1px solid var(--bil-light);
+            font-size: var(--fs-xxs); font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.08em;
+            padding: 0.55rem 0.75rem 0.65rem; text-align: left;
+            border-bottom: 1px solid var(--hairline-strong);
         }
         .channels-table thead th:not(:first-child) { text-align: right; }
 
         .channels-table tbody td {
-            padding: 0.75rem; font-size: 0.8rem;
-            border-bottom: 1px solid rgba(232, 214, 245, 0.5);
+            padding: 0.8rem 0.75rem; font-size: var(--fs-sm);
+            border-bottom: 1px solid var(--hairline);
         }
         .channels-table tbody td:not(:first-child) { text-align: right; }
         .channels-table tbody tr:last-child td { border-bottom: none; }
-        .channels-table tbody tr:hover { background: rgba(232, 214, 245, 0.15); }
+        .channels-table tbody tr:hover { background: var(--bil-lighter); }
 
-        .channel-name { display: flex; align-items: center; gap: 0.65rem; }
+        .channel-name { display: flex; align-items: center; gap: 0.7rem; }
 
         .channel-icon {
-            width: 32px; height: 32px; border-radius: 8px;
+            width: 30px; height: 30px; border-radius: 7px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem; font-weight: 600; color: var(--white); flex-shrink: 0;
+            font-size: var(--fs-xs); font-weight: 600; color: var(--white); flex-shrink: 0;
+            letter-spacing: -0.01em;
         }
         .channel-icon.pdooh { background: #FF6B00; }
         .channel-icon.linkedin { background: #0A66C2; }
@@ -271,69 +306,98 @@
         .channel-icon.youtube { background: #FF0000; }
         .channel-icon.teads { background: #1A1A2E; }
         .channel-icon.display { background: var(--bil-purple); }
-        .channel-icon.presse { background: #8B6F47; }
 
-        .channel-info strong { font-weight: 600; display: block; font-size: 0.8rem; }
-        .channel-info span { font-size: 0.65rem; color: var(--text-muted); }
+        .channel-info strong { font-weight: 600; display: block; font-size: var(--fs-sm); letter-spacing: -0.005em; }
+        .channel-info span { font-size: var(--fs-xxs); color: var(--text-muted); }
 
         .td-placeholder { color: var(--text-light); font-weight: 400; }
         .td-objective { font-weight: 500; color: var(--text-dark); }
 
         /* ===== PROGRESS BARS ===== */
-        .progress-wrapper { margin-bottom: 1.25rem; }
+        .progress-wrapper { margin-bottom: 1.15rem; }
         .progress-wrapper:last-child { margin-bottom: 0; }
 
-        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
-        .progress-label { font-size: 0.75rem; font-weight: 500; color: var(--text-dark); }
-        .progress-value { font-size: 0.7rem; color: var(--text-muted); }
+        .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.4rem; gap: 0.75rem; }
+        .progress-label { font-size: var(--fs-xs); font-weight: 500; color: var(--text-dark); }
+        .progress-value { font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-        .progress-bar { height: 8px; background: var(--bil-lighter); border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
-        .progress-fill.navy { background: linear-gradient(90deg, var(--bil-purple), var(--bil-accent)); }
-        .progress-fill.bright { background: linear-gradient(90deg, var(--bil-mid), var(--bil-bright)); }
-        .progress-fill.gold { background: linear-gradient(90deg, var(--bil-purple), var(--bil-mid)); }
-        .progress-fill.success { background: linear-gradient(90deg, #10B981, var(--success)); }
+        .progress-bar { height: 6px; background: var(--bil-lighter); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* Couleurs par canal — objectifs impressions */
+        .progress-fill.ch-dooh { background: #FF6B00; }
+        .progress-fill.ch-linkedin { background: #0A66C2; }
+        .progress-fill.ch-meta { background: #0084FF; }
+        .progress-fill.ch-dv360 { background: #34A853; }
+        .progress-fill.ch-youtube { background: #FF0000; }
+        .progress-fill.ch-teads { background: #1A1A2E; }
+        .progress-fill.ch-display { background: var(--bil-purple); }
+
+        /* Teintes violet sobres — pacing budgetaire */
+        .progress-fill.navy { background: var(--bil-purple); }
+        .progress-fill.bright { background: var(--bil-accent); }
+        .progress-fill.gold { background: var(--bil-bright); }
 
         /* ===== PHASE CARDS ===== */
         .phase-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
 
         .phase-card {
-            background: var(--bil-lighter); border-radius: 10px; padding: 1rem;
-            text-align: center; border: 1px solid transparent; transition: border-color 0.2s;
+            background: var(--bil-lighter);
+            border-radius: 10px;
+            padding: 0.9rem 0.85rem 1rem;
+            text-align: left;
+            border: 1px solid transparent;
+            transition: border-color 0.2s, background 0.2s;
+            position: relative;
         }
-        .phase-card.current { border-color: var(--bil-accent); background: rgba(154, 92, 181, 0.06); }
+        .phase-card.current {
+            border-color: rgba(154, 92, 181, 0.35);
+            background: rgba(154, 92, 181, 0.08);
+        }
+        .phase-card.current::before {
+            content: "";
+            position: absolute;
+            top: 0.9rem; right: 0.85rem;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--bil-accent);
+            box-shadow: 0 0 0 3px rgba(154, 92, 181, 0.18);
+        }
 
-        .phase-label { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.15rem; }
-        .phase-dates { font-size: 0.55rem; color: var(--text-light); margin-bottom: 0.3rem; }
-        .phase-amount { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); }
+        .phase-label { font-size: var(--fs-xxs); font-weight: 600; color: var(--bil-purple); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.2rem; }
+        .phase-dates { font-size: var(--fs-xxs); color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 400; }
+        .phase-amount { font-size: var(--fs-lg); font-weight: 600; color: var(--text-dark); letter-spacing: -0.01em; }
 
         .phase-status {
-            font-size: 0.6rem; font-weight: 500; margin-top: 0.3rem;
-            padding: 0.15rem 0.5rem; border-radius: 8px; display: inline-block;
+            font-size: var(--fs-xxs); font-weight: 500; margin-top: 0.45rem;
+            padding: 0.15rem 0.55rem; border-radius: 999px; display: inline-block;
         }
-        .phase-status.pending { background: rgba(251, 191, 36, 0.15); color: #B45309; }
-        .phase-status.upcoming { background: rgba(45, 10, 78, 0.06); color: var(--text-muted); }
+        .phase-status.active { background: rgba(52, 211, 153, 0.14); color: #059669; }
+        .phase-status.pending { background: rgba(251, 191, 36, 0.14); color: #B45309; }
+        .phase-status.upcoming { background: rgba(45, 10, 78, 0.05); color: var(--text-muted); }
+        .phase-status.done { background: rgba(45, 10, 78, 0.05); color: var(--text-light); }
 
         /* ===== CHARTS ===== */
         .chart-container { position: relative; width: 100%; height: 260px; }
 
         .donut-wrapper { display: flex; align-items: center; justify-content: center; gap: 2rem; flex-wrap: wrap; flex: 1; }
-        .donut-container { width: 210px; height: 210px; flex-shrink: 0; min-width: 0; }
-        .donut-legend { display: flex; flex-direction: column; gap: 0.6rem; }
-        .legend-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.75rem; }
-        .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+        .donut-container { width: 200px; height: 200px; flex-shrink: 0; min-width: 0; }
+        .donut-legend { display: flex; flex-direction: column; gap: 0.55rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.6rem; font-size: var(--fs-xs); }
+        .legend-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
         .legend-label { color: var(--text-muted); flex: 1; }
-        .legend-value { font-weight: 600; color: var(--text-dark); }
+        .legend-value { font-weight: 600; color: var(--text-dark); font-variant-numeric: tabular-nums; }
 
         /* ===== FOOTER ===== */
         .footer {
             background: var(--bil-purple);
             color: rgba(255, 255, 255, 0.5);
             text-align: center;
-            padding: 1.25rem;
-            font-size: 0.7rem;
+            padding: 1.15rem;
+            font-size: var(--fs-xs);
+            letter-spacing: 0.01em;
         }
-        .footer strong { color: rgba(255, 255, 255, 0.8); font-weight: 500; }
+        .footer strong { color: rgba(255, 255, 255, 0.82); font-weight: 500; }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1100px) {
@@ -392,7 +456,7 @@
             padding: 0.75rem 0.9rem 0.75rem 1rem;
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(45, 10, 78, 0.12);
-            font-size: 0.8rem;
+            font-size: var(--fs-sm);
             max-width: 360px;
         }
         .load-toast[hidden] { display: none; }
@@ -402,7 +466,7 @@
             border: 1px solid rgba(45, 10, 78, 0.12);
             border-radius: 6px;
             padding: 0.35rem 0.7rem;
-            font-size: 0.72rem;
+            font-size: var(--fs-xs);
             font-weight: 500;
             color: var(--bil-purple);
             cursor: pointer;
@@ -438,13 +502,14 @@
         }
         .lock-box h2 {
             color: #fff;
-            font-size: 1.1rem;
+            font-size: var(--fs-lg);
             font-weight: 600;
             margin-bottom: 0.4rem;
+            letter-spacing: -0.005em;
         }
         .lock-box p {
             color: rgba(255,255,255,0.6);
-            font-size: 0.78rem;
+            font-size: var(--fs-sm);
             font-weight: 300;
             margin-bottom: 1.5rem;
         }
@@ -462,7 +527,7 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .lock-input::placeholder { color: rgba(255,255,255,0.3); letter-spacing: 0.15em; font-size: 0.85rem; }
+        .lock-input::placeholder { color: rgba(255,255,255,0.3); letter-spacing: 0.15em; font-size: var(--fs-md); }
         .lock-input:focus { border-color: rgba(255,255,255,0.5); }
         .lock-input.error { border-color: #F87171; animation: shake 0.4s ease; }
         .lock-btn {
@@ -474,7 +539,7 @@
             background: rgba(255,255,255,0.15);
             color: #fff;
             font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem;
+            font-size: var(--fs-md);
             font-weight: 500;
             cursor: pointer;
             transition: background 0.2s;
@@ -484,7 +549,7 @@
         .lock-input:focus-visible { border-color: rgba(255,255,255,0.65); }
         .lock-error {
             color: #F87171;
-            font-size: 0.72rem;
+            font-size: var(--fs-xs);
             margin-top: 0.75rem;
             min-height: 1rem;
         }
@@ -856,49 +921,49 @@
                     <span class="progress-label">DOOH (Business + Outdoor + Transports)</span>
                     <span class="progress-value">0 / 902 833</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill navy" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-dooh" style="width: 0%"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">LinkedIn (Carousel + In-Feed)</span>
                     <span class="progress-value">0 / 434 286</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill navy" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-linkedin" style="width: 0%"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">Meta (Facebook/Instagram)</span>
                     <span class="progress-value">0 / 4 300 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill bright" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-meta" style="width: 0%"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">DV360 Video</span>
                     <span class="progress-value">0 / 1 500 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill bright" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-dv360" style="width: 0%"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">YouTube Instream</span>
                     <span class="progress-value">0 / 1 500 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill gold" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-youtube" style="width: 0%"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">Teads (Carousel + InRead)</span>
                     <span class="progress-value">0 / 1 307 692</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill gold" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-teads" style="width: 0%"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">Programmatique Display</span>
                     <span class="progress-value">0 / 425 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill success" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-display" style="width: 0%"></div></div>
             </div>
         </div>
 
@@ -911,19 +976,19 @@
                 Pacing budgétaire par phase
             </div>
             <div class="phase-grid">
-                <div class="phase-card current">
+                <div class="phase-card" data-phase-start="2026-04-10" data-phase-end="2026-06-30">
                     <div class="phase-label">Phase 1</div>
                     <div class="phase-dates">Avr - Juin 2026</div>
                     <div class="phase-amount">67 948 &euro;</div>
-                    <div class="phase-status pending">En attente</div>
+                    <div class="phase-status upcoming">À venir</div>
                 </div>
-                <div class="phase-card">
+                <div class="phase-card" data-phase-start="2026-07-01" data-phase-end="2026-08-31">
                     <div class="phase-label">Phase 2</div>
                     <div class="phase-dates">Juil - Août 2026</div>
                     <div class="phase-amount">14 260 &euro;</div>
                     <div class="phase-status upcoming">À venir</div>
                 </div>
-                <div class="phase-card">
+                <div class="phase-card" data-phase-start="2026-09-01" data-phase-end="2026-11-29">
                     <div class="phase-label">Phase 3</div>
                     <div class="phase-dates">Sep - Nov 2026</div>
                     <div class="phase-amount">70 725 &euro;</div>
@@ -944,13 +1009,6 @@
                         <span class="progress-value">0 &euro; / 112 985 &euro;</span>
                     </div>
                     <div class="progress-bar"><div class="progress-fill navy" style="width: 0%"></div></div>
-                </div>
-                <div class="progress-wrapper" style="margin-top: 1rem;">
-                    <div class="progress-header">
-                        <span class="progress-label">Budget total HT consommé</span>
-                        <span class="progress-value">0 &euro; / 152 933 &euro;</span>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill gold" style="width: 0%"></div></div>
                 </div>
                 <div class="progress-wrapper" style="margin-top: 1rem;">
                     <div class="progress-header">
@@ -1012,8 +1070,6 @@ function tryUnlock() {
         setTimeout(() => { input.classList.remove('error'); error.textContent = ''; }, 1500);
     }
 }
-
-checkAccess();
 
 // ===== SUPABASE =====
 const SUPABASE_URL = 'https://mfqbhpxsuawujnfbcojr.supabase.co';
@@ -1158,7 +1214,6 @@ function updateKpis(data) {
 
     // Pacing budgétaire - sélectionner les barres dans la section "Consommation budgétaire"
     const spendPct = (data.total_spend / TOTAL_BUDGET * 100);
-    const spendHtPct = (data.total_spend / TOTAL_BUDGET_HT * 100);
     const now = new Date();
     const daysPassed = Math.max(0, Math.floor((now - CAMPAIGN_START) / 86400000));
     const timePct = (daysPassed / CAMPAIGN_DAYS * 100);
@@ -1169,12 +1224,9 @@ function updateKpis(data) {
     // Budget média (idx 0)
     pacingBars[0].style.width = Math.min(spendPct, 100) + '%';
     pacingValues[0].textContent = fmtEur(data.total_spend) + ' / ' + fmtEur(TOTAL_BUDGET);
-    // Budget total HT (idx 1)
-    pacingBars[1].style.width = Math.min(spendHtPct, 100) + '%';
-    pacingValues[1].textContent = fmtEur(data.total_spend) + ' / ' + fmtEur(TOTAL_BUDGET_HT);
-    // Temps (idx 2)
-    pacingBars[2].style.width = Math.min(timePct, 100) + '%';
-    pacingValues[2].textContent = daysPassed + ' / ' + CAMPAIGN_DAYS + ' jours';
+    // Temps (idx 1)
+    pacingBars[1].style.width = Math.min(timePct, 100) + '%';
+    pacingValues[1].textContent = daysPassed + ' / ' + CAMPAIGN_DAYS + ' jours';
 }
 
 function updateTable(platforms) {
@@ -1267,20 +1319,26 @@ async function loadDashboard() {
     toast.hidden = true;
 
     try {
-        const [kpiRes, platRes, dailyRes, videoRes] = await Promise.all([
+        const results = await Promise.all([
             sb.rpc('get_dashboard_kpis', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_by_platform', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_daily', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_video_views', { p_client_code: CLIENT_CODE }),
         ]);
+        const [kpiRes, platRes, dailyRes, videoRes] = results;
 
-        const rpcError = kpiRes.error || platRes.error || dailyRes.error || videoRes.error;
-        if (rpcError) throw rpcError;
+        results.forEach((r, i) => {
+            if (r.error) console.warn(`RPC ${i} erreur:`, r.error);
+        });
 
         if (kpiRes.data) updateKpis(kpiRes.data);
         if (platRes.data) updateTable(platRes.data);
         if (dailyRes.data) updateTimeline(dailyRes.data);
         if (videoRes.data) updateVideoViews(videoRes.data);
+
+        // Toast seulement si toutes les RPC ont échoué
+        const allErrored = results.every(r => r.error);
+        if (allErrored) toast.hidden = false;
 
     } catch (err) {
         console.error('Erreur chargement dashboard:', err);
@@ -1292,8 +1350,33 @@ async function loadDashboard() {
 
 document.getElementById('loadRetryBtn').addEventListener('click', loadDashboard);
 
+function updatePhases() {
+    const now = new Date();
+    document.querySelectorAll('.phase-card').forEach(card => {
+        const start = new Date(card.dataset.phaseStart);
+        const end = new Date(card.dataset.phaseEnd);
+        end.setHours(23, 59, 59); // fin de journée incluse
+        const status = card.querySelector('.phase-status');
+        card.classList.remove('current');
+        status.classList.remove('active', 'pending', 'upcoming', 'done');
+        if (now < start) {
+            status.textContent = 'À venir';
+            status.classList.add('upcoming');
+        } else if (now > end) {
+            status.textContent = 'Terminée';
+            status.classList.add('done');
+        } else {
+            status.textContent = 'En cours';
+            status.classList.add('active');
+            card.classList.add('current');
+        }
+    });
+}
+
 // ===== INIT =====
 initCharts();
+updatePhases();
+checkAccess();
 </script>
 
 </body>
