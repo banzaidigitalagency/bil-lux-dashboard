@@ -9,7 +9,7 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23702F8A'/%3E%3Ctext x='16' y='22.5' font-family='Poppins,Helvetica,sans-serif' font-size='20' font-weight='700' fill='white' text-anchor='middle' letter-spacing='-0.5'%3EB%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <style>
@@ -26,7 +26,7 @@
             --white: #FFFFFF;
             --text-dark: #1A0A2E;
             --text-muted: #6B5B7B;
-            --text-light: #9B8FAD;
+            --text-light: #7B6E91;
             --success: #34D399;
             --warning: #FBBF24;
             --danger: #F87171;
@@ -84,7 +84,7 @@
         .header-divider { width: 1px; height: 32px; background: rgba(255, 255, 255, 0.25); }
         .header-campaign { color: var(--white); }
         .header-campaign h1 { font-size: var(--fs-md); font-weight: 600; letter-spacing: 0.01em; }
-        .header-campaign span { font-size: var(--fs-xs); font-weight: 300; opacity: 0.7; }
+        .header-campaign span { font-size: var(--fs-xs); font-weight: 400; opacity: 0.7; }
         .header-meta { display: flex; align-items: center; gap: 1.25rem; }
 
         .header-badge {
@@ -136,7 +136,7 @@
         .campaign-banner > * { position: relative; }
 
         .campaign-banner-left h2 { font-size: var(--fs-2xl); font-weight: 600; margin-bottom: 0.35rem; letter-spacing: -0.01em; }
-        .campaign-banner-left p { font-size: var(--fs-sm); opacity: 0.72; font-weight: 300; }
+        .campaign-banner-left p { font-size: var(--fs-sm); opacity: 0.72; font-weight: 400; }
         .campaign-banner-right { display: flex; gap: 2.25rem; }
         .banner-stat { text-align: center; }
         .banner-stat-value { font-size: var(--fs-xl); font-weight: 600; color: var(--bil-light); letter-spacing: -0.01em; }
@@ -179,19 +179,6 @@
 
         .kpi-card:hover::after { transform: scaleX(1); }
 
-        .kpi-icon {
-            width: 32px; height: 32px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 0.7rem;
-        }
-
-        .kpi-icon.impressions { background: rgba(112, 47, 138, 0.08); color: var(--bil-purple); }
-        .kpi-icon.clicks { background: rgba(154, 92, 181, 0.1); color: var(--bil-accent); }
-        .kpi-icon.spend { background: rgba(123, 61, 166, 0.08); color: var(--bil-mid); }
-        .kpi-icon.ctr { background: rgba(52, 211, 153, 0.1); color: var(--success); }
-        .kpi-icon.cpm { background: rgba(176, 124, 200, 0.14); color: var(--bil-bright); }
-        .kpi-icon.views { background: rgba(61, 21, 102, 0.08); color: var(--bil-deep); }
-
         .kpi-label {
             font-size: var(--fs-xxs); font-weight: 600; color: var(--text-muted);
             text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem;
@@ -230,11 +217,6 @@
             letter-spacing: -0.005em;
         }
 
-        .card-title .icon {
-            width: 26px; height: 26px; border-radius: 7px;
-            background: var(--bil-lighter); color: var(--bil-purple);
-            display: flex; align-items: center; justify-content: center;
-        }
 
         /* ===== FUNNEL CARDS ===== */
         .funnel-card {
@@ -243,21 +225,29 @@
             border-radius: 12px;
             padding: 1.15rem 1.4rem;
             box-shadow: var(--card-shadow);
-            border-left: 3px solid;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
         }
 
-        .funnel-card.notoriete { border-left-color: var(--bil-accent); }
-        .funnel-card.acquisition { border-left-color: var(--bil-purple); }
-        .funnel-card.consideration { border-left-color: var(--success); }
-
         .funnel-header {
             display: flex; align-items: center; justify-content: space-between;
         }
 
-        .funnel-title { font-size: var(--fs-sm); font-weight: 600; }
+        .funnel-title {
+            font-size: var(--fs-sm); font-weight: 600;
+            display: inline-flex; align-items: center; gap: 0.55rem;
+        }
+        .funnel-title::before {
+            content: "";
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--text-light);
+        }
+        .funnel-card.notoriete .funnel-title::before { background: var(--bil-accent); }
+        .funnel-card.acquisition .funnel-title::before { background: var(--bil-purple); }
+        .funnel-card.consideration .funnel-title::before { background: #059669; }
         .funnel-badge {
             font-size: var(--fs-xxs); font-weight: 600; text-transform: uppercase;
             letter-spacing: 0.08em; padding: 0.2rem 0.55rem; border-radius: 999px;
@@ -322,7 +312,14 @@
         .progress-value { font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
         .progress-bar { height: 6px; background: var(--bil-lighter); border-radius: 3px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .progress-fill {
+            height: 100%; width: 100%;
+            border-radius: 3px;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
 
         /* Couleurs par canal — objectifs impressions */
         .progress-fill.ch-dooh { background: #FF6B00; }
@@ -449,23 +446,24 @@
             z-index: 200;
             display: flex;
             align-items: center;
-            gap: 0.85rem;
+            gap: 0.7rem;
             background: var(--white);
-            border: 1px solid rgba(45, 10, 78, 0.08);
-            border-left: 3px solid var(--danger);
-            padding: 0.75rem 0.9rem 0.75rem 1rem;
+            border: 1px solid rgba(45, 10, 78, 0.1);
+            padding: 0.8rem 0.9rem 0.8rem 0.95rem;
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(45, 10, 78, 0.12);
             font-size: var(--fs-sm);
-            max-width: 360px;
+            max-width: 380px;
         }
         .load-toast[hidden] { display: none; }
-        .load-toast-msg { color: var(--text-dark); font-weight: 500; }
+        .load-toast-icon { width: 18px; height: 18px; color: var(--danger); flex-shrink: 0; }
+        .load-toast-msg { color: var(--text-dark); font-weight: 500; flex: 1; }
         .load-toast-btn {
             background: transparent;
             border: 1px solid rgba(45, 10, 78, 0.12);
             border-radius: 6px;
-            padding: 0.35rem 0.7rem;
+            padding: 0.45rem 0.8rem;
+            min-height: 36px;
             font-size: var(--fs-xs);
             font-weight: 500;
             color: var(--bil-purple);
@@ -510,7 +508,7 @@
         .lock-box p {
             color: rgba(255,255,255,0.6);
             font-size: var(--fs-sm);
-            font-weight: 300;
+            font-weight: 400;
             margin-bottom: 1.5rem;
         }
         .lock-input {
@@ -532,6 +530,7 @@
         .lock-input.error { border-color: #F87171; animation: shake 0.4s ease; }
         .lock-btn {
             width: 100%;
+            min-height: 44px;
             margin-top: 1rem;
             padding: 0.75rem;
             border-radius: 10px;
@@ -638,49 +637,31 @@
     <!-- KPI Cards -->
     <div class="kpi-grid">
         <div class="kpi-card">
-            <div class="kpi-icon spend">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            </div>
             <div class="kpi-label">Dépenses</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Budget : 112 985 &euro;</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-icon impressions">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            </div>
             <div class="kpi-label">Impressions</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Objectif : 10 370 000</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-icon clicks">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
-            </div>
             <div class="kpi-label">Clics</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Objectif : 22 301</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-icon ctr">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            </div>
             <div class="kpi-label">CTR moyen</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Objectif : 0,22 %</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-icon cpm">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            </div>
             <div class="kpi-label">CPM moyen</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Objectif : 12,82 &euro;</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-icon views">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </div>
             <div class="kpi-label">Vues 100%</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Objectif : 2 250 000</div>
@@ -737,12 +718,7 @@
     <div class="grid-3-2">
         <!-- Timeline Chart -->
         <div class="card">
-            <div class="card-title">
-                <span class="icon">
-                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-                </span>
-                Évolution des impressions cumulées
-            </div>
+            <div class="card-title">Évolution des impressions cumulées</div>
             <div class="chart-container">
                 <canvas id="timelineChart"></canvas>
             </div>
@@ -750,12 +726,7 @@
 
         <!-- Budget Donut -->
         <div class="card" style="display: flex; flex-direction: column;">
-            <div class="card-title">
-                <span class="icon">
-                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0110 10"/></svg>
-                </span>
-                Répartition budgétaire
-            </div>
+            <div class="card-title">Répartition budgétaire</div>
             <div class="donut-wrapper">
                 <div class="donut-container">
                     <canvas id="budgetDonut"></canvas>
@@ -775,12 +746,7 @@
 
     <!-- Channels Detail Table -->
     <div class="card" style="margin-bottom: 1.75rem;">
-        <div class="card-title">
-            <span class="icon" aria-hidden="true">
-                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            </span>
-            Détail par canal
-        </div>
+        <div class="card-title">Détail par canal</div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
         <table class="channels-table" style="min-width: 800px;">
             <thead>
@@ -910,71 +876,61 @@
     <div class="grid-2">
         <!-- Impression Goals Progress -->
         <div class="card">
-            <div class="card-title">
-                <span class="icon">
-                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                </span>
-                Avancement des objectifs impressions
-            </div>
+            <div class="card-title">Avancement des objectifs impressions</div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">DOOH (Business + Outdoor + Transports)</span>
                     <span class="progress-value">0 / 902 833</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill ch-dooh" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-dooh"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">LinkedIn (Carousel + In-Feed)</span>
                     <span class="progress-value">0 / 434 286</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill ch-linkedin" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-linkedin"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">Meta (Facebook/Instagram)</span>
                     <span class="progress-value">0 / 4 300 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill ch-meta" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-meta"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">DV360 Video</span>
                     <span class="progress-value">0 / 1 500 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill ch-dv360" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-dv360"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">YouTube Instream</span>
                     <span class="progress-value">0 / 1 500 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill ch-youtube" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-youtube"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">Teads (Carousel + InRead)</span>
                     <span class="progress-value">0 / 1 307 692</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill ch-teads" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-teads"></div></div>
             </div>
             <div class="progress-wrapper">
                 <div class="progress-header">
                     <span class="progress-label">Programmatique Display</span>
                     <span class="progress-value">0 / 425 000</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill ch-display" style="width: 0%"></div></div>
+                <div class="progress-bar"><div class="progress-fill ch-display"></div></div>
             </div>
         </div>
 
         <!-- Phase Pacing -->
         <div class="card">
-            <div class="card-title">
-                <span class="icon">
-                    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                </span>
-                Pacing budgétaire par phase
-            </div>
+            <div class="card-title">Pacing budgétaire par phase</div>
             <div class="phase-grid">
                 <div class="phase-card" data-phase-start="2026-04-10" data-phase-end="2026-06-30">
                     <div class="phase-label">Phase 1</div>
@@ -997,25 +953,20 @@
             </div>
 
             <div style="margin-top: 1.5rem;">
-                <div class="card-title" style="margin-bottom: 1rem;">
-                    <span class="icon">
-                        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-                    </span>
-                    Consommation budgétaire
-                </div>
+                <div class="card-title" style="margin-bottom: 1rem;">Consommation budgétaire</div>
                 <div class="progress-wrapper">
                     <div class="progress-header">
                         <span class="progress-label">Budget média consommé</span>
                         <span class="progress-value">0 &euro; / 112 985 &euro;</span>
                     </div>
-                    <div class="progress-bar"><div class="progress-fill navy" style="width: 0%"></div></div>
+                    <div class="progress-bar"><div class="progress-fill navy"></div></div>
                 </div>
                 <div class="progress-wrapper" style="margin-top: 1rem;">
                     <div class="progress-header">
                         <span class="progress-label">Avancement temporel</span>
                         <span class="progress-value">0 / 234 jours</span>
                     </div>
-                    <div class="progress-bar"><div class="progress-fill bright" style="width: 0%"></div></div>
+                    <div class="progress-bar"><div class="progress-fill bright"></div></div>
                 </div>
             </div>
         </div>
@@ -1033,6 +984,7 @@
 <!-- ===== LOAD STATES ===== -->
 <div class="load-bar" id="loadBar" aria-hidden="true"></div>
 <div class="load-toast" id="loadToast" role="alert" aria-live="polite" hidden>
+    <svg class="load-toast-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12.5"/><circle cx="12" cy="16.5" r="0.5" fill="currentColor" stroke="none"/></svg>
     <span class="load-toast-msg">Impossible de charger les données</span>
     <button type="button" class="load-toast-btn" id="loadRetryBtn">Réessayer</button>
 </div>
@@ -1222,10 +1174,10 @@ function updateKpis(data) {
     const pacingBars = pacingCard.querySelectorAll('.progress-fill');
     const pacingValues = pacingCard.querySelectorAll('.progress-value');
     // Budget média (idx 0)
-    pacingBars[0].style.width = Math.min(spendPct, 100) + '%';
+    pacingBars[0].style.transform = 'scaleX(' + Math.min(spendPct, 100) / 100 + ')';
     pacingValues[0].textContent = fmtEur(data.total_spend) + ' / ' + fmtEur(TOTAL_BUDGET);
     // Temps (idx 1)
-    pacingBars[1].style.width = Math.min(timePct, 100) + '%';
+    pacingBars[1].style.transform = 'scaleX(' + Math.min(timePct, 100) / 100 + ')';
     pacingValues[1].textContent = daysPassed + ' / ' + CAMPAIGN_DAYS + ' jours';
 }
 
@@ -1269,7 +1221,7 @@ function updateTable(platforms) {
         const wrapper = progressWrappers[mapping.idx];
         if (!wrapper) return;
         const pct = Math.min((p.impressions / mapping.obj) * 100, 100);
-        wrapper.querySelector('.progress-fill').style.width = pct.toFixed(1) + '%';
+        wrapper.querySelector('.progress-fill').style.transform = 'scaleX(' + (pct / 100).toFixed(4) + ')';
         wrapper.querySelector('.progress-value').textContent = fmt(p.impressions) + ' / ' + fmt(mapping.obj);
     });
 }
