@@ -218,13 +218,27 @@
         }
 
 
-        /* ===== FUNNEL CARDS ===== */
+        /* ===== FUNNEL CARDS (objectifs / estimations) ===== */
+        .section-title-row {
+            display: flex; align-items: baseline; gap: 0.6rem;
+            margin-bottom: 1.1rem; padding: 0 0.15rem;
+        }
+        .section-title-row .section-title {
+            font-size: 0.95rem; font-weight: 700; color: var(--text-dark);
+            text-transform: uppercase; letter-spacing: 0.12em;
+        }
+        .section-title-row .section-subtitle {
+            font-size: var(--fs-xs); color: var(--text-muted); font-weight: 400;
+        }
+
+        .funnel-stack { display: flex; flex-direction: column; gap: 1.25rem; }
+        .funnel-stack .funnel-card { flex: 1; }
+
         .funnel-card {
-            background: var(--white);
-            border: 1px solid var(--hairline);
+            background: var(--bil-lighter);
+            border: 1px dashed var(--hairline-strong);
             border-radius: 12px;
             padding: 1.15rem 1.4rem;
-            box-shadow: var(--card-shadow);
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
@@ -258,9 +272,9 @@
         .funnel-card.consideration .funnel-badge { background: rgba(52, 211, 153, 0.12); color: #059669; }
 
         .funnel-stats { display: flex; gap: 1.75rem; }
-        .funnel-stat-value { font-size: var(--fs-lg); font-weight: 600; letter-spacing: -0.01em; }
-        .funnel-stat-label { font-size: var(--fs-xxs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-top: 0.1rem; }
-        .funnel-channels { font-size: var(--fs-xs); color: var(--text-muted); line-height: 1.55; }
+        .funnel-stat-value { font-size: var(--fs-lg); font-weight: 500; color: var(--text-muted); letter-spacing: -0.01em; }
+        .funnel-stat-label { font-size: var(--fs-xxs); color: var(--text-light); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-top: 0.1rem; }
+        .funnel-channels { font-size: var(--fs-xs); color: var(--text-light); line-height: 1.55; }
 
         /* ===== CHANNELS TABLE ===== */
         .channels-table { width: 100%; border-collapse: collapse; }
@@ -661,6 +675,76 @@
         </div>
     </div>
 
+    <!-- Strategie campagne : objectifs funnel + repartition budgetaire -->
+    <div class="grid-2">
+        <div class="funnel-stack">
+            <div class="funnel-card notoriete">
+                <div class="funnel-header">
+                    <span class="funnel-title">Notoriété</span>
+                    <span class="funnel-badge">Haut de funnel</span>
+                </div>
+                <div class="funnel-stats">
+                    <div>
+                        <div class="funnel-stat-value">57 085 &euro;</div>
+                        <div class="funnel-stat-label">Budget média</div>
+                    </div>
+                    <div>
+                        <div class="funnel-stat-value">3,9M</div>
+                        <div class="funnel-stat-label">Impressions est.</div>
+                    </div>
+                    <div>
+                        <div class="funnel-stat-value">2,25M</div>
+                        <div class="funnel-stat-label">Vues 100% est.</div>
+                    </div>
+                </div>
+                <div class="funnel-channels">DOOH &bull; Vidéo Instream &bull; YouTube Instream</div>
+            </div>
+            <div class="funnel-card acquisition">
+                <div class="funnel-header">
+                    <span class="funnel-title">Acquisition</span>
+                    <span class="funnel-badge">Milieu de funnel</span>
+                </div>
+                <div class="funnel-stats">
+                    <div>
+                        <div class="funnel-stat-value">55 900 &euro;</div>
+                        <div class="funnel-stat-label">Budget média</div>
+                    </div>
+                    <div>
+                        <div class="funnel-stat-value">6,5M</div>
+                        <div class="funnel-stat-label">Impressions est.</div>
+                    </div>
+                    <div>
+                        <div class="funnel-stat-value">18 551</div>
+                        <div class="funnel-stat-label">Clics est.</div>
+                    </div>
+                </div>
+                <div class="funnel-channels">LinkedIn &bull; Meta &bull; Teads &bull; Habillage</div>
+            </div>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column;">
+            <div class="card-title">Répartition budgétaire</div>
+            <div class="donut-wrapper">
+                <div class="donut-container">
+                    <canvas id="budgetDonut"></canvas>
+                </div>
+                <div class="donut-legend">
+                    <div class="legend-item"><span class="legend-dot" style="background:#FF6B00"></span><span class="legend-label">DOOH</span><span class="legend-value">27 085 &euro;</span></div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#0A66C2"></span><span class="legend-label">LinkedIn</span><span class="legend-value">15 200 &euro;</span></div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#0084FF"></span><span class="legend-label">Meta</span><span class="legend-value">15 200 &euro;</span></div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#34A853"></span><span class="legend-label">Vidéo Instream</span><span class="legend-value">15 000 &euro;</span></div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#FF0000"></span><span class="legend-label">YouTube</span><span class="legend-value">15 000 &euro;</span></div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#1A1A2E"></span><span class="legend-label">Teads</span><span class="legend-value">17 000 &euro;</span></div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#702F8A"></span><span class="legend-label">Prog. Display</span><span class="legend-value">8 500 &euro;</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performances de la campagne -->
+    <div class="section-title-row">
+        <h2 class="section-title">Performances de la campagne</h2>
+    </div>
     <!-- KPI Cards -->
     <div class="kpi-grid">
         <div class="kpi-card">
@@ -692,82 +776,6 @@
             <div class="kpi-label">Vues 100%</div>
             <div class="kpi-value placeholder">-</div>
             <div class="kpi-change">Objectif : 2 250 000</div>
-        </div>
-    </div>
-
-    <!-- Funnel Breakdown -->
-    <div class="grid-2">
-        <div class="funnel-card notoriete">
-            <div class="funnel-header">
-                <span class="funnel-title">Notoriété</span>
-                <span class="funnel-badge">Haut de funnel</span>
-            </div>
-            <div class="funnel-stats">
-                <div>
-                    <div class="funnel-stat-value">57 085 &euro;</div>
-                    <div class="funnel-stat-label">Budget média</div>
-                </div>
-                <div>
-                    <div class="funnel-stat-value">3,9M</div>
-                    <div class="funnel-stat-label">Impressions est.</div>
-                </div>
-                <div>
-                    <div class="funnel-stat-value">2,25M</div>
-                    <div class="funnel-stat-label">Vues 100% est.</div>
-                </div>
-            </div>
-            <div class="funnel-channels">DOOH &bull; Vidéo Instream &bull; YouTube Instream</div>
-        </div>
-        <div class="funnel-card acquisition">
-            <div class="funnel-header">
-                <span class="funnel-title">Acquisition</span>
-                <span class="funnel-badge">Milieu de funnel</span>
-            </div>
-            <div class="funnel-stats">
-                <div>
-                    <div class="funnel-stat-value">55 900 &euro;</div>
-                    <div class="funnel-stat-label">Budget média</div>
-                </div>
-                <div>
-                    <div class="funnel-stat-value">6,5M</div>
-                    <div class="funnel-stat-label">Impressions est.</div>
-                </div>
-                <div>
-                    <div class="funnel-stat-value">18 551</div>
-                    <div class="funnel-stat-label">Clics est.</div>
-                </div>
-            </div>
-            <div class="funnel-channels">LinkedIn &bull; Meta &bull; Teads &bull; Habillage</div>
-        </div>
-    </div>
-
-    <!-- Charts Row -->
-    <div class="grid-3-2">
-        <!-- Timeline Chart -->
-        <div class="card">
-            <div class="card-title">Évolution des impressions cumulées</div>
-            <div class="chart-container">
-                <canvas id="timelineChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Budget Donut -->
-        <div class="card" style="display: flex; flex-direction: column;">
-            <div class="card-title">Répartition budgétaire</div>
-            <div class="donut-wrapper">
-                <div class="donut-container">
-                    <canvas id="budgetDonut"></canvas>
-                </div>
-                <div class="donut-legend">
-                    <div class="legend-item"><span class="legend-dot" style="background:#FF6B00"></span><span class="legend-label">DOOH</span><span class="legend-value">27 085 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#0A66C2"></span><span class="legend-label">LinkedIn</span><span class="legend-value">15 200 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#0084FF"></span><span class="legend-label">Meta</span><span class="legend-value">15 200 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#34A853"></span><span class="legend-label">Vidéo Instream</span><span class="legend-value">15 000 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#FF0000"></span><span class="legend-label">YouTube</span><span class="legend-value">15 000 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#1A1A2E"></span><span class="legend-label">Teads</span><span class="legend-value">17 000 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#702F8A"></span><span class="legend-label">Prog. Display</span><span class="legend-value">8 500 &euro;</span></div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -945,6 +953,14 @@
                 </tr>
             </tbody>
         </table>
+        </div>
+    </div>
+
+    <!-- Timeline Chart -->
+    <div class="card" style="margin-bottom: 1.75rem;">
+        <div class="card-title">Évolution des impressions cumulées</div>
+        <div class="chart-container">
+            <canvas id="timelineChart"></canvas>
         </div>
     </div>
 
