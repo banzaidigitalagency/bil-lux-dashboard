@@ -1468,12 +1468,11 @@ function updateTable(platforms, phaseIdx) {
         const fill = (idx, val) => { cells[idx].textContent = val; cells[idx].classList.remove('td-placeholder'); cells[idx].classList.add('td-objective'); };
         fill(2, fmtEur(spend));
         updateProgressCell(cells[3], impressions, imprObj);
+        // Si la plateforme n'a pas d'objectif clics (ex DOOH), on laisse le placeholder "-" pour clics et CTR
         if (clickObj > 0) {
             updateProgressCell(cells[4], clicks, clickObj);
-        } else {
-            fill(4, fmt(clicks));
+            fill(5, fmtPct(ctr));
         }
-        fill(5, fmtPct(ctr));
     }
 
     platforms.forEach(p => {
