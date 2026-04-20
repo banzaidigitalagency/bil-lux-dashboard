@@ -276,6 +276,25 @@
         .funnel-stat-label { font-size: var(--fs-xxs); color: var(--text-light); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; margin-top: 0.1rem; }
         .funnel-channels { font-size: var(--fs-xs); color: var(--text-light); line-height: 1.55; }
 
+        /* ===== TABS ===== */
+        .tab-bar {
+            display: flex; gap: 0.35rem; margin-bottom: 1.1rem;
+            border-bottom: 1px solid var(--hairline);
+            padding-bottom: 0;
+        }
+        .tab-btn {
+            font-family: inherit; font-size: var(--fs-sm); font-weight: 500;
+            padding: 0.55rem 0.95rem; border: none;
+            background: transparent; color: var(--text-muted); cursor: pointer;
+            border-bottom: 2px solid transparent; margin-bottom: -1px;
+            transition: color 0.15s, border-color 0.15s;
+        }
+        .tab-btn:hover { color: var(--text-dark); }
+        .tab-btn.active {
+            color: var(--bil-purple); font-weight: 600;
+            border-bottom-color: var(--bil-purple);
+        }
+
         /* ===== CHANNELS TABLE ===== */
         .channels-table { width: 100%; border-collapse: collapse; }
 
@@ -782,6 +801,12 @@
     <!-- Channels Detail Table -->
     <div class="card" style="margin-bottom: 1.75rem;">
         <div class="card-title">Détail par canal</div>
+        <div class="tab-bar" role="tablist">
+            <button type="button" class="tab-btn active" data-phase="total" role="tab" aria-selected="true">Total</button>
+            <button type="button" class="tab-btn" data-phase="0" role="tab">Phase 1</button>
+            <button type="button" class="tab-btn" data-phase="1" role="tab">Phase 2</button>
+            <button type="button" class="tab-btn" data-phase="2" role="tab">Phase 3</button>
+        </div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
         <table class="channels-table" style="min-width: 800px;">
             <thead>
@@ -1134,6 +1159,37 @@ const CLICK_OBJECTIVES = {
     google: 750,
     teads: 3923,
 };
+
+// Objectifs par phase et par plateforme (extrait du media plan Excel)
+const PHASE_OBJECTIVES = {
+    0: { // Phase 1 (Avr - Juin)
+        displayce:    { impr: 602833,  clicks: 0 },
+        linkedin:     { impr: 171428,  clicks: 514 },
+        meta:         { impr: 2000000, clicks: 2000 },
+        dv360:        { impr: 700000,  clicks: 1400 },
+        google:       { impr: 700000,  clicks: 350 },
+        teads:        { impr: 769230,  clicks: 2307 },
+        display_prog: { impr: 250000,  clicks: 1250 },
+    },
+    1: { // Phase 2 (Juil - Aout)
+        displayce:    { impr: 0,       clicks: 0 },
+        linkedin:     { impr: 91428,   clicks: 274 },
+        meta:         { impr: 800000,  clicks: 3200 },
+        dv360:        { impr: 300000,  clicks: 600 },
+        google:       { impr: 300000,  clicks: 150 },
+        teads:        { impr: 0,       clicks: 0 },
+        display_prog: { impr: 0,       clicks: 0 },
+    },
+    2: { // Phase 3 (Sep - Nov)
+        displayce:    { impr: 300000,  clicks: 0 },
+        linkedin:     { impr: 171428,  clicks: 514 },
+        meta:         { impr: 1500000, clicks: 6000 },
+        dv360:        { impr: 500000,  clicks: 1000 },
+        google:       { impr: 500000,  clicks: 250 },
+        teads:        { impr: 538461,  clicks: 1615 },
+        display_prog: { impr: 175000,  clicks: 875 },
+    },
+};
 const TOTAL_IMPR_OBJ = 10370000;
 const TOTAL_BUDGET = 112985;
 const CAMPAIGN_DAYS = 234;
@@ -1275,50 +1331,156 @@ function updateKpis(data) {
     pacingValues[2].textContent = daysPassed + ' / ' + CAMPAIGN_DAYS + ' jours';
 }
 
-function updateTable(platforms) {
+// Stockage HTML initial du tbody pour reset entre les onglets
+let tbodyInitialHTML = null;
+let platformDailyData = null;
+
+function resetTable() {
+    const tbody = document.querySelector('.channels-table tbody');
+    if (tbody && tbodyInitialHTML) tbody.innerHTML = tbodyInitialHTML;
+}
+
+function aggregateByPhase(phaseIdx) {
+    if (!platformDailyData) return [];
+    const phase = phaseIdx == null ? null : PHASES_DATA[phaseIdx];
+    const agg = {};
+    platformDailyData.forEach(d => {
+        if (phase) {
+            const date = new Date(d.date);
+            if (date < phase.start || date > phase.end) return;
+        }
+        const p = d.platform;
+        if (!agg[p]) agg[p] = { platform: p, spend: 0, impressions: 0, clicks: 0 };
+        agg[p].spend += Number(d.spend) || 0;
+        agg[p].impressions += Number(d.impressions) || 0;
+        agg[p].clicks += Number(d.clicks) || 0;
+    });
+    Object.values(agg).forEach(p => {
+        p.ctr = p.impressions > 0 ? (p.clicks / p.impressions * 100) : 0;
+        p.cpm = p.impressions > 0 ? (p.spend / p.impressions * 1000) : 0;
+    });
+    return Object.values(agg);
+}
+
+function handleTabClick(btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    resetTable();
+    const phase = btn.dataset.phase;
+    const phaseIdx = phase === 'total' ? null : parseInt(phase, 10);
+    const data = aggregateByPhase(phaseIdx);
+    updateTable(data, phaseIdx);
+}
+
+function updateTable(platforms, phaseIdx) {
+    // phaseIdx = null pour Total, 0/1/2 pour Phase 1/2/3
     const rows = document.querySelectorAll('.channels-table tbody tr');
     const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5 };
-    const objByPlatform = {
-        displayce: OBJECTIVES.displayce,
-        linkedin: OBJECTIVES.linkedin,
-        meta: OBJECTIVES.meta,
-        dv360: OBJECTIVES.dv360,
-        google: OBJECTIVES.google,
-        teads: OBJECTIVES.teads,
-    };
+    const rowPlatformOrder = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
+
+    const phaseObj = phaseIdx == null ? null : PHASE_OBJECTIVES[phaseIdx];
+    function getImprObj(platform) {
+        if (phaseObj) return phaseObj[platform]?.impr ?? 0;
+        return OBJECTIVES[platform] ?? OBJECTIVES[platform === 'display_prog' ? 'display_prog' : platform] ?? 0;
+    }
+    function getClickObj(platform) {
+        if (phaseObj) return phaseObj[platform]?.clicks ?? 0;
+        return CLICK_OBJECTIVES[platform] ?? 0;
+    }
+
+    // Mise à jour des dénominateurs affichés (le "/ X" après le chiffre)
+    rowPlatformOrder.forEach((platform, rowIdx) => {
+        const row = rows[rowIdx];
+        if (!row) return;
+        const cells = row.querySelectorAll('td');
+        const imprObj = getImprObj(platform);
+        const clickObj = getClickObj(platform);
+
+        // Masquer la ligne si le canal n'est pas actif dans la phase (aucun objectif)
+        if (phaseObj && imprObj === 0 && clickObj === 0) {
+            row.style.display = 'none';
+            return;
+        } else {
+            row.style.display = '';
+        }
+
+        // Cellule impressions (idx 3) : si obj > 0, cellule progression ; sinon placeholder
+        const imprCell = cells[3];
+        if (imprCell) {
+            if (imprObj > 0) {
+                const colorClass = ({
+                    linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
+                    google: 'ch-youtube', teads: 'ch-teads', display_prog: 'ch-display',
+                    displayce: 'ch-dooh'
+                })[platform] || '';
+                imprCell.className = 'td-progress';
+                imprCell.innerHTML = '<div class="progress-cell">' +
+                    '<span class="progress-cell-value"><span class="pc-current">-</span> / ' + fmt(imprObj) + '</span>' +
+                    '<div class="progress-bar"><div class="progress-fill ' + colorClass + '"></div></div>' +
+                    '</div>';
+            } else {
+                imprCell.className = 'td-placeholder';
+                imprCell.textContent = '-';
+            }
+        }
+
+        // Cellule clics (idx 4) : si clickObj > 0, afficher cellule progression ; sinon placeholder
+        const clickCell = cells[4];
+        if (clickCell) {
+            if (clickObj > 0) {
+                clickCell.className = 'td-progress';
+                // Determiner la classe couleur selon la plateforme
+                const colorClass = ({
+                    linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
+                    google: 'ch-youtube', teads: 'ch-teads', display_prog: 'ch-display',
+                    displayce: 'ch-dooh'
+                })[platform] || '';
+                clickCell.innerHTML = '<div class="progress-cell">' +
+                    '<span class="progress-cell-value"><span class="pc-current">-</span> / ' + fmt(clickObj) + '</span>' +
+                    '<div class="progress-bar"><div class="progress-fill ' + colorClass + '"></div></div>' +
+                    '</div>';
+            } else {
+                clickCell.className = 'td-placeholder';
+                clickCell.textContent = '-';
+            }
+        }
+    });
 
     function updateProgressCell(cell, value, obj) {
         const current = cell.querySelector('.pc-current');
         const fillBar = cell.querySelector('.progress-fill');
         if (current) current.textContent = fmt(value);
-        if (fillBar && obj) {
+        if (fillBar && obj > 0) {
             const pct = Math.min((value / obj) * 100, 100);
             fillBar.style.transform = 'scaleX(' + (pct / 100).toFixed(4) + ')';
         }
     }
 
-    function fillRow(rowIdx, spend, impressions, clicks, ctr, imprObj, clickObj) {
+    function fillRow(rowIdx, platform, spend, impressions, clicks, ctr) {
         if (!rows[rowIdx]) return;
         const cells = rows[rowIdx].querySelectorAll('td');
+        const imprObj = getImprObj(platform);
+        const clickObj = getClickObj(platform);
         const fill = (idx, val) => { cells[idx].textContent = val; cells[idx].classList.remove('td-placeholder'); cells[idx].classList.add('td-objective'); };
         fill(2, fmtEur(spend));
-        // impressions (idx 3) - toujours une cellule progression
         updateProgressCell(cells[3], impressions, imprObj);
-        // clics (idx 4) - cellule progression si on a un objectif (tous sauf DOOH)
-        if (clickObj) {
+        if (clickObj > 0) {
             updateProgressCell(cells[4], clicks, clickObj);
         } else {
             fill(4, fmt(clicks));
         }
-        // CTR réel (idx 5)
         fill(5, fmtPct(ctr));
     }
 
     platforms.forEach(p => {
-        if (!(p.impressions > 0 || p.spend > 0)) return; // pas encore de donnees : conserver le placeholder
+        if (!(p.impressions > 0 || p.spend > 0)) return;
         const rowIdx = rowByPlatform[p.platform];
         if (rowIdx == null) return;
-        fillRow(rowIdx, p.spend, p.impressions, p.clicks, p.ctr, objByPlatform[p.platform], CLICK_OBJECTIVES[p.platform]);
+        fillRow(rowIdx, p.platform, p.spend, p.impressions, p.clicks, p.ctr);
     });
 }
 
@@ -1391,21 +1553,29 @@ async function loadDashboard() {
     document.body.classList.add('is-loading');
     toast.hidden = true;
 
+    // Snapshot du tbody initial pour reset entre onglets
+    if (!tbodyInitialHTML) {
+        const tbody = document.querySelector('.channels-table tbody');
+        if (tbody) tbodyInitialHTML = tbody.innerHTML;
+    }
+
     try {
         const results = await Promise.all([
             sb.rpc('get_dashboard_kpis', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_by_platform', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_daily', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_video_views', { p_client_code: CLIENT_CODE }),
+            sb.rpc('get_dashboard_by_platform_daily', { p_client_code: CLIENT_CODE }),
         ]);
-        const [kpiRes, platRes, dailyRes, videoRes] = results;
+        const [kpiRes, platRes, dailyRes, videoRes, platDailyRes] = results;
 
         results.forEach((r, i) => {
             if (r.error) console.warn(`RPC ${i} erreur:`, r.error);
         });
 
         if (kpiRes.data) updateKpis(kpiRes.data);
-        if (platRes.data) updateTable(platRes.data);
+        if (platDailyRes.data) platformDailyData = platDailyRes.data;
+        if (platRes.data) updateTable(platRes.data, null);
         if (dailyRes.data) {
             try { updateTimeline(dailyRes.data); } catch (e) { console.error('updateTimeline:', e); }
             try { updatePhaseGauges(dailyRes.data); } catch (e) { console.error('updatePhaseGauges:', e); }
@@ -1425,6 +1595,10 @@ async function loadDashboard() {
 }
 
 document.getElementById('loadRetryBtn').addEventListener('click', loadDashboard);
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => handleTabClick(btn));
+});
 
 function updatePhases() {
     const now = new Date();
