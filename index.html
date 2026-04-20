@@ -303,6 +303,11 @@
         .td-placeholder { color: var(--text-light); font-weight: 400; }
         .td-objective { font-weight: 500; color: var(--text-dark); }
 
+        .td-progress { min-width: 180px; width: 220px; }
+        .progress-cell { display: flex; flex-direction: column; gap: 0.4rem; align-items: stretch; }
+        .progress-cell-value { font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; font-weight: 400; }
+        .progress-cell .progress-bar { width: 100%; }
+
         /* ===== PROGRESS BARS ===== */
         .progress-wrapper { margin-bottom: 1.15rem; }
         .progress-wrapper:last-child { margin-bottom: 0; }
@@ -770,11 +775,9 @@
                     <th>Canal</th>
                     <th>Budget média</th>
                     <th>Dépense</th>
-                    <th>Impr. réal.</th>
-                    <th>Impr. obj.</th>
-                    <th>Clics est.</th>
-                    <th>CTR est.</th>
-                    <th>CPM</th>
+                    <th>Impressions (réal. / obj.)</th>
+                    <th>Clics (réal. / obj.)</th>
+                    <th>CTR</th>
                 </tr>
             </thead>
             <tbody>
@@ -787,11 +790,14 @@
                     </td>
                     <td class="td-objective">27 085 &euro;</td>
                     <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 902 833</span>
+                            <div class="progress-bar"><div class="progress-fill ch-dooh"></div></div>
+                        </div>
+                    </td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-objective">902 833</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">30 &euro;</td>
                 </tr>
                 <tr>
                     <td>
@@ -802,11 +808,19 @@
                     </td>
                     <td class="td-objective">15 200 &euro;</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">434 286</td>
-                    <td class="td-objective">1 303</td>
-                    <td class="td-objective">0,30 %</td>
-                    <td class="td-objective">35 &euro;</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 434 286</span>
+                            <div class="progress-bar"><div class="progress-fill ch-linkedin"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 1 303</span>
+                            <div class="progress-bar"><div class="progress-fill ch-linkedin"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">~ 0,30 %</td>
                 </tr>
                 <tr>
                     <td>
@@ -817,11 +831,19 @@
                     </td>
                     <td class="td-objective">15 200 &euro;</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">4 300 000</td>
-                    <td class="td-objective">11 200</td>
-                    <td class="td-objective">0,26 %</td>
-                    <td class="td-objective">3,54 &euro;</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 4 300 000</span>
+                            <div class="progress-bar"><div class="progress-fill ch-meta"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 11 200</span>
+                            <div class="progress-bar"><div class="progress-fill ch-meta"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">~ 0,26 %</td>
                 </tr>
                 <tr>
                     <td>
@@ -832,11 +854,19 @@
                     </td>
                     <td class="td-objective">15 000 &euro;</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">1 500 000</td>
-                    <td class="td-objective">3 000</td>
-                    <td class="td-objective">0,20 %</td>
-                    <td class="td-objective">10 &euro;</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 1 500 000</span>
+                            <div class="progress-bar"><div class="progress-fill ch-dv360"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 3 000</span>
+                            <div class="progress-bar"><div class="progress-fill ch-dv360"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">~ 0,20 %</td>
                 </tr>
                 <tr>
                     <td>
@@ -847,11 +877,19 @@
                     </td>
                     <td class="td-objective">15 000 &euro;</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">1 500 000</td>
-                    <td class="td-objective">750</td>
-                    <td class="td-objective">0,05 %</td>
-                    <td class="td-objective">10 &euro;</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 1 500 000</span>
+                            <div class="progress-bar"><div class="progress-fill ch-youtube"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 750</span>
+                            <div class="progress-bar"><div class="progress-fill ch-youtube"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">~ 0,05 %</td>
                 </tr>
                 <tr>
                     <td>
@@ -862,11 +900,19 @@
                     </td>
                     <td class="td-objective">17 000 &euro;</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">1 307 692</td>
-                    <td class="td-objective">3 923</td>
-                    <td class="td-objective">0,30 %</td>
-                    <td class="td-objective">13 &euro;</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 1 307 692</span>
+                            <div class="progress-bar"><div class="progress-fill ch-teads"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 3 923</span>
+                            <div class="progress-bar"><div class="progress-fill ch-teads"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">~ 0,30 %</td>
                 </tr>
                 <tr>
                     <td>
@@ -877,11 +923,19 @@
                     </td>
                     <td class="td-objective">8 500 &euro;</td>
                     <td class="td-placeholder">-</td>
-                    <td class="td-placeholder">-</td>
-                    <td class="td-objective">425 000</td>
-                    <td class="td-objective">2 125</td>
-                    <td class="td-objective">0,50 %</td>
-                    <td class="td-objective">20 &euro;</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 425 000</span>
+                            <div class="progress-bar"><div class="progress-fill ch-display"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 2 125</span>
+                            <div class="progress-bar"><div class="progress-fill ch-display"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">~ 0,50 %</td>
                 </tr>
             </tbody>
         </table>
@@ -889,63 +943,9 @@
     </div>
 
     <!-- Bottom Row -->
-    <div class="grid-2">
-        <!-- Impression Goals Progress -->
-        <div class="card">
-            <div class="card-title">Avancement des objectifs impressions</div>
-            <div class="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label">DOOH (Business + Outdoor + Transports)</span>
-                    <span class="progress-value">0 / 902 833</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill ch-dooh"></div></div>
-            </div>
-            <div class="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label">LinkedIn (Carousel + In-Feed)</span>
-                    <span class="progress-value">0 / 434 286</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill ch-linkedin"></div></div>
-            </div>
-            <div class="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label">Meta (Facebook/Instagram)</span>
-                    <span class="progress-value">0 / 4 300 000</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill ch-meta"></div></div>
-            </div>
-            <div class="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label">DV360 Video</span>
-                    <span class="progress-value">0 / 1 500 000</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill ch-dv360"></div></div>
-            </div>
-            <div class="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label">YouTube Instream</span>
-                    <span class="progress-value">0 / 1 500 000</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill ch-youtube"></div></div>
-            </div>
-            <div class="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label">Teads (Carousel + InRead)</span>
-                    <span class="progress-value">0 / 1 307 692</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill ch-teads"></div></div>
-            </div>
-            <div class="progress-wrapper">
-                <div class="progress-header">
-                    <span class="progress-label">Programmatique Display</span>
-                    <span class="progress-value">0 / 425 000</span>
-                </div>
-                <div class="progress-bar"><div class="progress-fill ch-display"></div></div>
-            </div>
-        </div>
-
+    <div style="margin-bottom: 1.75rem;">
         <!-- Phase Pacing -->
-        <div class="card">
+        <div class="card pacing-card">
             <div class="card-title">Pacing budgétaire par phase</div>
             <div class="phase-grid">
                 <div class="phase-card" data-phase-start="2026-04-10" data-phase-end="2026-06-30">
@@ -1065,6 +1065,15 @@ const OBJECTIVES = {
     google: 1500000,
     teads: 1307692,
     display_prog: 425000,
+};
+
+// Objectifs clics par plateforme (DOOH n'a pas de clics)
+const CLICK_OBJECTIVES = {
+    linkedin: 1303,
+    meta: 11200,
+    dv360: 3000,
+    google: 750,
+    teads: 3923,
 };
 const TOTAL_IMPR_OBJ = 10370000;
 const TOTAL_BUDGET = 112985;
@@ -1186,7 +1195,7 @@ function updateKpis(data) {
     const daysPassed = Math.max(0, Math.floor((now - CAMPAIGN_START) / 86400000));
     const timePct = (daysPassed / CAMPAIGN_DAYS * 100);
 
-    const pacingCard = document.querySelectorAll('.grid-2 > .card')[1];
+    const pacingCard = document.querySelector('.pacing-card');
     const pacingBars = pacingCard.querySelectorAll('.progress-fill');
     const pacingValues = pacingCard.querySelectorAll('.progress-value');
     // Budget média (idx 0)
@@ -1199,46 +1208,48 @@ function updateKpis(data) {
 
 function updateTable(platforms) {
     const rows = document.querySelectorAll('.channels-table tbody tr');
+    const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5 };
+    const objByPlatform = {
+        displayce: OBJECTIVES.displayce,
+        linkedin: OBJECTIVES.linkedin,
+        meta: OBJECTIVES.meta,
+        dv360: OBJECTIVES.dv360,
+        google: OBJECTIVES.google,
+        teads: OBJECTIVES.teads,
+    };
 
-    function fillRow(rowIdx, spend, impressions, clicks, ctr, cpm) {
+    function updateProgressCell(cell, value, obj) {
+        const current = cell.querySelector('.pc-current');
+        const fillBar = cell.querySelector('.progress-fill');
+        if (current) current.textContent = fmt(value);
+        if (fillBar && obj) {
+            const pct = Math.min((value / obj) * 100, 100);
+            fillBar.style.transform = 'scaleX(' + (pct / 100).toFixed(4) + ')';
+        }
+    }
+
+    function fillRow(rowIdx, spend, impressions, clicks, ctr, imprObj, clickObj) {
         if (!rows[rowIdx]) return;
         const cells = rows[rowIdx].querySelectorAll('td');
         const fill = (idx, val) => { cells[idx].textContent = val; cells[idx].classList.remove('td-placeholder'); cells[idx].classList.add('td-objective'); };
         fill(2, fmtEur(spend));
-        fill(3, fmt(impressions));
-        fill(5, fmt(clicks));
-        fill(6, fmtPct(ctr));
-        fill(7, fmtEur(cpm));
+        // impressions (idx 3) - toujours une cellule progression
+        updateProgressCell(cells[3], impressions, imprObj);
+        // clics (idx 4) - cellule progression si on a un objectif (tous sauf DOOH)
+        if (clickObj) {
+            updateProgressCell(cells[4], clicks, clickObj);
+        } else {
+            fill(4, fmt(clicks));
+        }
+        // CTR réel (idx 5)
+        fill(5, fmtPct(ctr));
     }
 
-    const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5 };
     platforms.forEach(p => {
         if (!(p.impressions > 0 || p.spend > 0)) return; // pas encore de donnees : conserver le placeholder
         const rowIdx = rowByPlatform[p.platform];
         if (rowIdx == null) return;
-        fillRow(rowIdx, p.spend, p.impressions, p.clicks, p.ctr, p.cpm);
-    });
-
-    // Progress bars objectifs impressions (card gauche)
-    const objCard = document.querySelectorAll('.grid-2 > .card')[0];
-    const progressWrappers = objCard.querySelectorAll('.progress-wrapper');
-    const platformToProgress = [
-        { platform: 'displayce', idx: 0, obj: OBJECTIVES.displayce },
-        { platform: 'linkedin',  idx: 1, obj: OBJECTIVES.linkedin },
-        { platform: 'meta',      idx: 2, obj: OBJECTIVES.meta },
-        { platform: 'dv360',     idx: 3, obj: OBJECTIVES.dv360 },
-        { platform: 'google',    idx: 4, obj: OBJECTIVES.google },
-        { platform: 'teads',     idx: 5, obj: OBJECTIVES.teads },
-    ];
-
-    platforms.forEach(p => {
-        const mapping = platformToProgress.find(m => m.platform === p.platform);
-        if (!mapping) return;
-        const wrapper = progressWrappers[mapping.idx];
-        if (!wrapper) return;
-        const pct = Math.min((p.impressions / mapping.obj) * 100, 100);
-        wrapper.querySelector('.progress-fill').style.transform = 'scaleX(' + (pct / 100).toFixed(4) + ')';
-        wrapper.querySelector('.progress-value').textContent = fmt(p.impressions) + ' / ' + fmt(mapping.obj);
+        fillRow(rowIdx, p.spend, p.impressions, p.clicks, p.ctr, objByPlatform[p.platform], CLICK_OBJECTIVES[p.platform]);
     });
 }
 
