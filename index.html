@@ -298,6 +298,21 @@
         /* ===== CHANNELS TABLE ===== */
         .channels-table { width: 100%; border-collapse: collapse; }
 
+        /* Main channels-table : 6 colonnes avec widths harmonisees */
+        .channels-table:not(.languages-table):not(.lang-channel-table) { table-layout: fixed; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(1),
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(1) { width: 22%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(2),
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(2) { width: 10%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(3),
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(3) { width: 11%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(4),
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(4) { width: 23%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(5),
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(5) { width: 23%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(6),
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(6) { width: 11%; }
+
         .channels-table thead th {
             font-size: var(--fs-xxs); font-weight: 600; color: var(--text-muted);
             text-transform: uppercase; letter-spacing: 0.08em;
@@ -342,11 +357,16 @@
             font-weight: 400; color: var(--text-muted); font-size: var(--fs-xs); margin-left: 0.35rem;
         }
 
-        .lang-channel-table { table-layout: fixed; }
+        .languages-table, .lang-channel-table { table-layout: fixed; }
+        .languages-table th:nth-child(1), .languages-table td:nth-child(1),
         .lang-channel-table th:nth-child(1), .lang-channel-table td:nth-child(1) { width: 30%; }
+        .languages-table th:nth-child(2), .languages-table td:nth-child(2),
         .lang-channel-table th:nth-child(2), .lang-channel-table td:nth-child(2) { width: 17%; }
+        .languages-table th:nth-child(3), .languages-table td:nth-child(3),
         .lang-channel-table th:nth-child(3), .lang-channel-table td:nth-child(3) { width: 22%; }
+        .languages-table th:nth-child(4), .languages-table td:nth-child(4),
         .lang-channel-table th:nth-child(4), .lang-channel-table td:nth-child(4) { width: 14%; }
+        .languages-table th:nth-child(5), .languages-table td:nth-child(5),
         .lang-channel-table th:nth-child(5), .lang-channel-table td:nth-child(5) { width: 17%; }
 
         .lang-channel-table tbody tr.lang-group-header td {
@@ -1032,7 +1052,7 @@
             <button type="button" class="tab-btn" data-lang-phase="2" role="tab">Phase 3</button>
         </div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-        <table class="languages-table channels-table" style="min-width: 640px;">
+        <table class="languages-table channels-table" style="min-width: 560px;">
             <thead>
                 <tr>
                     <th>Langue</th>
