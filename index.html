@@ -1200,8 +1200,9 @@ const MONTHS = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov'];
 const CUM_TARGETS = [1300000, 3250000, 5200000, 5945000, 6690000, 7890000, 9090000, 10370000];
 
 // Phases : budget media par phase + objectifs impressions par phase
+// Phase 1 start volontairement en amont pour inclure eventuelles donnees pre-lancement (tests, warm-up)
 const PHASES_DATA = [
-    { idx: 0, start: new Date(2026, 3, 10), end: new Date(2026, 5, 30), budgetMedia: 50197, imprObj: 5200000 },
+    { idx: 0, start: new Date(2026, 0, 1),  end: new Date(2026, 5, 30), budgetMedia: 50197, imprObj: 5200000 },
     { idx: 1, start: new Date(2026, 6, 1),  end: new Date(2026, 7, 31), budgetMedia: 10535, imprObj: 1490000 },
     { idx: 2, start: new Date(2026, 8, 1),  end: new Date(2026, 10, 29), budgetMedia: 52252, imprObj: 3680000 },
 ];
@@ -1513,16 +1514,17 @@ function updateTimeline(daily) {
     timelineChart.update();
 }
 
-function updatePhaseGauges(daily) {
-    if (!daily || daily.length === 0) return;
+function updatePhaseGauges() {
+    // Utilise platformDailyData (spend avec coefs billing) pour etre coherent avec les totaux KPI
+    if (!platformDailyData || platformDailyData.length === 0) return;
     const phaseCards = document.querySelectorAll('.phase-card');
     PHASES_DATA.forEach(phase => {
         let spend = 0, impressions = 0;
-        daily.forEach(d => {
+        platformDailyData.forEach(d => {
             const date = new Date(d.date);
             if (date >= phase.start && date <= phase.end) {
-                spend += (d.spend || 0);
-                impressions += (d.impressions || 0);
+                spend += Number(d.spend) || 0;
+                impressions += Number(d.impressions) || 0;
             }
         });
         const card = phaseCards[phase.idx];
@@ -1577,7 +1579,7 @@ async function loadDashboard() {
         if (platRes.data) updateTable(platRes.data, null);
         if (dailyRes.data) {
             try { updateTimeline(dailyRes.data); } catch (e) { console.error('updateTimeline:', e); }
-            try { updatePhaseGauges(dailyRes.data); } catch (e) { console.error('updatePhaseGauges:', e); }
+            try { updatePhaseGauges(); } catch (e) { console.error('updatePhaseGauges:', e); }
         }
         if (videoRes.data) updateVideoViews(videoRes.data);
 
