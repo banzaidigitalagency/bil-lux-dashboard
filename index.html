@@ -401,6 +401,19 @@
         .progress-cell-value { font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; font-weight: 400; }
         .progress-cell .progress-bar { width: 100%; }
 
+        /* Main channels-table : aere les cellules jauge et raccourcit la barre */
+        .channels-table:not(.languages-table):not(.lang-channel-table) .td-progress {
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+        .channels-table:not(.languages-table):not(.lang-channel-table) .progress-cell {
+            align-items: flex-end;
+        }
+        .channels-table:not(.languages-table):not(.lang-channel-table) .progress-cell .progress-bar {
+            width: 65%;
+            max-width: 140px;
+        }
+
         /* ===== PROGRESS BARS ===== */
         .progress-wrapper { margin-bottom: 1.15rem; }
         .progress-wrapper:last-child { margin-bottom: 0; }
