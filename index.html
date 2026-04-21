@@ -329,6 +329,40 @@
         .channel-icon.youtube { background: #FF0000; }
         .channel-icon.teads { background: #1A1A2E; }
         .channel-icon.display { background: var(--bil-purple); }
+        .channel-icon.lang-fr { background: var(--bil-dark); letter-spacing: 0.02em; }
+        .channel-icon.lang-nl { background: var(--bil-purple); letter-spacing: 0.02em; }
+        .channel-icon.lang-en { background: #9B6BC4; letter-spacing: 0.02em; }
+
+        .card-subtitle {
+            font-size: var(--fs-sm); font-weight: 600; color: var(--text-dark);
+            margin-top: 1.75rem; margin-bottom: 0.85rem;
+            letter-spacing: -0.005em;
+        }
+        .card-subtitle .subtitle-note {
+            font-weight: 400; color: var(--text-muted); font-size: var(--fs-xs); margin-left: 0.35rem;
+        }
+
+        .lang-channel-table tbody tr.lang-group-header td {
+            background: var(--bil-lighter);
+            padding: 0.55rem 0.85rem;
+            border-bottom: 1px solid var(--hairline);
+            font-weight: 600;
+        }
+        .lang-channel-table tbody tr.lang-group-header td:first-child {
+            text-align: left;
+        }
+        .lang-channel-table tbody tr.lang-group-header td .channel-info strong {
+            color: var(--bil-dark);
+        }
+        .lang-channel-table tbody tr.lang-channel-row td:first-child {
+            padding-left: 3rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .lang-channel-table tbody tr.lang-channel-row td:first-child strong {
+            font-weight: 500;
+        }
+        .lang-channel-table tbody tr.lang-channel-row:hover { background: var(--bil-lighter); }
 
         .channel-info strong { font-weight: 600; display: block; font-size: var(--fs-sm); letter-spacing: -0.005em; }
         .channel-info span { font-size: var(--fs-xxs); color: var(--text-muted); }
@@ -981,6 +1015,88 @@
         </div>
     </div>
 
+    <!-- Languages Detail Table -->
+    <div class="card" style="margin-bottom: 1.75rem;">
+        <div class="card-title">Détail par langue <span class="subtitle-note">(canaux digitaux, hors DOOH)</span></div>
+        <div class="tab-bar" id="tabs-languages" role="tablist">
+            <button type="button" class="tab-btn active" data-lang-phase="total" role="tab" aria-selected="true">Total</button>
+            <button type="button" class="tab-btn" data-lang-phase="0" role="tab">Phase 1</button>
+            <button type="button" class="tab-btn" data-lang-phase="1" role="tab">Phase 2</button>
+            <button type="button" class="tab-btn" data-lang-phase="2" role="tab">Phase 3</button>
+        </div>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table class="languages-table channels-table" style="min-width: 640px;">
+            <thead>
+                <tr>
+                    <th>Langue</th>
+                    <th>Dépense</th>
+                    <th>Impressions</th>
+                    <th>Clics</th>
+                    <th>CTR</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-lang="FR">
+                    <td>
+                        <div class="channel-name">
+                            <div class="channel-icon lang-fr">FR</div>
+                            <div class="channel-info"><strong>Français</strong></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                </tr>
+                <tr data-lang="EN">
+                    <td>
+                        <div class="channel-name">
+                            <div class="channel-icon lang-en">EN</div>
+                            <div class="channel-info"><strong>Anglais</strong></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                </tr>
+                <tr data-lang="NL">
+                    <td>
+                        <div class="channel-name">
+                            <div class="channel-icon lang-nl">NL</div>
+                            <div class="channel-info"><strong>Néerlandais</strong></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+
+        <div class="card-subtitle">Détail par canal</div>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+        <table class="lang-channel-table channels-table" style="min-width: 720px;">
+            <thead>
+                <tr>
+                    <th>Langue</th>
+                    <th>Dépense</th>
+                    <th>Impressions</th>
+                    <th>Clics</th>
+                    <th>CTR</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="lang-channel-empty">
+                    <td colspan="5" class="td-placeholder" style="text-align: center; padding: 1.5rem;">Chargement...</td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+
     <!-- Timeline Chart -->
     <div class="card" style="margin-bottom: 1.75rem;">
         <div class="card-title">Évolution des impressions cumulées</div>
@@ -1337,7 +1453,7 @@ let tbodyInitialHTML = null;
 let platformDailyData = null;
 
 function resetTable() {
-    const tbody = document.querySelector('.channels-table tbody');
+    const tbody = document.querySelector('.channels-table:not(.languages-table) tbody');
     if (tbody && tbodyInitialHTML) tbody.innerHTML = tbodyInitialHTML;
 }
 
@@ -1364,10 +1480,13 @@ function aggregateByPhase(phaseIdx) {
 }
 
 function handleTabClick(btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.remove('active');
-        b.setAttribute('aria-selected', 'false');
-    });
+    const tabBar = btn.closest('.tab-bar');
+    if (tabBar) {
+        tabBar.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
+    }
     btn.classList.add('active');
     btn.setAttribute('aria-selected', 'true');
     resetTable();
@@ -1379,7 +1498,7 @@ function handleTabClick(btn) {
 
 function updateTable(platforms, phaseIdx) {
     // phaseIdx = null pour Total, 0/1/2 pour Phase 1/2/3
-    const rows = document.querySelectorAll('.channels-table tbody tr');
+    const rows = document.querySelectorAll('.channels-table:not(.languages-table) tbody tr');
     const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5 };
     const rowPlatformOrder = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
 
@@ -1484,6 +1603,173 @@ function updateTable(platforms, phaseIdx) {
     });
 }
 
+// ===== DETAIL PAR LANGUE =====
+let languageDailyData = null;
+const LANG_ORDER = ['FR', 'EN', 'NL'];
+
+function aggregateByLanguage(phaseIdx) {
+    if (!languageDailyData) return [];
+    const phase = phaseIdx != null ? PHASES_DATA[phaseIdx] : null;
+    const agg = {};
+    LANG_ORDER.forEach(l => { agg[l] = { language: l, spend: 0, impressions: 0, clicks: 0 }; });
+    languageDailyData.forEach(d => {
+        if (!d.language || !agg[d.language]) return;
+        if (d.platform === 'displayce') return; // DOOH exclu du bloc langue
+        if (phase) {
+            const date = new Date(d.date);
+            if (date < phase.start || date > phase.end) return;
+        }
+        agg[d.language].spend += Number(d.spend) || 0;
+        agg[d.language].impressions += Number(d.impressions) || 0;
+        agg[d.language].clicks += Number(d.clicks) || 0;
+    });
+    Object.values(agg).forEach(l => {
+        l.ctr = l.impressions > 0 ? (l.clicks / l.impressions * 100) : 0;
+    });
+    return LANG_ORDER.map(l => agg[l]);
+}
+
+function updateLanguageTable(languages) {
+    const tbody = document.querySelector('.languages-table tbody');
+    if (!tbody) return;
+    function setCell(cell, text, hasValue) {
+        cell.textContent = text;
+        if (hasValue) {
+            cell.classList.remove('td-placeholder');
+            cell.classList.add('td-objective');
+        } else {
+            cell.classList.add('td-placeholder');
+            cell.classList.remove('td-objective');
+        }
+    }
+    languages.forEach(lang => {
+        const row = tbody.querySelector('tr[data-lang="' + lang.language + '"]');
+        if (!row) return;
+        const cells = row.querySelectorAll('td');
+        const hasSpend = lang.spend > 0;
+        const hasImpr = lang.impressions > 0;
+        const hasClicks = lang.clicks > 0;
+        setCell(cells[1], hasSpend ? fmtEur(lang.spend) : '-', hasSpend);
+        setCell(cells[2], hasImpr ? fmt(lang.impressions) : '-', hasImpr);
+        setCell(cells[3], hasClicks ? fmt(lang.clicks) : '-', hasClicks);
+        setCell(cells[4], hasImpr && hasClicks ? fmtPct(lang.ctr) : '-', hasImpr && hasClicks);
+    });
+}
+
+function handleLangTabClick(btn) {
+    const tabBar = btn.closest('.tab-bar');
+    if (tabBar) {
+        tabBar.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
+    }
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    const phase = btn.dataset.langPhase;
+    const phaseIdx = phase === 'total' ? null : parseInt(phase, 10);
+    updateLanguageTable(aggregateByLanguage(phaseIdx));
+    updateChannelLanguageTable(aggregateByChannelAndLanguage(phaseIdx));
+}
+
+const LANG_LABELS = { FR: 'Français', NL: 'Néerlandais', EN: 'Anglais' };
+const LANG_CHANNELS_ORDER = ['linkedin', 'meta', 'dv360', 'google', 'teads', 'programmatic_display'];
+const CHANNEL_META = {
+    linkedin: { label: 'LinkedIn', sub: 'Carousel + In-Feed Ads', icon: 'Li', iconClass: 'linkedin' },
+    meta: { label: 'Meta', sub: 'Facebook/Instagram', icon: 'Me', iconClass: 'meta' },
+    dv360: { label: 'Vidéo Instream', sub: 'Non-désactivable', icon: 'Dv', iconClass: 'dv360' },
+    google: { label: 'YouTube', sub: 'Instream non-désactivable', icon: 'Yt', iconClass: 'youtube' },
+    teads: { label: 'Teads', sub: 'Carousel + InRead social', icon: 'Te', iconClass: 'teads' },
+    programmatic_display: { label: 'Prog. Display', sub: 'Habillage - Sites Premium', icon: 'Dsp', iconClass: 'display' }
+};
+
+function aggregateByChannelAndLanguage(phaseIdx) {
+    const result = {};
+    LANG_CHANNELS_ORDER.forEach(c => { result[c] = {}; });
+    if (!languageDailyData) return result;
+    const phase = phaseIdx != null ? PHASES_DATA[phaseIdx] : null;
+    languageDailyData.forEach(d => {
+        if (!d.language || !LANG_ORDER.includes(d.language)) return;
+        if (d.platform === 'displayce') return; // DOOH exclu de cette vue
+        if (!result[d.platform]) return;
+        if (phase) {
+            const date = new Date(d.date);
+            if (date < phase.start || date > phase.end) return;
+        }
+        if (!result[d.platform][d.language]) {
+            result[d.platform][d.language] = { language: d.language, spend: 0, impressions: 0, clicks: 0 };
+        }
+        result[d.platform][d.language].spend += Number(d.spend) || 0;
+        result[d.platform][d.language].impressions += Number(d.impressions) || 0;
+        result[d.platform][d.language].clicks += Number(d.clicks) || 0;
+    });
+    Object.values(result).forEach(langMap => {
+        Object.values(langMap).forEach(l => {
+            l.ctr = l.impressions > 0 ? (l.clicks / l.impressions * 100) : 0;
+        });
+    });
+    return result;
+}
+
+function updateChannelLanguageTable(dataByChannel) {
+    const tbody = document.querySelector('.lang-channel-table tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    let totalRows = 0;
+    LANG_CHANNELS_ORDER.forEach(channelKey => {
+        const languages = dataByChannel[channelKey] || {};
+        const activeLanguages = LANG_ORDER
+            .map(l => languages[l])
+            .filter(l => l && (l.impressions > 0 || l.spend > 0));
+        if (activeLanguages.length === 0) return;
+        const meta = CHANNEL_META[channelKey];
+        if (!meta) return;
+
+        const total = activeLanguages.reduce((acc, l) => {
+            acc.spend += l.spend; acc.impressions += l.impressions; acc.clicks += l.clicks;
+            return acc;
+        }, { spend: 0, impressions: 0, clicks: 0 });
+        total.ctr = total.impressions > 0 ? (total.clicks / total.impressions * 100) : 0;
+        const totalHasClicks = total.clicks > 0;
+
+        const headerRow = document.createElement('tr');
+        headerRow.className = 'lang-group-header';
+        headerRow.innerHTML =
+            '<td>' +
+                '<div class="channel-name">' +
+                    '<div class="channel-icon ' + meta.iconClass + '">' + meta.icon + '</div>' +
+                    '<div class="channel-info"><strong>' + meta.label + '</strong></div>' +
+                '</div>' +
+            '</td>' +
+            '<td class="td-objective">' + fmtEur(total.spend) + '</td>' +
+            '<td class="td-objective">' + fmt(total.impressions) + '</td>' +
+            '<td class="' + (totalHasClicks ? 'td-objective' : 'td-placeholder') + '">' + (totalHasClicks ? fmt(total.clicks) : '-') + '</td>' +
+            '<td class="' + (totalHasClicks ? 'td-objective' : 'td-placeholder') + '">' + (totalHasClicks ? fmtPct(total.ctr) : '-') + '</td>';
+        tbody.appendChild(headerRow);
+        totalRows++;
+
+        activeLanguages.forEach(l => {
+            const row = document.createElement('tr');
+            row.className = 'lang-channel-row';
+            const hasClicks = l.clicks > 0;
+            row.innerHTML =
+                '<td><strong>' + LANG_LABELS[l.language] + '</strong></td>' +
+                '<td class="td-objective">' + fmtEur(l.spend) + '</td>' +
+                '<td class="td-objective">' + fmt(l.impressions) + '</td>' +
+                '<td class="' + (hasClicks ? 'td-objective' : 'td-placeholder') + '">' + (hasClicks ? fmt(l.clicks) : '-') + '</td>' +
+                '<td class="' + (hasClicks ? 'td-objective' : 'td-placeholder') + '">' + (hasClicks ? fmtPct(l.ctr) : '-') + '</td>';
+            tbody.appendChild(row);
+            totalRows++;
+        });
+    });
+    if (totalRows === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.className = 'lang-channel-empty';
+        emptyRow.innerHTML = '<td colspan="5" class="td-placeholder" style="text-align: center; padding: 1.5rem;">Aucune donnée digitale sur cette période</td>';
+        tbody.appendChild(emptyRow);
+    }
+}
+
 function updateTimeline(daily) {
     if (!daily || daily.length === 0) return;
     // Agréger par mois et calculer le cumul
@@ -1556,7 +1842,7 @@ async function loadDashboard() {
 
     // Snapshot du tbody initial pour reset entre onglets
     if (!tbodyInitialHTML) {
-        const tbody = document.querySelector('.channels-table tbody');
+        const tbody = document.querySelector('.channels-table:not(.languages-table) tbody');
         if (tbody) tbodyInitialHTML = tbody.innerHTML;
     }
 
@@ -1567,8 +1853,9 @@ async function loadDashboard() {
             sb.rpc('get_dashboard_daily', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_video_views', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_by_platform_daily', { p_client_code: CLIENT_CODE }),
+            sb.rpc('get_dashboard_by_language_daily', { p_client_code: CLIENT_CODE }),
         ]);
-        const [kpiRes, platRes, dailyRes, videoRes, platDailyRes] = results;
+        const [kpiRes, platRes, dailyRes, videoRes, platDailyRes, langDailyRes] = results;
 
         results.forEach((r, i) => {
             if (r.error) console.warn(`RPC ${i} erreur:`, r.error);
@@ -1577,6 +1864,11 @@ async function loadDashboard() {
         if (kpiRes.data) updateKpis(kpiRes.data);
         if (platDailyRes.data) platformDailyData = platDailyRes.data;
         if (platRes.data) updateTable(platRes.data, null);
+        if (langDailyRes.data) {
+            languageDailyData = langDailyRes.data;
+            try { updateLanguageTable(aggregateByLanguage(null)); } catch (e) { console.error('updateLanguageTable:', e); }
+            try { updateChannelLanguageTable(aggregateByChannelAndLanguage(null)); } catch (e) { console.error('updateChannelLanguageTable:', e); }
+        }
         if (dailyRes.data) {
             try { updateTimeline(dailyRes.data); } catch (e) { console.error('updateTimeline:', e); }
             try { updatePhaseGauges(); } catch (e) { console.error('updatePhaseGauges:', e); }
@@ -1597,8 +1889,12 @@ async function loadDashboard() {
 
 document.getElementById('loadRetryBtn').addEventListener('click', loadDashboard);
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
+document.querySelectorAll('.tab-btn[data-phase]').forEach(btn => {
     btn.addEventListener('click', () => handleTabClick(btn));
+});
+
+document.querySelectorAll('.tab-btn[data-lang-phase]').forEach(btn => {
+    btn.addEventListener('click', () => handleLangTabClick(btn));
 });
 
 function updatePhases() {
