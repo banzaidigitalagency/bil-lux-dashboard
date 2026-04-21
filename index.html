@@ -298,20 +298,19 @@
         /* ===== CHANNELS TABLE ===== */
         .channels-table { width: 100%; border-collapse: collapse; }
 
-        /* Main channels-table : 6 colonnes avec widths harmonisees */
+        /* Main channels-table : 5 colonnes avec widths harmonisees */
         .channels-table:not(.languages-table):not(.lang-channel-table) { table-layout: fixed; }
         .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(1),
-        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(1) { width: 22%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(1) { width: 25%; }
         .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(2),
-        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(2) { width: 10%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(2) { width: 22%; }
         .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(3),
-        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(3) { width: 11%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(3) { width: 22%; }
         .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(4),
-        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(4) { width: 23%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(4) { width: 21%; }
         .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(5),
-        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(5) { width: 23%; }
-        .channels-table:not(.languages-table):not(.lang-channel-table) th:nth-child(6),
-        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(6) { width: 11%; }
+        .channels-table:not(.languages-table):not(.lang-channel-table) td:nth-child(5) { width: 10%; white-space: nowrap; }
+        .channel-info span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 
         .channels-table thead th {
             font-size: var(--fs-xxs); font-weight: 600; color: var(--text-muted);
@@ -873,8 +872,7 @@
             <thead>
                 <tr>
                     <th>Canal</th>
-                    <th>Budget média</th>
-                    <th>Dépense</th>
+                    <th>Dépense (réal. / obj.)</th>
                     <th>Impressions (réal. / obj.)</th>
                     <th>Clics (réal. / obj.)</th>
                     <th>CTR</th>
@@ -888,8 +886,12 @@
                             <div class="channel-info"><strong>DOOH</strong><span>Business + Outdoor + Transports - Bruxelles</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">27 085 &euro;</td>
-                    <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 27 085 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-dooh"></div></div>
+                        </div>
+                    </td>
                     <td class="td-progress">
                         <div class="progress-cell">
                             <span class="progress-cell-value"><span class="pc-current">-</span> / 902 833</span>
@@ -906,8 +908,12 @@
                             <div class="channel-info"><strong>LinkedIn</strong><span>Carousel + In-Feed Ads</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">15 200 &euro;</td>
-                    <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 15 200 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-linkedin"></div></div>
+                        </div>
+                    </td>
                     <td class="td-progress">
                         <div class="progress-cell">
                             <span class="progress-cell-value"><span class="pc-current">-</span> / 434 286</span>
@@ -929,8 +935,12 @@
                             <div class="channel-info"><strong>Meta</strong><span>Facebook/Instagram - Carousel + In-Feed</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">15 200 &euro;</td>
-                    <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 15 200 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-meta"></div></div>
+                        </div>
+                    </td>
                     <td class="td-progress">
                         <div class="progress-cell">
                             <span class="progress-cell-value"><span class="pc-current">-</span> / 4 300 000</span>
@@ -952,8 +962,12 @@
                             <div class="channel-info"><strong>Vidéo Instream</strong><span>Non-désactivable</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">15 000 &euro;</td>
-                    <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 15 000 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-dv360"></div></div>
+                        </div>
+                    </td>
                     <td class="td-progress">
                         <div class="progress-cell">
                             <span class="progress-cell-value"><span class="pc-current">-</span> / 1 500 000</span>
@@ -975,8 +989,12 @@
                             <div class="channel-info"><strong>YouTube</strong><span>Instream non-désactivable</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">15 000 &euro;</td>
-                    <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 15 000 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-youtube"></div></div>
+                        </div>
+                    </td>
                     <td class="td-progress">
                         <div class="progress-cell">
                             <span class="progress-cell-value"><span class="pc-current">-</span> / 1 500 000</span>
@@ -998,8 +1016,12 @@
                             <div class="channel-info"><strong>Teads</strong><span>Carousel + InRead social</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">17 000 &euro;</td>
-                    <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 17 000 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-teads"></div></div>
+                        </div>
+                    </td>
                     <td class="td-progress">
                         <div class="progress-cell">
                             <span class="progress-cell-value"><span class="pc-current">-</span> / 1 307 692</span>
@@ -1021,8 +1043,12 @@
                             <div class="channel-info"><strong>Prog. Display</strong><span>Habillage - Sites Premium</span></div>
                         </div>
                     </td>
-                    <td class="td-objective">8 500 &euro;</td>
-                    <td class="td-placeholder">-</td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 8 500 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-display"></div></div>
+                        </div>
+                    </td>
                     <td class="td-progress">
                         <div class="progress-cell">
                             <span class="progress-cell-value"><span class="pc-current">-</span> / 425 000</span>
@@ -1294,6 +1320,17 @@ const OBJECTIVES = {
     display_prog: 425000,
 };
 
+// Budgets media par plateforme (total annuel, EUR)
+const BUDGETS = {
+    displayce: 27085,
+    linkedin: 15200,
+    meta: 15200,
+    dv360: 15000,
+    google: 15000,
+    teads: 17000,
+    display_prog: 8500,
+};
+
 // Objectifs clics par plateforme (DOOH n'a pas de clics)
 const CLICK_OBJECTIVES = {
     linkedin: 1303,
@@ -1539,6 +1576,19 @@ function updateTable(platforms, phaseIdx) {
         return CLICK_OBJECTIVES[platform] ?? 0;
     }
 
+    const COLOR_CLASSES = {
+        linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
+        google: 'ch-youtube', teads: 'ch-teads', display_prog: 'ch-display',
+        displayce: 'ch-dooh'
+    };
+    function progressCellHTML(denom, colorClass, isEur) {
+        const val = isEur ? fmtEur(denom) : fmt(denom);
+        return '<div class="progress-cell">' +
+            '<span class="progress-cell-value"><span class="pc-current">-</span> / ' + val + '</span>' +
+            '<div class="progress-bar"><div class="progress-fill ' + colorClass + '"></div></div>' +
+            '</div>';
+    }
+
     // Mise à jour des dénominateurs affichés (le "/ X" après le chiffre)
     rowPlatformOrder.forEach((platform, rowIdx) => {
         const row = rows[rowIdx];
@@ -1546,6 +1596,8 @@ function updateTable(platforms, phaseIdx) {
         const cells = row.querySelectorAll('td');
         const imprObj = getImprObj(platform);
         const clickObj = getClickObj(platform);
+        const budget = BUDGETS[platform] ?? 0;
+        const colorClass = COLOR_CLASSES[platform] || '';
 
         // Masquer la ligne si le canal n'est pas actif dans la phase (aucun objectif)
         if (phaseObj && imprObj === 0 && clickObj === 0) {
@@ -1555,41 +1607,31 @@ function updateTable(platforms, phaseIdx) {
             row.style.display = '';
         }
 
-        // Cellule impressions (idx 3) : si obj > 0, cellule progression ; sinon placeholder
-        const imprCell = cells[3];
+        // Cellule dépense (idx 1) : toujours en progression sur le budget annuel
+        const spendCell = cells[1];
+        if (spendCell && budget > 0) {
+            spendCell.className = 'td-progress';
+            spendCell.innerHTML = progressCellHTML(budget, colorClass, true);
+        }
+
+        // Cellule impressions (idx 2)
+        const imprCell = cells[2];
         if (imprCell) {
             if (imprObj > 0) {
-                const colorClass = ({
-                    linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
-                    google: 'ch-youtube', teads: 'ch-teads', display_prog: 'ch-display',
-                    displayce: 'ch-dooh'
-                })[platform] || '';
                 imprCell.className = 'td-progress';
-                imprCell.innerHTML = '<div class="progress-cell">' +
-                    '<span class="progress-cell-value"><span class="pc-current">-</span> / ' + fmt(imprObj) + '</span>' +
-                    '<div class="progress-bar"><div class="progress-fill ' + colorClass + '"></div></div>' +
-                    '</div>';
+                imprCell.innerHTML = progressCellHTML(imprObj, colorClass, false);
             } else {
                 imprCell.className = 'td-placeholder';
                 imprCell.textContent = '-';
             }
         }
 
-        // Cellule clics (idx 4) : si clickObj > 0, afficher cellule progression ; sinon placeholder
-        const clickCell = cells[4];
+        // Cellule clics (idx 3)
+        const clickCell = cells[3];
         if (clickCell) {
             if (clickObj > 0) {
                 clickCell.className = 'td-progress';
-                // Determiner la classe couleur selon la plateforme
-                const colorClass = ({
-                    linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
-                    google: 'ch-youtube', teads: 'ch-teads', display_prog: 'ch-display',
-                    displayce: 'ch-dooh'
-                })[platform] || '';
-                clickCell.innerHTML = '<div class="progress-cell">' +
-                    '<span class="progress-cell-value"><span class="pc-current">-</span> / ' + fmt(clickObj) + '</span>' +
-                    '<div class="progress-bar"><div class="progress-fill ' + colorClass + '"></div></div>' +
-                    '</div>';
+                clickCell.innerHTML = progressCellHTML(clickObj, colorClass, false);
             } else {
                 clickCell.className = 'td-placeholder';
                 clickCell.textContent = '-';
@@ -1597,10 +1639,10 @@ function updateTable(platforms, phaseIdx) {
         }
     });
 
-    function updateProgressCell(cell, value, obj) {
+    function updateProgressCell(cell, value, obj, isEur) {
         const current = cell.querySelector('.pc-current');
         const fillBar = cell.querySelector('.progress-fill');
-        if (current) current.textContent = fmt(value);
+        if (current) current.textContent = isEur ? fmtEur(value) : fmt(value);
         if (fillBar && obj > 0) {
             const pct = Math.min((value / obj) * 100, 100);
             fillBar.style.transform = 'scaleX(' + (pct / 100).toFixed(4) + ')';
@@ -1612,13 +1654,16 @@ function updateTable(platforms, phaseIdx) {
         const cells = rows[rowIdx].querySelectorAll('td');
         const imprObj = getImprObj(platform);
         const clickObj = getClickObj(platform);
-        const fill = (idx, val) => { cells[idx].textContent = val; cells[idx].classList.remove('td-placeholder'); cells[idx].classList.add('td-objective'); };
-        fill(2, fmtEur(spend));
-        updateProgressCell(cells[3], impressions, imprObj);
+        const budget = BUDGETS[platform] ?? 0;
+        if (budget > 0) updateProgressCell(cells[1], spend, budget, true);
+        if (imprObj > 0) updateProgressCell(cells[2], impressions, imprObj, false);
         // Si la plateforme n'a pas d'objectif clics (ex DOOH), on laisse le placeholder "-" pour clics et CTR
         if (clickObj > 0) {
-            updateProgressCell(cells[4], clicks, clickObj);
-            fill(5, fmtPct(ctr));
+            updateProgressCell(cells[3], clicks, clickObj, false);
+            const ctrCell = cells[4];
+            ctrCell.textContent = fmtPct(ctr);
+            ctrCell.classList.remove('td-placeholder');
+            ctrCell.classList.add('td-objective');
         }
     }
 
