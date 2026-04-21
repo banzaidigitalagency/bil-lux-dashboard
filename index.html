@@ -342,6 +342,13 @@
             font-weight: 400; color: var(--text-muted); font-size: var(--fs-xs); margin-left: 0.35rem;
         }
 
+        .lang-channel-table { table-layout: fixed; }
+        .lang-channel-table th:nth-child(1), .lang-channel-table td:nth-child(1) { width: 30%; }
+        .lang-channel-table th:nth-child(2), .lang-channel-table td:nth-child(2) { width: 17%; }
+        .lang-channel-table th:nth-child(3), .lang-channel-table td:nth-child(3) { width: 22%; }
+        .lang-channel-table th:nth-child(4), .lang-channel-table td:nth-child(4) { width: 14%; }
+        .lang-channel-table th:nth-child(5), .lang-channel-table td:nth-child(5) { width: 17%; }
+
         .lang-channel-table tbody tr.lang-group-header td {
             background: var(--bil-lighter);
             padding: 0.55rem 0.85rem;
@@ -1078,7 +1085,7 @@
 
         <div class="card-subtitle">Détail par canal</div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-        <table class="lang-channel-table channels-table" style="min-width: 720px;">
+        <table class="lang-channel-table channels-table" style="min-width: 560px;">
             <thead>
                 <tr>
                     <th>Langue</th>
