@@ -36,7 +36,9 @@ Le JS mappe les plateformes Supabase aux lignes du tableau HTML par index :
 - `dv360` -> row 3
 - `google` -> row 4 (YouTube)
 - `teads` -> row 5
-- row 6 (Prog. Display) n'a pas de donnees Supabase directes
+- `display_prog` -> row 6 (Prog. Display / Habillage)
+
+Le canal Habillage est la campagne DV360 dont le nom contient `HABILLAGE` (`2600 - BELGIAN - HABILLAGE`). Les RPC dashboard la scindent du DV360 video sous la cle `display_prog` (uniquement pour `p_client_code = 'bil'`) et lui appliquent le coef billing `habillage` (0.40) au lieu du coef `outstream` (0.20) du DV360 video. Le split est implemente dans `get_dashboard_by_platform`, `get_dashboard_by_platform_daily`, `get_dashboard_by_language_daily` et `get_dashboard_kpis`, plus le mapping `display_prog -> habillage` dans `get_billing_coef`.
 
 ## Deploiement
 

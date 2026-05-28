@@ -1351,6 +1351,7 @@ const CLICK_OBJECTIVES = {
     dv360: 3000,
     google: 750,
     teads: 3923,
+    display_prog: 2125,
 };
 
 // Objectifs par phase et par plateforme (extrait du media plan Excel)
@@ -1576,7 +1577,7 @@ function handleTabClick(btn) {
 function updateTable(platforms, phaseIdx) {
     // phaseIdx = null pour Total, 0/1/2 pour Phase 1/2/3
     const rows = document.querySelectorAll('.channels-table:not(.languages-table) tbody tr');
-    const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5 };
+    const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5, display_prog: 6 };
     const rowPlatformOrder = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
 
     const phaseObj = phaseIdx == null ? null : PHASE_OBJECTIVES[phaseIdx];
@@ -1758,14 +1759,14 @@ function handleLangTabClick(btn) {
 }
 
 const LANG_LABELS = { FR: 'Français', NL: 'Néerlandais', EN: 'Anglais' };
-const LANG_CHANNELS_ORDER = ['linkedin', 'meta', 'dv360', 'google', 'teads', 'programmatic_display'];
+const LANG_CHANNELS_ORDER = ['linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
 const CHANNEL_META = {
     linkedin: { label: 'LinkedIn', sub: 'Carousel + In-Feed Ads', icon: 'Li', iconClass: 'linkedin' },
     meta: { label: 'Meta', sub: 'Facebook/Instagram', icon: 'Me', iconClass: 'meta' },
     dv360: { label: 'Vidéo Instream', sub: 'Non-désactivable', icon: 'Dv', iconClass: 'dv360' },
     google: { label: 'YouTube', sub: 'Instream non-désactivable', icon: 'Yt', iconClass: 'youtube' },
     teads: { label: 'Teads', sub: 'Carousel + InRead social', icon: 'Te', iconClass: 'teads' },
-    programmatic_display: { label: 'Prog. Display', sub: 'Habillage - Sites Premium', icon: 'Dsp', iconClass: 'display' }
+    display_prog: { label: 'Prog. Display', sub: 'Habillage - Sites Premium', icon: 'Dsp', iconClass: 'display' }
 };
 
 function aggregateByChannelAndLanguage(phaseIdx) {
