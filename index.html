@@ -749,7 +749,7 @@
     <div class="campaign-banner">
         <div class="campaign-banner-left">
             <h2>Campagne Branding Belgique</h2>
-            <p>Campagne digitale du 10 avril au 29 novembre 2026 &bull; 7 leviers activés &bull; Budget média : 112 988 &euro;</p>
+            <p>Campagne digitale du 10 avril au 29 novembre 2026 &bull; 7 leviers activés &bull; Budget média : <span id="heroBudget">112 988 &euro;</span></p>
         </div>
         <div class="campaign-banner-right">
             <div class="banner-stat">
@@ -842,7 +842,7 @@
         <div class="kpi-card">
             <div class="kpi-label">Dépenses</div>
             <div class="kpi-value placeholder">-</div>
-            <div class="kpi-change">Budget : 112 988 &euro;</div>
+            <div class="kpi-change">Budget : <span id="kpiBudget">112 988 &euro;</span></div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Impressions</div>
@@ -1322,84 +1322,79 @@ const PLATFORM_MAP = {
     teads:     { rows: [7], label: 'Teads', progressIdx: 5 },
 };
 
-// Objectifs par plateforme (impressions)
-const OBJECTIVES = {
-    displayce: 902833,
-    linkedin: 434286,
-    meta: 4300000,
-    dv360: 1500000,
-    google: 1500000,
-    teads: 1307692,
-    display_prog: 425000,
-};
+// ===== PLANNING : budgets + objectifs impressions =====
+// Alimentes dynamiquement depuis Supabase (RPC get_dashboard_planning -> campaign_tracking)
+// par applyPlanning(). Aucune valeur budget/impression en dur ici.
+let BUDGETS = {};            // budget client annuel par canal
+let OBJECTIVES = {};         // objectif impressions annuel par canal
+let PHASE_OBJECTIVES = { 0: {}, 1: {}, 2: {} }; // { impr, clicks, budget } par canal et par phase
+let TOTAL_BUDGET = 0;        // budget media total (rempli par applyPlanning)
+let TOTAL_IMPR_OBJ = 0;      // objectif impressions total (rempli par applyPlanning)
 
-// Budgets media client par plateforme (total annuel, EUR) - source suivi Matt - 26
-const BUDGETS = {
-    displayce: 27088,
-    linkedin: 15200,
-    meta: 15200,
-    dv360: 15000,
-    google: 15000,
-    teads: 17000,
-    display_prog: 8500,
+// Objectifs de CLICS par phase : SEULE donnee plan absente de campaign_tracking,
+// donc conservee en dur (a synchroniser le jour ou une colonne obj_clicks existe en base).
+const CLICK_OBJECTIVES_PHASE = {
+    0: { linkedin: 514, meta: 2000, dv360: 1400, google: 350, teads: 2307, display_prog: 1250 },
+    1: { linkedin: 274, meta: 3200, dv360: 600,  google: 150, teads: 0,    display_prog: 0 },
+    2: { linkedin: 514, meta: 6000, dv360: 1000, google: 250, teads: 1615, display_prog: 875 },
 };
+// Objectifs clics annuels = somme des phases
+let CLICK_OBJECTIVES = {};
+Object.values(CLICK_OBJECTIVES_PHASE).forEach(ph => {
+    Object.entries(ph).forEach(([k, v]) => { CLICK_OBJECTIVES[k] = (CLICK_OBJECTIVES[k] || 0) + v; });
+});
 
-// Objectifs clics par plateforme (DOOH n'a pas de clics)
-const CLICK_OBJECTIVES = {
-    linkedin: 1303,
-    meta: 11200,
-    dv360: 3000,
-    google: 750,
-    teads: 3923,
-    display_prog: 2125,
-};
-
-// Objectifs par phase et par plateforme (extrait du media plan Excel)
-const PHASE_OBJECTIVES = {
-    0: { // Phase 1 (Avr - Juin)
-        displayce:    { impr: 602833,  clicks: 0,    budget: 18088 },
-        linkedin:     { impr: 171428,  clicks: 514,  budget: 6000 },
-        meta:         { impr: 2000000, clicks: 2000, budget: 6000 },
-        dv360:        { impr: 700000,  clicks: 1400, budget: 7000 },
-        google:       { impr: 700000,  clicks: 350,  budget: 7000 },
-        teads:        { impr: 769230,  clicks: 2307, budget: 10000 },
-        display_prog: { impr: 250000,  clicks: 1250, budget: 5000 },
-    },
-    1: { // Phase 2 (Juil - Aout)
-        displayce:    { impr: 0,       clicks: 0,    budget: 0 },
-        linkedin:     { impr: 91428,   clicks: 274,  budget: 3200 },
-        meta:         { impr: 800000,  clicks: 3200, budget: 3200 },
-        dv360:        { impr: 300000,  clicks: 600,  budget: 3000 },
-        google:       { impr: 300000,  clicks: 150,  budget: 3000 },
-        teads:        { impr: 0,       clicks: 0,    budget: 0 },
-        display_prog: { impr: 0,       clicks: 0,    budget: 0 },
-    },
-    2: { // Phase 3 (Sep - Nov)
-        displayce:    { impr: 300000,  clicks: 0,    budget: 9000 },
-        linkedin:     { impr: 171428,  clicks: 514,  budget: 6000 },
-        meta:         { impr: 1500000, clicks: 6000, budget: 6000 },
-        dv360:        { impr: 500000,  clicks: 1000, budget: 5000 },
-        google:       { impr: 500000,  clicks: 250,  budget: 5000 },
-        teads:        { impr: 538461,  clicks: 1615, budget: 7000 },
-        display_prog: { impr: 175000,  clicks: 875,  budget: 3500 },
-    },
-};
-const TOTAL_IMPR_OBJ = 10370000;
-const TOTAL_BUDGET = 112988;
 const CAMPAIGN_DAYS = 234;
 const CAMPAIGN_START = new Date(2026, 3, 10); // 10 avril 2026
 
-// Objectifs cumulés par mois
+// Objectifs cumulés par mois (courbe de pacing du timeline ; granularite mensuelle absente de campaign_tracking)
 const MONTHS = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov'];
 const CUM_TARGETS = [1300000, 3250000, 5200000, 5945000, 6690000, 7890000, 9090000, 10370000];
 
-// Phases : budget media par phase + objectifs impressions par phase
+// Phases : fenetres de dates (structurelles). budgetMedia/imprObj remplis par applyPlanning.
 // Phase 1 start volontairement en amont pour inclure eventuelles donnees pre-lancement (tests, warm-up)
 const PHASES_DATA = [
-    { idx: 0, start: new Date(2026, 0, 1),  end: new Date(2026, 5, 30), budgetMedia: 59088, imprObj: 5200000 },
-    { idx: 1, start: new Date(2026, 6, 1),  end: new Date(2026, 7, 31), budgetMedia: 12400, imprObj: 1490000 },
-    { idx: 2, start: new Date(2026, 8, 1),  end: new Date(2026, 10, 29), budgetMedia: 41500, imprObj: 3680000 },
+    { idx: 0, start: new Date(2026, 0, 1),  end: new Date(2026, 5, 30),  budgetMedia: 0, imprObj: 0 },
+    { idx: 1, start: new Date(2026, 6, 1),  end: new Date(2026, 7, 31),  budgetMedia: 0, imprObj: 0 },
+    { idx: 2, start: new Date(2026, 8, 1),  end: new Date(2026, 10, 29), budgetMedia: 0, imprObj: 0 },
 ];
+
+// Construit BUDGETS / OBJECTIVES / PHASE_OBJECTIVES / PHASES_DATA depuis la RPC planning
+function applyPlanning(rows) {
+    if (!Array.isArray(rows) || rows.length === 0) return;
+    BUDGETS = {}; OBJECTIVES = {};
+    PHASE_OBJECTIVES = { 0: {}, 1: {}, 2: {} };
+    const phaseBudget = [0, 0, 0], phaseImpr = [0, 0, 0];
+    rows.forEach(r => {
+        const ch = r.channel, ph = r.phase_idx;
+        if (!(ph in PHASE_OBJECTIVES)) return;
+        const budget = Number(r.budget) || 0, impr = Number(r.impr) || 0;
+        BUDGETS[ch] = (BUDGETS[ch] || 0) + budget;
+        OBJECTIVES[ch] = (OBJECTIVES[ch] || 0) + impr;
+        const clicks = (CLICK_OBJECTIVES_PHASE[ph] && CLICK_OBJECTIVES_PHASE[ph][ch]) || 0;
+        PHASE_OBJECTIVES[ph][ch] = { impr, clicks, budget };
+        phaseBudget[ph] += budget; phaseImpr[ph] += impr;
+    });
+    PHASES_DATA.forEach((p, i) => { p.budgetMedia = phaseBudget[i]; p.imprObj = phaseImpr[i]; });
+    TOTAL_BUDGET = phaseBudget.reduce((a, b) => a + b, 0);
+    TOTAL_IMPR_OBJ = phaseImpr.reduce((a, b) => a + b, 0);
+
+    // Donut repartition budget
+    if (donutChart) {
+        const order = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
+        donutChart.data.datasets[0].data = order.map(c => Math.round(BUDGETS[c] || 0));
+        donutChart.update();
+    }
+    // Montants budget encore presents en dur dans le HTML
+    const heroB = document.getElementById('heroBudget');
+    if (heroB) heroB.textContent = fmtEur(TOTAL_BUDGET);
+    const kpiB = document.getElementById('kpiBudget');
+    if (kpiB) kpiB.textContent = fmtEur(TOTAL_BUDGET);
+    document.querySelectorAll('.phase-card').forEach((card, i) => {
+        const amt = card.querySelector('.phase-amount');
+        if (amt && PHASES_DATA[i]) amt.textContent = fmtEur(PHASES_DATA[i].budgetMedia);
+    });
+}
 
 function fmt(n) { return n == null ? '-' : Math.round(n).toLocaleString('fr-FR'); }
 function fmtEur(n) { return n == null ? '-' : Math.round(n).toLocaleString('fr-FR') + ' \u20AC'; }
@@ -1460,7 +1455,7 @@ function initCharts() {
         type: 'doughnut',
         data: {
             labels: ['DOOH', 'LinkedIn', 'Meta', 'Vidéo Instream', 'YouTube', 'Teads', 'Prog. Display'],
-            datasets: [{ data: [27088, 15200, 15200, 15000, 15000, 17000, 8500],
+            datasets: [{ data: [0, 0, 0, 0, 0, 0, 0],
                 backgroundColor: ['#FF6B00', '#0A66C2', '#0084FF', '#34A853', '#FF0000', '#1A1A2E', '#702F8A'],
                 borderWidth: 2, borderColor: '#FFF', hoverOffset: 6 }]
         },
@@ -1944,12 +1939,18 @@ async function loadDashboard() {
             sb.rpc('get_dashboard_video_views', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_by_platform_daily', { p_client_code: CLIENT_CODE }),
             sb.rpc('get_dashboard_by_language_daily', { p_client_code: CLIENT_CODE }),
+            sb.rpc('get_dashboard_planning', { p_client_code: CLIENT_CODE }),
         ]);
-        const [kpiRes, platRes, dailyRes, videoRes, platDailyRes, langDailyRes] = results;
+        const [kpiRes, platRes, dailyRes, videoRes, platDailyRes, langDailyRes, planRes] = results;
 
         results.forEach((r, i) => {
             if (r.error) console.warn(`RPC ${i} erreur:`, r.error);
         });
+
+        // Planning d'abord : alimente budgets/objectifs utilises par les autres mises a jour
+        if (planRes.data) {
+            try { applyPlanning(planRes.data); } catch (e) { console.error('applyPlanning:', e); }
+        }
 
         if (kpiRes.data) updateKpis(kpiRes.data);
         if (platDailyRes.data) platformDailyData = platDailyRes.data;
