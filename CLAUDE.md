@@ -11,13 +11,17 @@ Dashboard de suivi de campagne digitale pour BIL (Banque Internationale a Luxemb
 Tout tient dans `index.html` : CSS inline, HTML, et JS (Chart.js + Supabase). Pas de build, pas de bundler, pas de framework.
 
 - **Lock screen** : code d'acces `BIL2026` (constante `ACCESS_CODE`), session via `sessionStorage`
-- **Supabase** : projet `mfqbhpxsuawujnfbcojr`, client code `bil`. Donnees chargees via 4 fonctions RPC :
+- **Supabase** : projet `mfqbhpxsuawujnfbcojr`, client code `bil`. Donnees chargees via 7 fonctions RPC (toutes appelees en parallele dans `loadDashboard`) :
   - `get_dashboard_kpis(p_client_code)` - KPIs globaux avec coefs billing
   - `get_dashboard_by_platform(p_client_code)` - breakdown par plateforme avec coefs
+  - `get_dashboard_by_platform_daily(p_client_code)` - spend/impr par plateforme et par jour (sert au filtre par phase via `aggregateByPhase`)
   - `get_dashboard_daily(p_client_code)` - impressions par jour (chart timeline)
+  - `get_dashboard_by_language_daily(p_client_code)` - breakdown langue x canal x jour
   - `get_dashboard_video_views(p_client_code)` - vues video DV360/YouTube
+  - `get_dashboard_planning(p_client_code)` - **planning budgets + objectifs impressions**, agrege depuis `campaign_tracking` par phase et par canal. Source unique des budgets/objectifs : `applyPlanning()` construit `BUDGETS`, `OBJECTIVES`, `PHASE_OBJECTIVES`, `PHASES_DATA.budgetMedia/imprObj`, `TOTAL_BUDGET`, `TOTAL_IMPR_OBJ` et le donut. **Aucun budget/objectif impressions n'est en dur dans le JS.** Mapping canal dans la RPC : `Habillage% -> display_prog`, `pYoutube%/youtube -> google`, sinon `platform`. Bornes de phases (2026-06-30, 2026-08-31) en dur dans la RPC. Pour BIL, `campaign_tracking.client_code` est NULL et `client_name` = `BIL LUXEMBOURG` (casse differente de `clients.name` = `BIL Luxembourg`), donc la RPC matche `client_code = p_client_code OR client_name ILIKE clients.name`.
+- **Seules valeurs plan encore en dur** (absentes de `campaign_tracking`) : objectifs de CLICS par phase (`CLICK_OBJECTIVES_PHASE`) et courbe mensuelle cumulee `CUM_TARGETS` (granularite mensuelle non stockee). Commentees dans le code.
 - **Coefficients billing** : table `billing_coefficients`, le spend client = spend reel / coef. Fonction helper `get_billing_coef(client_id, platform::text)` avec fallback sur coefs par defaut (client_id IS NULL)
-- **Charts** : Chart.js 4.x - un line chart (impressions cumulees) et un doughnut (repartition budget)
+- **Charts** : Chart.js 4.x - un line chart (impressions cumulees) et un doughnut (repartition budget, alimente par `applyPlanning`)
 
 ## Couleurs BIL
 
