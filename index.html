@@ -1333,9 +1333,9 @@ const OBJECTIVES = {
     display_prog: 425000,
 };
 
-// Budgets media par plateforme (total annuel, EUR)
+// Budgets media client par plateforme (total annuel, EUR) - source suivi Matt - 26
 const BUDGETS = {
-    displayce: 27085,
+    displayce: 27088,
     linkedin: 15200,
     meta: 15200,
     dv360: 15000,
@@ -1357,31 +1357,31 @@ const CLICK_OBJECTIVES = {
 // Objectifs par phase et par plateforme (extrait du media plan Excel)
 const PHASE_OBJECTIVES = {
     0: { // Phase 1 (Avr - Juin)
-        displayce:    { impr: 602833,  clicks: 0 },
-        linkedin:     { impr: 171428,  clicks: 514 },
-        meta:         { impr: 2000000, clicks: 2000 },
-        dv360:        { impr: 700000,  clicks: 1400 },
-        google:       { impr: 700000,  clicks: 350 },
-        teads:        { impr: 769230,  clicks: 2307 },
-        display_prog: { impr: 250000,  clicks: 1250 },
+        displayce:    { impr: 602833,  clicks: 0,    budget: 18088 },
+        linkedin:     { impr: 171428,  clicks: 514,  budget: 6000 },
+        meta:         { impr: 2000000, clicks: 2000, budget: 6000 },
+        dv360:        { impr: 700000,  clicks: 1400, budget: 7000 },
+        google:       { impr: 700000,  clicks: 350,  budget: 7000 },
+        teads:        { impr: 769230,  clicks: 2307, budget: 10000 },
+        display_prog: { impr: 250000,  clicks: 1250, budget: 5000 },
     },
     1: { // Phase 2 (Juil - Aout)
-        displayce:    { impr: 0,       clicks: 0 },
-        linkedin:     { impr: 91428,   clicks: 274 },
-        meta:         { impr: 800000,  clicks: 3200 },
-        dv360:        { impr: 300000,  clicks: 600 },
-        google:       { impr: 300000,  clicks: 150 },
-        teads:        { impr: 0,       clicks: 0 },
-        display_prog: { impr: 0,       clicks: 0 },
+        displayce:    { impr: 0,       clicks: 0,    budget: 0 },
+        linkedin:     { impr: 91428,   clicks: 274,  budget: 3200 },
+        meta:         { impr: 800000,  clicks: 3200, budget: 3200 },
+        dv360:        { impr: 300000,  clicks: 600,  budget: 3000 },
+        google:       { impr: 300000,  clicks: 150,  budget: 3000 },
+        teads:        { impr: 0,       clicks: 0,    budget: 0 },
+        display_prog: { impr: 0,       clicks: 0,    budget: 0 },
     },
     2: { // Phase 3 (Sep - Nov)
-        displayce:    { impr: 300000,  clicks: 0 },
-        linkedin:     { impr: 171428,  clicks: 514 },
-        meta:         { impr: 1500000, clicks: 6000 },
-        dv360:        { impr: 500000,  clicks: 1000 },
-        google:       { impr: 500000,  clicks: 250 },
-        teads:        { impr: 538461,  clicks: 1615 },
-        display_prog: { impr: 175000,  clicks: 875 },
+        displayce:    { impr: 300000,  clicks: 0,    budget: 9000 },
+        linkedin:     { impr: 171428,  clicks: 514,  budget: 6000 },
+        meta:         { impr: 1500000, clicks: 6000, budget: 6000 },
+        dv360:        { impr: 500000,  clicks: 1000, budget: 5000 },
+        google:       { impr: 500000,  clicks: 250,  budget: 5000 },
+        teads:        { impr: 538461,  clicks: 1615, budget: 7000 },
+        display_prog: { impr: 175000,  clicks: 875,  budget: 3500 },
     },
 };
 const TOTAL_IMPR_OBJ = 10370000;
@@ -1396,9 +1396,9 @@ const CUM_TARGETS = [1300000, 3250000, 5200000, 5945000, 6690000, 7890000, 90900
 // Phases : budget media par phase + objectifs impressions par phase
 // Phase 1 start volontairement en amont pour inclure eventuelles donnees pre-lancement (tests, warm-up)
 const PHASES_DATA = [
-    { idx: 0, start: new Date(2026, 0, 1),  end: new Date(2026, 5, 30), budgetMedia: 50197, imprObj: 5200000 },
-    { idx: 1, start: new Date(2026, 6, 1),  end: new Date(2026, 7, 31), budgetMedia: 10535, imprObj: 1490000 },
-    { idx: 2, start: new Date(2026, 8, 1),  end: new Date(2026, 10, 29), budgetMedia: 52252, imprObj: 3680000 },
+    { idx: 0, start: new Date(2026, 0, 1),  end: new Date(2026, 5, 30), budgetMedia: 59088, imprObj: 5200000 },
+    { idx: 1, start: new Date(2026, 6, 1),  end: new Date(2026, 7, 31), budgetMedia: 12400, imprObj: 1490000 },
+    { idx: 2, start: new Date(2026, 8, 1),  end: new Date(2026, 10, 29), budgetMedia: 41500, imprObj: 3680000 },
 ];
 
 function fmt(n) { return n == null ? '-' : Math.round(n).toLocaleString('fr-FR'); }
@@ -1460,7 +1460,7 @@ function initCharts() {
         type: 'doughnut',
         data: {
             labels: ['DOOH', 'LinkedIn', 'Meta', 'Vidéo Instream', 'YouTube', 'Teads', 'Prog. Display'],
-            datasets: [{ data: [27085, 15200, 15200, 15000, 15000, 17000, 8500],
+            datasets: [{ data: [27088, 15200, 15200, 15000, 15000, 17000, 8500],
                 backgroundColor: ['#FF6B00', '#0A66C2', '#0084FF', '#34A853', '#FF0000', '#1A1A2E', '#702F8A'],
                 borderWidth: 2, borderColor: '#FFF', hoverOffset: 6 }]
         },
@@ -1589,6 +1589,10 @@ function updateTable(platforms, phaseIdx) {
         if (phaseObj) return phaseObj[platform]?.clicks ?? 0;
         return CLICK_OBJECTIVES[platform] ?? 0;
     }
+    function getBudgetObj(platform) {
+        if (phaseObj) return phaseObj[platform]?.budget ?? 0;
+        return BUDGETS[platform] ?? 0;
+    }
 
     const COLOR_CLASSES = {
         linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
@@ -1610,18 +1614,18 @@ function updateTable(platforms, phaseIdx) {
         const cells = row.querySelectorAll('td');
         const imprObj = getImprObj(platform);
         const clickObj = getClickObj(platform);
-        const budget = BUDGETS[platform] ?? 0;
+        const budget = getBudgetObj(platform);
         const colorClass = COLOR_CLASSES[platform] || '';
 
         // Masquer la ligne si le canal n'est pas actif dans la phase (aucun objectif)
-        if (phaseObj && imprObj === 0 && clickObj === 0) {
+        if (phaseObj && imprObj === 0 && clickObj === 0 && budget === 0) {
             row.style.display = 'none';
             return;
         } else {
             row.style.display = '';
         }
 
-        // Cellule dépense (idx 1) : toujours en progression sur le budget annuel
+        // Cellule dépense (idx 1) : budget de la phase active (annuel sur l'onglet Total)
         const spendCell = cells[1];
         if (spendCell && budget > 0) {
             spendCell.className = 'td-progress';
@@ -1668,7 +1672,7 @@ function updateTable(platforms, phaseIdx) {
         const cells = rows[rowIdx].querySelectorAll('td');
         const imprObj = getImprObj(platform);
         const clickObj = getClickObj(platform);
-        const budget = BUDGETS[platform] ?? 0;
+        const budget = getBudgetObj(platform);
         if (budget > 0) updateProgressCell(cells[1], spend, budget, true);
         if (imprObj > 0) updateProgressCell(cells[2], impressions, imprObj, false);
         // Si la plateforme n'a pas d'objectif clics (ex DOOH), on laisse le placeholder "-" pour clics et CTR
