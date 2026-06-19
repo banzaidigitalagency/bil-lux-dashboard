@@ -42,7 +42,7 @@ Le JS mappe les plateformes Supabase aux lignes du tableau HTML par index :
 - `teads` -> row 5
 - `display_prog` -> row 6 (Prog. Display / Habillage)
 
-Le canal Habillage est la campagne DV360 dont le nom contient `HABILLAGE` (`2600 - BELGIAN - HABILLAGE`). Les RPC dashboard la scindent du DV360 video sous la cle `display_prog` et lui appliquent le coef billing `habillage` (0.40) au lieu du coef `outstream` (0.20) du DV360 video. Le split se base **uniquement sur le nom de campagne** (`platform = 'dv360' AND name ILIKE '%HABILLAGE%'`), sans condition de code client (robuste aux renommages). Il est implemente dans `get_dashboard_by_platform`, `get_dashboard_by_platform_daily`, `get_dashboard_by_language_daily` et `get_dashboard_kpis` (total Depenses), plus le mapping `display_prog -> habillage` (inconditionnel) dans `get_billing_coef`.
+Le canal Habillage est la campagne DV360 dont le nom contient `HABILLAGE` (`2600 - BELGIAN - HABILLAGE`). Les RPC dashboard la scindent du DV360 video sous la cle `display_prog` et lui appliquent le coef billing `habillage` (0.40) au lieu du coef `outstream` (0.20) du DV360 video. Le split se base **uniquement sur le nom de campagne** (`platform = 'dv360' AND name ILIKE '%HABILLAGE%'`), sans condition de code client (robuste aux renommages). Il est implemente dans toutes les RPC qui calculent du spend (`get_dashboard_kpis`, `get_dashboard_by_platform`, `get_dashboard_by_platform_daily`, `get_dashboard_by_language_daily`, `get_dashboard_daily`), plus le mapping `display_prog -> habillage` (inconditionnel) dans `get_billing_coef`. Les 4 RPC sur `campaign_insights` renvoient un total Depenses identique (coherence verifiee).
 
 ## Deploiement
 
