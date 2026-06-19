@@ -27,22 +27,29 @@ Tout tient dans `index.html` : CSS inline, HTML, et JS (Chart.js + Supabase). Pa
 
 Violet principal `#702F8A`. Les CSS variables vont de `--bil-dark` (#4A1D6B) a `--bil-lighter` (#F5EEF9). Les couleurs des canaux (LinkedIn bleu, Meta bleu, YouTube rouge, etc.) gardent leurs couleurs propres.
 
-## Canaux actifs (7)
+## Canaux actifs (8)
 
-DOOH (Displayce), LinkedIn, Meta, DV360 Video, YouTube (Google), Teads, Prog. Display. Pas de Presse (dashboard 100% digital).
+DOOH (Displayce), LinkedIn, Meta, DV360 Video, YouTube (Google), Teads, Prog. Display, CTV (Connected TV - YouTube). Pas de Presse (dashboard 100% digital).
 
 ## Mapping plateforme Supabase -> tableau
 
-Le JS mappe les plateformes Supabase aux lignes du tableau HTML par index :
+Le JS mappe les plateformes Supabase aux lignes du tableau HTML par index (`rowByPlatform` / `rowPlatformOrder`) :
 - `displayce` -> row 0 (DOOH)
 - `linkedin` -> row 1
 - `meta` -> row 2
-- `dv360` -> row 3
-- `google` -> row 4 (YouTube)
+- `dv360` -> row 3 (DV360 Video)
+- `google` -> row 4 (YouTube / pYoutube)
 - `teads` -> row 5
 - `display_prog` -> row 6 (Prog. Display / Habillage)
+- `ctv` -> row 7 (CTV, couleur teal #00A8A8, sans objectif clics)
 
-Le canal Habillage est la campagne DV360 dont le nom contient `HABILLAGE` (`2600 - BELGIAN - HABILLAGE`). Les RPC dashboard la scindent du DV360 video sous la cle `display_prog` et lui appliquent le coef billing `habillage` (0.40) au lieu du coef `outstream` (0.20) du DV360 video. Le split se base **uniquement sur le nom de campagne** (`platform = 'dv360' AND name ILIKE '%HABILLAGE%'`), sans condition de code client (robuste aux renommages). Il est implemente dans toutes les RPC qui calculent du spend (`get_dashboard_kpis`, `get_dashboard_by_platform`, `get_dashboard_by_platform_daily`, `get_dashboard_by_language_daily`, `get_dashboard_daily`), plus le mapping `display_prog -> habillage` (inconditionnel) dans `get_billing_coef`. Les 4 RPC sur `campaign_insights` renvoient un total Depenses identique (coherence verifiee).
+Deux canaux sont des sous-ensembles de plateformes mutualisees, scindes par **nom de campagne** (pas par code client, robuste aux renommages) :
+- **Habillage** -> `display_prog` : campagne DV360 dont le nom contient `HABILLAGE`. Coef billing `habillage` (0.40) au lieu d'`outstream` (0.20).
+- **CTV** -> `ctv` : campagnes Google Ads dont le nom contient `CTV` (ex `BIL - 2604 - BELGIAN - CTV - EN/FR`). Coef billing `ctv` (0.35, ligne ajoutee dans `billing_coefficients`, defaut client_id NULL). Cote planning, repere par `canal_label ILIKE '%CTV%'` (teste AVANT la regle `%youtube%`).
+
+Le split est implemente dans les RPC de spend (`get_dashboard_by_platform`, `get_dashboard_by_platform_daily`, `get_dashboard_by_language_daily`) et dans `get_dashboard_planning` ; `get_dashboard_kpis` et `get_dashboard_daily` n'ont pas besoin du split CTV (la part CTV est sur platform `google` -> coef `pyoutube` 0.35, identique). `get_billing_coef` mappe `display_prog -> habillage` et `ctv -> ctv` (via la branche ELSE). Les 4 RPC sur `campaign_insights` renvoient un total Depenses identique (coherence verifiee).
+
+Objectifs de CLICS (hardcode, `CLICK_OBJECTIVES_PHASE`) et courbe mensuelle (`CUM_TARGETS`) recalcules a la repart v2 (transfert +10k vers P1, Habillage P1 coupe, ligne CTV 3 346 EUR / 185 889 imp). CTV est sans objectif clics.
 
 ## Deploiement
 

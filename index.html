@@ -343,6 +343,7 @@
         .channel-icon.youtube { background: #FF0000; }
         .channel-icon.teads { background: #1A1A2E; }
         .channel-icon.display { background: var(--bil-purple); }
+        .channel-icon.ctv { background: #00A8A8; }
         .channel-icon.lang-fr { background: var(--bil-dark); letter-spacing: 0.02em; }
         .channel-icon.lang-nl { background: var(--bil-purple); letter-spacing: 0.02em; }
         .channel-icon.lang-en { background: #9B6BC4; letter-spacing: 0.02em; }
@@ -440,6 +441,7 @@
         .progress-fill.ch-youtube { background: #FF0000; }
         .progress-fill.ch-teads { background: #1A1A2E; }
         .progress-fill.ch-display { background: var(--bil-purple); }
+        .progress-fill.ch-ctv { background: #00A8A8; }
 
         /* Teintes violet sobres — pacing budgetaire */
         .progress-fill.navy { background: var(--bil-purple); }
@@ -1076,6 +1078,28 @@
                     </td>
                     <td class="td-placeholder">~ 0,50 %</td>
                 </tr>
+                <tr>
+                    <td>
+                        <div class="channel-name">
+                            <div class="channel-icon ctv">Ctv</div>
+                            <div class="channel-info"><strong>CTV</strong><span>Connected TV - YouTube</span></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 3 346 &euro;</span>
+                            <div class="progress-bar"><div class="progress-fill ch-ctv"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-progress">
+                        <div class="progress-cell">
+                            <span class="progress-cell-value"><span class="pc-current">-</span> / 185 889</span>
+                            <div class="progress-bar"><div class="progress-fill ch-ctv"></div></div>
+                        </div>
+                    </td>
+                    <td class="td-placeholder">-</td>
+                    <td class="td-placeholder">-</td>
+                </tr>
             </tbody>
         </table>
         </div>
@@ -1333,10 +1357,11 @@ let TOTAL_IMPR_OBJ = 0;      // objectif impressions total (rempli par applyPlan
 
 // Objectifs de CLICS par phase : SEULE donnee plan absente de campaign_tracking,
 // donc conservee en dur (a synchroniser le jour ou une colonne obj_clicks existe en base).
+// Recalcules sur la repart v2 (clics ~ impressions a CTR constant ; Habillage coupe en P1). CTV = sans clics.
 const CLICK_OBJECTIVES_PHASE = {
-    0: { linkedin: 514, meta: 2000, dv360: 1400, google: 350, teads: 2307, display_prog: 1250 },
-    1: { linkedin: 274, meta: 3200, dv360: 600,  google: 150, teads: 0,    display_prog: 0 },
-    2: { linkedin: 514, meta: 6000, dv360: 1000, google: 250, teads: 1615, display_prog: 875 },
+    0: { linkedin: 601, meta: 2338, dv360: 1637, google: 409, teads: 2697, display_prog: 625 },
+    1: { linkedin: 164, meta: 1910, dv360: 358,  google: 90,  teads: 0,    display_prog: 0 },
+    2: { linkedin: 452, meta: 5278, dv360: 879,  google: 220, teads: 1420, display_prog: 770 },
 };
 // Objectifs clics annuels = somme des phases
 let CLICK_OBJECTIVES = {};
@@ -1349,7 +1374,8 @@ const CAMPAIGN_START = new Date(2026, 3, 10); // 10 avril 2026
 
 // Objectifs cumulés par mois (courbe de pacing du timeline ; granularite mensuelle absente de campaign_tracking)
 const MONTHS = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov'];
-const CUM_TARGETS = [1300000, 3250000, 5200000, 5945000, 6690000, 7890000, 9090000, 10370000];
+// Repart v2, cumul prorata des jours reels de chaque ligne (total 10 221 908)
+const CUM_TARGETS = [1289485, 3635079, 6090898, 6535934, 6980969, 8237216, 9262640, 10221908];
 
 // Phases : fenetres de dates (structurelles). budgetMedia/imprObj remplis par applyPlanning.
 // Phase 1 start volontairement en amont pour inclure eventuelles donnees pre-lancement (tests, warm-up)
@@ -1381,7 +1407,7 @@ function applyPlanning(rows) {
 
     // Donut repartition budget
     if (donutChart) {
-        const order = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
+        const order = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog', 'ctv'];
         donutChart.data.datasets[0].data = order.map(c => Math.round(BUDGETS[c] || 0));
         donutChart.update();
     }
@@ -1454,9 +1480,9 @@ function initCharts() {
     donutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-            labels: ['DOOH', 'LinkedIn', 'Meta', 'Vidéo Instream', 'YouTube', 'Teads', 'Prog. Display'],
-            datasets: [{ data: [0, 0, 0, 0, 0, 0, 0],
-                backgroundColor: ['#FF6B00', '#0A66C2', '#0084FF', '#34A853', '#FF0000', '#1A1A2E', '#702F8A'],
+            labels: ['DOOH', 'LinkedIn', 'Meta', 'Vidéo Instream', 'YouTube', 'Teads', 'Prog. Display', 'CTV'],
+            datasets: [{ data: [0, 0, 0, 0, 0, 0, 0, 0],
+                backgroundColor: ['#FF6B00', '#0A66C2', '#0084FF', '#34A853', '#FF0000', '#1A1A2E', '#702F8A', '#00A8A8'],
                 borderWidth: 2, borderColor: '#FFF', hoverOffset: 6 }]
         },
         options: {
@@ -1572,8 +1598,8 @@ function handleTabClick(btn) {
 function updateTable(platforms, phaseIdx) {
     // phaseIdx = null pour Total, 0/1/2 pour Phase 1/2/3
     const rows = document.querySelectorAll('.channels-table:not(.languages-table) tbody tr');
-    const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5, display_prog: 6 };
-    const rowPlatformOrder = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
+    const rowByPlatform = { displayce: 0, linkedin: 1, meta: 2, dv360: 3, google: 4, teads: 5, display_prog: 6, ctv: 7 };
+    const rowPlatformOrder = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog', 'ctv'];
 
     const phaseObj = phaseIdx == null ? null : PHASE_OBJECTIVES[phaseIdx];
     function getImprObj(platform) {
@@ -1592,7 +1618,7 @@ function updateTable(platforms, phaseIdx) {
     const COLOR_CLASSES = {
         linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
         google: 'ch-youtube', teads: 'ch-teads', display_prog: 'ch-display',
-        displayce: 'ch-dooh'
+        displayce: 'ch-dooh', ctv: 'ch-ctv'
     };
     function progressCellHTML(denom, colorClass, isEur) {
         const val = isEur ? fmtEur(denom) : fmt(denom);
@@ -1758,14 +1784,15 @@ function handleLangTabClick(btn) {
 }
 
 const LANG_LABELS = { FR: 'Français', NL: 'Néerlandais', EN: 'Anglais' };
-const LANG_CHANNELS_ORDER = ['linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog'];
+const LANG_CHANNELS_ORDER = ['linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog', 'ctv'];
 const CHANNEL_META = {
     linkedin: { label: 'LinkedIn', sub: 'Carousel + In-Feed Ads', icon: 'Li', iconClass: 'linkedin' },
     meta: { label: 'Meta', sub: 'Facebook/Instagram', icon: 'Me', iconClass: 'meta' },
     dv360: { label: 'Vidéo Instream', sub: 'Non-désactivable', icon: 'Dv', iconClass: 'dv360' },
     google: { label: 'YouTube', sub: 'Instream non-désactivable', icon: 'Yt', iconClass: 'youtube' },
     teads: { label: 'Teads', sub: 'Carousel + InRead social', icon: 'Te', iconClass: 'teads' },
-    display_prog: { label: 'Prog. Display', sub: 'Habillage - Sites Premium', icon: 'Dsp', iconClass: 'display' }
+    display_prog: { label: 'Prog. Display', sub: 'Habillage - Sites Premium', icon: 'Dsp', iconClass: 'display' },
+    ctv: { label: 'CTV', sub: 'Connected TV - YouTube', icon: 'Ctv', iconClass: 'ctv' }
 };
 
 function aggregateByChannelAndLanguage(phaseIdx) {
