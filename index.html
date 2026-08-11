@@ -816,13 +816,13 @@
             </div>
             <div class="header-date">Avril - Novembre 2026</div>
             <div class="export-group">
-                <button type="button" class="export-btn" id="exportXlsxBtn" title="Bilan détaillé au format Excel (langue, créa, canal, jour)">
+                <button type="button" class="export-btn" id="exportXlsxBtn" title="Bilan au format Excel (canal, langue, créa, format)">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M8 1.8v8.4M4.6 6.8 8 10.2l3.4-3.4M2 12.4v1.2a.6.6 0 0 0 .6.6h10.8a.6.6 0 0 0 .6-.6v-1.2"/>
                     </svg>
                     Bilan Excel
                 </button>
-                <button type="button" class="export-btn ghost" id="exportCsvBtn" title="Détail quotidien au format CSV">CSV</button>
+                <button type="button" class="export-btn ghost" id="exportCsvBtn" title="Détail par créa au format CSV">CSV</button>
             </div>
         </div>
     </div>
@@ -2397,37 +2397,10 @@ function loadXlsxLib() {
     return xlsxPromise;
 }
 
-// Concepts creatifs BIL, presents dans le nom d'annonce (Meta, LinkedIn, YouTube, Habillage)
-const CREA_CONCEPTS = { CADRE: 'Cadre', COUPLE: 'Couple', ENTREPRENEUR: 'Entrepreneur', JEUNE: 'Jeune' };
-// Formats et ciblages lus dans les noms d'annonce puis de groupe d'annonces.
-// OUTSREAM = faute de frappe presente dans le nommage DV360, volontairement conservee.
-const FORMAT_TOKENS = [
-    ['SHORTS', 'Shorts'], ['1920X1080', '1920x1080'], ['1280X720', '1280x720'],
-    ['INFEED', 'In-feed'], ['IN-FEED', 'In-feed'], ['HABILLAGE', 'Habillage'],
-    ['NON DESACTIVABLE', 'Non désactivable'],
-    ['INSTREAM', 'Instream'], ['OUTSTREAM', 'Outstream'], ['OUTSREAM', 'Outstream'],
-];
-const TARGET_TOKENS = [
-    ['SMART TARGETING', 'Smart Targeting'], ['SIRDATA', 'SirData'], ['EQUATIV', 'Equativ'],
-    ['WHITELIST', 'Whitelist'], ['+ WL', 'Whitelist'], ['INTENT TO SWITCH', 'Intent to Switch Bank'],
-    ['FINANCE', 'Finance'], ['BROAD', 'Broad'],
-    ['OUTDOOR', 'Outdoor'], ['BUSINESS', 'Business'], ['TRANSPORTS', 'Transports'],
-];
-const AD_FORMAT_LABELS = {
-    display_default: 'Display', video_default: 'Vidéo', VIDEO_RESPONSIVE_AD: 'Vidéo responsive',
-};
-
-function normName(s) {
-    return String(s || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-function matchTokens(haystack, tokens) {
-    const out = [];
-    tokens.forEach(([tok, label]) => {
-        if (haystack.includes(tok) && out.indexOf(label) === -1) out.push(label);
-    });
-    return out.slice(0, 3).join(' + ');
-}
+// Le detail par annonce reste cote serveur. La RPC get_dashboard_export renvoie deja
+// des lignes dimensionnees (jour, canal, langue, crea, variante, format) et rien qui
+// identifie nos line items : ni nom de campagne, ni groupe d'annonces, ni ciblage.
+// Ne pas reintroduire ces colonnes, le fichier part chez le client.
 
 function phaseLabelForDate(dateStr) {
     const phases = (currentScope && Array.isArray(currentScope.phases)) ? currentScope.phases : [];
@@ -2439,37 +2412,23 @@ function phaseLabelForDate(dateStr) {
     return 'Hors phase';
 }
 
-// Ligne brute Supabase -> ligne exploitable, avec les dimensions deduites du nommage
 function enrichExportRows(rows) {
-    return (rows || []).map(r => {
-        const adName = r.ad_name || '';
-        const agName = r.ad_group_name || '';
-        const adUp = normName(adName);
-        const hay = adUp + ' | ' + normName(agName);
-        const creaKey = Object.keys(CREA_CONCEPTS).find(k => adUp.indexOf(k) !== -1);
-        const variante = adUp.match(/TEXTE\s*V(\d+)/);
-        return {
-            date: String(r.date || '').slice(0, 10),
-            phase: phaseLabelForDate(r.date),
-            canal: CHANNEL_LABELS[r.channel] || r.channel,
-            campagne: r.campaign_name || '',
-            groupe: agName,
-            annonce: adName,
-            langue: r.language || '',
-            crea: creaKey ? CREA_CONCEPTS[creaKey] : '',
-            variante: variante ? 'V' + variante[1] : '',
-            format: matchTokens(hay, FORMAT_TOKENS) || AD_FORMAT_LABELS[r.ad_format] ||
-                    (r.channel === 'displayce' ? 'DOOH' : ''),
-            ciblage: matchTokens(hay, TARGET_TOKENS),
-            impressions: Number(r.impressions) || 0,
-            clics: Number(r.clicks) || 0,
-            budget: Number(r.spend) || 0,
-            vues: r.video_starts == null ? null : Number(r.video_starts),
-            vues100: r.video_completions == null ? null : Number(r.video_completions),
-            clicsSortants: r.outbound_clicks == null ? null : Number(r.outbound_clicks),
-            engagements: r.engagements == null ? null : Number(r.engagements),
-        };
-    });
+    return (rows || []).map(r => ({
+        date: String(r.date || '').slice(0, 10),
+        phase: phaseLabelForDate(r.date),
+        canal: CHANNEL_LABELS[r.channel] || r.channel,
+        langue: r.language || '',
+        crea: r.crea || '',
+        variante: r.variante || '',
+        format: r.format || '',
+        impressions: Number(r.impressions) || 0,
+        clics: Number(r.clicks) || 0,
+        budget: Number(r.spend) || 0,
+        vues: r.video_starts == null ? null : Number(r.video_starts),
+        vues100: r.video_completions == null ? null : Number(r.video_completions),
+        clicsSortants: r.outbound_clicks == null ? null : Number(r.outbound_clicks),
+        engagements: r.engagements == null ? null : Number(r.engagements),
+    }));
 }
 
 const SUM_FIELDS = ['impressions', 'clics', 'budget'];
@@ -2515,7 +2474,8 @@ async function fetchExportRows() {
 
 function exportFileBase() {
     const label = (currentScope && currentScope.label) || 'campagne';
-    const slug = normName(label).replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const slug = label.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                      .replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '');
     const today = new Date().toISOString().slice(0, 10);
     return 'BIL_' + slug + '_bilan_' + today;
 }
@@ -2600,21 +2560,9 @@ function sheetFromRows(rows, keys, headers) {
     return aoa;
 }
 
-const DETAIL_HEADERS = ['Date', 'Phase', 'Canal', 'Campagne', 'Groupe d\'annonces', 'Annonce', 'Langue',
-                        'Créa', 'Variante', 'Format', 'Ciblage', 'Impressions', 'Clics',
-                        'Budget client (€)', 'Vues / diffusions', 'Vues 100 %', 'Clics sortants', 'Engagements'];
-
-function detailAoa(rows) {
-    const aoa = [DETAIL_HEADERS];
-    rows.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
-        .forEach(r => aoa.push([
-            r.date, r.phase, r.canal, r.campagne, r.groupe, r.annonce, r.langue,
-            r.crea, r.variante, r.format, r.ciblage,
-            r.impressions, r.clics, round2(r.budget),
-            r.vues, r.vues100, r.clicsSortants, r.engagements,
-        ]));
-    return aoa;
-}
+// Niveau le plus fin du fichier. Volontairement au-dessus du line item.
+const CREA_KEYS    = ['canal', 'langue', 'crea', 'variante', 'format'];
+const CREA_HEADERS = ['Canal', 'Langue', 'Créa', 'Variante', 'Format'];
 
 function sheetMethodo(rows) {
     return [
@@ -2623,23 +2571,19 @@ function sheetMethodo(rows) {
         ['Montants', 'Tous les montants sont en budget client (euros), coefficients de facturation appliqués.'],
         ['Périmètre', 'Uniquement la campagne "' + ((currentScope && currentScope.label) || '') + '"' +
                       ((currentScope && currentScope.bdc_number) ? ' (BDC ' + currentScope.bdc_number + ')' : '') + '.'],
-        ['Granularité', 'Une ligne par jour et par annonce. Le DOOH ne remonte pas le niveau annonce : ' +
-                        'ses lignes sont au niveau environnement (Outdoor, Business, Transports) et langue.'],
-        ['Langue / Créa / Format / Ciblage', 'Déduits du nommage des campagnes, groupes et annonces. ' +
-                        'Une cellule vide signifie que le nommage ne porte pas l\'information.'],
+        ['Granularité', 'Le fichier descend jusqu\'à la créa, la variante de texte et le format. ' +
+                        'Les canaux dont les créas ne sont pas déclinées (DOOH, vidéo instream) ' +
+                        'apparaissent au niveau canal, langue et format.'],
+        ['Langue / Créa / Format', 'Une cellule vide signifie que la plateforme ne permet pas de ' +
+                        'distinguer la dimension sur ce canal.'],
         ['Vues / diffusions', 'Démarrages de vidéo. En DOOH, la colonne reprend le nombre de diffusions ' +
                         'du spot sur les écrans. YouTube et CTV ne remontent que les vues à 100 % : ' +
                         'la colonne y est vide.'],
         ['Taux de complétion', 'Vues à 100 % rapportées aux démarrages, ou aux impressions si la plateforme ' +
                         'ne remonte pas les démarrages. Non calculé sur la ligne Total, les canaux ' +
                         'n\'ayant pas la même base.'],
-        ['Cellules vides', 'La plateforme ne remonte pas la métrique pour ce canal (ce n\'est pas un zéro).'],
         ['Clics sortants / Engagements', 'Meta et LinkedIn uniquement (clics sur le lien, interactions).'],
-        ['Ligne "Non ventilé"', 'Écart entre le total consolidé de la campagne et le détail par annonce ' +
-                        '(annonces supprimées de la plateforme). Conservée pour que les totaux du fichier ' +
-                        'correspondent exactement à ceux du dashboard.'],
-        [],
-        ['Lignes de détail', rows.length],
+        ['Cellules vides', 'La plateforme ne remonte pas la métrique pour ce canal (ce n\'est pas un zéro).'],
     ];
 }
 
@@ -2668,9 +2612,7 @@ async function exportXlsx() {
         sheets.push(['Par phase', sheetFromRows(rows, ['phase', 'canal'], ['Phase', 'Canal']), true]);
     }
     sheets.push(
-        ['Par créa', sheetFromRows(rows, ['canal', 'langue', 'crea', 'variante', 'format', 'ciblage'],
-                                   ['Canal', 'Langue', 'Créa', 'Variante', 'Format', 'Ciblage']), true],
-        ['Détail quotidien', detailAoa(rows), true],
+        ['Par créa', sheetFromRows(rows, CREA_KEYS, CREA_HEADERS), true],
         ['Méthodo', sheetMethodo(rows), false]
     );
 
@@ -2690,7 +2632,6 @@ async function exportXlsx() {
         XLSXlib.utils.book_append_sheet(wb, ws, name);
     });
 
-    // compression: sans elle le fichier fait plusieurs Mo pour ~10 000 lignes
     const out = XLSXlib.write(wb, { bookType: 'xlsx', type: 'array', compression: true });
     downloadBlob(new Blob([out], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
                  exportFileBase() + '.xlsx');
@@ -2708,8 +2649,8 @@ function toCsv(aoa) {
 
 async function exportCsv() {
     const rows = await fetchExportRows();
-    downloadBlob(new Blob([toCsv(detailAoa(rows))], { type: 'text/csv;charset=utf-8' }),
-                 exportFileBase() + '_detail.csv');
+    downloadBlob(new Blob([toCsv(sheetFromRows(rows, CREA_KEYS, CREA_HEADERS))], { type: 'text/csv;charset=utf-8' }),
+                 exportFileBase() + '_par-crea.csv');
 }
 
 function wireExportButton(id, fn, busyLabel) {
