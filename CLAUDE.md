@@ -6,6 +6,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Dashboard de suivi de campagne digitale pour BIL (Banque Internationale a Luxembourg) - Campagne Branding Belgique 2026. Fichier HTML unique avec donnees live Supabase.
 
+## Memoire projet (a lire avant de travailler)
+
+Le contexte accumule au fil des sessions est versionne dans `docs/memoire/` (index : `docs/memoire/README.md`). Ce CLAUDE.md decrit l'architecture ; `docs/memoire/` decrit le **pourquoi** (decisions, preferences de l'equipe, pieges connus). Trois notes non negociables :
+
+- `docs/memoire/spend-billing-coefs.md` : **CRITIQUE**, ne jamais afficher le spend brut, toujours avec billing coefficients (le dashboard est vu par le client).
+- `docs/memoire/budgets-source-de-verite.md` : les budgets viennent du Sheet "Matt - 26" via le sync vers `campaign_tracking`. Avant de toucher au code sur un budget faux, comparer Sheet vs `campaign_tracking`.
+- `docs/memoire/design-approche.md` : pas de refonte, garder les sections et le violet BIL.
+
+Quand une decision structurante est prise en session, l'ecrire dans `docs/memoire/` (versionne, partage) plutot que dans la memoire locale de Claude Code (par machine, non partagee).
+
 ## Architecture
 
 Tout tient dans `index.html` : CSS inline, HTML, et JS (Chart.js + Supabase). Pas de build, pas de bundler, pas de framework.
