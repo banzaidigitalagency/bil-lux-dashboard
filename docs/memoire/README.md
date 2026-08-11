@@ -10,7 +10,7 @@ Ces notes-ci portent sur le **pourquoi** : décisions prises, préférences de l
 
 | Fichier | Contenu |
 |---|---|
-| [projet-etat.md](projet-etat.md) | État du projet : 8 canaux, stack, coefs billing, décisions, pièges connus. À jour au 2026-08-11 (périmètre des RPC restreint au BDC BELGIAN, chiffres de livraison) |
+| [projet-etat.md](projet-etat.md) | État du projet : 8 canaux, stack, coefs billing, décisions, pièges connus. À jour au 2026-08-11 (dashboard multi-campagnes Belgian + Knokke, chiffres de livraison, lignes de planning saisies à la main à surveiller) |
 | [budgets-source-de-verite.md](budgets-source-de-verite.md) | Chaîne Sheet "Matt - 26" → sync → `campaign_tracking` → RPC planning, piège de staleness |
 | [design-approche.md](design-approche.md) | Comment itérer sur le design : garder les sections et le violet BIL, artisanat plutôt que refonte |
 | [redaction-tirets-cadratins.md](redaction-tirets-cadratins.md) | Pas de tirets cadratins dans le contenu visible |

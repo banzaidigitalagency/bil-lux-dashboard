@@ -110,6 +110,54 @@
 
         .header-date { color: rgba(255, 255, 255, 0.65); font-size: var(--fs-xs); }
 
+        /* ===== COMMUTATEUR DE CAMPAGNE ===== */
+        .scope-bar {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 0.15rem;
+            align-items: flex-end;
+        }
+        .scope-bar[hidden] { display: none; }
+        .scope-btn {
+            font-family: inherit;
+            font-size: var(--fs-sm);
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.6);
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 0.55rem 0.9rem 0.65rem;
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: color 0.16s ease, border-color 0.16s ease;
+        }
+        .scope-btn:hover { color: rgba(255, 255, 255, 0.92); }
+        .scope-btn.active {
+            color: var(--white);
+            font-weight: 600;
+            border-bottom-color: var(--white);
+        }
+        .scope-btn:focus-visible {
+            outline: 2px solid rgba(255, 255, 255, 0.55);
+            outline-offset: -3px;
+            border-radius: 4px 4px 0 0;
+        }
+        .scope-btn .scope-dot {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+        .scope-btn.is-live .scope-dot { background: var(--success, #34D399); }
+
+        /* Fondu au changement de campagne */
+        .main { transition: opacity 0.2s ease; }
+        body.is-switching .main { opacity: 0.3; }
+
         /* ===== MAIN ===== */
         .main { max-width: 1440px; margin: 0 auto; padding: 1.75rem 2rem 3rem; }
 
@@ -530,6 +578,9 @@
             .phase-grid { grid-template-columns: 1fr; }
             .header-top { flex-wrap: wrap; gap: 0.65rem 1rem; padding: 0.9rem 1rem; }
             .header-meta { gap: 0.85rem; flex-wrap: wrap; }
+            .scope-bar { padding: 0 1rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .scope-bar::-webkit-scrollbar { display: none; }
+            .scope-btn { padding: 0.5rem 0.7rem 0.6rem; font-size: var(--fs-xs); }
             .main { padding: 1.25rem 1rem; }
             .campaign-banner { padding: 1.25rem 1.35rem; border-radius: 12px; }
             .campaign-banner-left h2 { font-size: 1.35rem; }
@@ -730,8 +781,8 @@
             <img src="bil-logo.png" alt="BIL" style="height: 44px; width: auto; filter: brightness(0) invert(1);">
             <div class="header-divider"></div>
             <div class="header-campaign">
-                <h1>Belgian Campaign</h1>
-                <span>Campagne Branding Belgique - Annuel 2026</span>
+                <h1 id="headerTitle">Belgian Campaign</h1>
+                <span id="headerSubtitle">Campagne Branding Belgique - Annuel 2026</span>
             </div>
         </div>
         <div class="header-meta">
@@ -742,6 +793,7 @@
             <div class="header-date">Avril - Novembre 2026</div>
         </div>
     </div>
+    <nav class="scope-bar" id="scopeBar" role="tablist" aria-label="Campagnes" hidden></nav>
 </header>
 
 <!-- ===== MAIN ===== -->
@@ -750,69 +802,30 @@
     <!-- Campaign Banner -->
     <div class="campaign-banner">
         <div class="campaign-banner-left">
-            <h2>Campagne Branding Belgique</h2>
-            <p>Campagne digitale du 10 avril au 29 novembre 2026 &bull; 7 leviers activés &bull; Budget média : <span id="heroBudget">112 988 &euro;</span></p>
+            <h2 id="bannerTitle">Campagne Branding Belgique</h2>
+            <p id="bannerMeta">Campagne digitale du 10 avril au 29 novembre 2026 &bull; 7 leviers activés &bull; Budget média : <span id="heroBudget">112 988 &euro;</span></p>
         </div>
-        <div class="campaign-banner-right">
-            <div class="banner-stat">
-                <div class="banner-stat-value">7</div>
-                <div class="banner-stat-label">Canaux</div>
-            </div>
-            <div class="banner-stat">
-                <div class="banner-stat-value">10,4M</div>
-                <div class="banner-stat-label">Impressions cibles</div>
-            </div>
-            <div class="banner-stat">
-                <div class="banner-stat-value">3</div>
-                <div class="banner-stat-label">Phases</div>
-            </div>
-        </div>
+        <div class="campaign-banner-right" id="bannerStats"></div>
     </div>
 
     <!-- Strategie campagne : objectifs funnel + repartition budgetaire -->
     <div class="grid-2">
         <div class="funnel-stack">
-            <div class="funnel-card notoriete">
+            <div class="funnel-card notoriete" id="funnelNotoriete">
                 <div class="funnel-header">
                     <span class="funnel-title">Notoriété</span>
                     <span class="funnel-badge">Haut de funnel</span>
                 </div>
-                <div class="funnel-stats">
-                    <div>
-                        <div class="funnel-stat-value">57 085 &euro;</div>
-                        <div class="funnel-stat-label">Budget média</div>
-                    </div>
-                    <div>
-                        <div class="funnel-stat-value">3,9M</div>
-                        <div class="funnel-stat-label">Impressions est.</div>
-                    </div>
-                    <div>
-                        <div class="funnel-stat-value">2,25M</div>
-                        <div class="funnel-stat-label">Vues 100% est.</div>
-                    </div>
-                </div>
-                <div class="funnel-channels">DOOH &bull; Vidéo Instream &bull; YouTube Instream</div>
+                <div class="funnel-stats"></div>
+                <div class="funnel-channels"></div>
             </div>
-            <div class="funnel-card acquisition">
+            <div class="funnel-card acquisition" id="funnelAcquisition">
                 <div class="funnel-header">
                     <span class="funnel-title">Acquisition</span>
                     <span class="funnel-badge">Milieu de funnel</span>
                 </div>
-                <div class="funnel-stats">
-                    <div>
-                        <div class="funnel-stat-value">55 900 &euro;</div>
-                        <div class="funnel-stat-label">Budget média</div>
-                    </div>
-                    <div>
-                        <div class="funnel-stat-value">6,5M</div>
-                        <div class="funnel-stat-label">Impressions est.</div>
-                    </div>
-                    <div>
-                        <div class="funnel-stat-value">18 551</div>
-                        <div class="funnel-stat-label">Clics est.</div>
-                    </div>
-                </div>
-                <div class="funnel-channels">LinkedIn &bull; Meta &bull; Teads &bull; Habillage</div>
+                <div class="funnel-stats"></div>
+                <div class="funnel-channels"></div>
             </div>
         </div>
 
@@ -822,15 +835,7 @@
                 <div class="donut-container">
                     <canvas id="budgetDonut"></canvas>
                 </div>
-                <div class="donut-legend">
-                    <div class="legend-item"><span class="legend-dot" style="background:#FF6B00"></span><span class="legend-label">DOOH</span><span class="legend-value">27 085 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#0A66C2"></span><span class="legend-label">LinkedIn</span><span class="legend-value">15 200 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#0084FF"></span><span class="legend-label">Meta</span><span class="legend-value">15 200 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#34A853"></span><span class="legend-label">Vidéo Instream</span><span class="legend-value">15 000 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#FF0000"></span><span class="legend-label">YouTube</span><span class="legend-value">15 000 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#1A1A2E"></span><span class="legend-label">Teads</span><span class="legend-value">17 000 &euro;</span></div>
-                    <div class="legend-item"><span class="legend-dot" style="background:#702F8A"></span><span class="legend-label">Prog. Display</span><span class="legend-value">8 500 &euro;</span></div>
-                </div>
+                <div class="donut-legend" id="donutLegend"></div>
             </div>
         </div>
     </div>
@@ -849,38 +854,35 @@
         <div class="kpi-card">
             <div class="kpi-label">Impressions</div>
             <div class="kpi-value placeholder">-</div>
-            <div class="kpi-change">Objectif : 10 370 000</div>
+            <div class="kpi-change" id="kpiObjImpr">Objectif : 10 370 000</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Clics</div>
             <div class="kpi-value placeholder">-</div>
-            <div class="kpi-change">Objectif : 22 301</div>
+            <div class="kpi-change" id="kpiObjClicks">Objectif : 22 301</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">CTR moyen</div>
             <div class="kpi-value placeholder">-</div>
-            <div class="kpi-change">Objectif : 0,22 %</div>
+            <div class="kpi-change" id="kpiObjCtr">Objectif : 0,22 %</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">CPM moyen</div>
             <div class="kpi-value placeholder">-</div>
-            <div class="kpi-change">Objectif : 12,82 &euro;</div>
+            <div class="kpi-change" id="kpiObjCpm">Objectif : 12,82 &euro;</div>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card" id="kpiVideoCard">
             <div class="kpi-label">Vues 100%</div>
             <div class="kpi-value placeholder">-</div>
-            <div class="kpi-change">Objectif : 2 250 000</div>
+            <div class="kpi-change" id="kpiObjVideo">Objectif : 2 250 000</div>
         </div>
     </div>
 
     <!-- Channels Detail Table -->
     <div class="card" style="margin-bottom: 1.75rem;">
         <div class="card-title">Détail par canal</div>
-        <div class="tab-bar" role="tablist">
+        <div class="tab-bar" id="tabsChannels" role="tablist">
             <button type="button" class="tab-btn active" data-phase="total" role="tab" aria-selected="true">Total</button>
-            <button type="button" class="tab-btn" data-phase="0" role="tab">Phase 1</button>
-            <button type="button" class="tab-btn" data-phase="1" role="tab">Phase 2</button>
-            <button type="button" class="tab-btn" data-phase="2" role="tab">Phase 3</button>
         </div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
         <table class="channels-table" style="min-width: 800px;">
@@ -1106,13 +1108,10 @@
     </div>
 
     <!-- Languages Detail Table -->
-    <div class="card" style="margin-bottom: 1.75rem;">
+    <div class="card" id="languageCard" style="margin-bottom: 1.75rem;">
         <div class="card-title">Détail par langue <span class="subtitle-note">(canaux digitaux, hors DOOH)</span></div>
         <div class="tab-bar" id="tabs-languages" role="tablist">
             <button type="button" class="tab-btn active" data-lang-phase="total" role="tab" aria-selected="true">Total</button>
-            <button type="button" class="tab-btn" data-lang-phase="0" role="tab">Phase 1</button>
-            <button type="button" class="tab-btn" data-lang-phase="1" role="tab">Phase 2</button>
-            <button type="button" class="tab-btn" data-lang-phase="2" role="tab">Phase 3</button>
         </div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
         <table class="languages-table channels-table" style="min-width: 560px;">
@@ -1199,57 +1198,10 @@
     <div style="margin-bottom: 1.75rem;">
         <!-- Phase Pacing -->
         <div class="card pacing-card">
+            <div id="phaseBlock">
             <div class="card-title">Pacing budgétaire par phase</div>
-            <div class="phase-grid">
-                <div class="phase-card" data-phase-start="2026-04-10" data-phase-end="2026-06-30">
-                    <div class="phase-label">Phase 1</div>
-                    <div class="phase-dates">Avr - Juin 2026</div>
-                    <div class="phase-amount">59 088 &euro;</div>
-                    <div class="phase-status upcoming">À venir</div>
-                    <div class="phase-gauges">
-                        <div class="phase-gauge">
-                            <div class="phase-gauge-head"><span class="pg-label">Budget</span><span class="pg-value pg-budget">- / 59 088 &euro;</span></div>
-                            <div class="progress-bar"><div class="progress-fill navy pg-budget-fill"></div></div>
-                        </div>
-                        <div class="phase-gauge">
-                            <div class="phase-gauge-head"><span class="pg-label">Impressions</span><span class="pg-value pg-impr">- / 5 200 000</span></div>
-                            <div class="progress-bar"><div class="progress-fill bright pg-impr-fill"></div></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="phase-card" data-phase-start="2026-07-01" data-phase-end="2026-08-31">
-                    <div class="phase-label">Phase 2</div>
-                    <div class="phase-dates">Juil - Août 2026</div>
-                    <div class="phase-amount">12 400 &euro;</div>
-                    <div class="phase-status upcoming">À venir</div>
-                    <div class="phase-gauges">
-                        <div class="phase-gauge">
-                            <div class="phase-gauge-head"><span class="pg-label">Budget</span><span class="pg-value pg-budget">- / 12 400 &euro;</span></div>
-                            <div class="progress-bar"><div class="progress-fill navy pg-budget-fill"></div></div>
-                        </div>
-                        <div class="phase-gauge">
-                            <div class="phase-gauge-head"><span class="pg-label">Impressions</span><span class="pg-value pg-impr">- / 1 490 000</span></div>
-                            <div class="progress-bar"><div class="progress-fill bright pg-impr-fill"></div></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="phase-card" data-phase-start="2026-09-01" data-phase-end="2026-11-29">
-                    <div class="phase-label">Phase 3</div>
-                    <div class="phase-dates">Sep - Nov 2026</div>
-                    <div class="phase-amount">41 500 &euro;</div>
-                    <div class="phase-status upcoming">À venir</div>
-                    <div class="phase-gauges">
-                        <div class="phase-gauge">
-                            <div class="phase-gauge-head"><span class="pg-label">Budget</span><span class="pg-value pg-budget">- / 41 500 &euro;</span></div>
-                            <div class="progress-bar"><div class="progress-fill navy pg-budget-fill"></div></div>
-                        </div>
-                        <div class="phase-gauge">
-                            <div class="phase-gauge-head"><span class="pg-label">Impressions</span><span class="pg-value pg-impr">- / 3 680 000</span></div>
-                            <div class="progress-bar"><div class="progress-fill bright pg-impr-fill"></div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="phase-grid" id="phaseGrid"></div>
+            </div><!-- /#phaseBlock -->
 
             <div class="global-pacing" style="margin-top: 1.5rem;">
                 <div class="card-title" style="margin-bottom: 1rem;">Consommation budgétaire</div>
@@ -1282,7 +1234,7 @@
 
 <!-- ===== FOOTER ===== -->
 <footer class="footer">
-    Dashboard de suivi - <strong>BIL - Campagne Branding Belgique 2026</strong> &bull; Agence SMART
+    Dashboard de suivi - <strong id="footerCampaign">BIL - Campagne Branding Belgique 2026</strong> &bull; Agence SMART
 </footer>
 
 </div><!-- /app-content -->
@@ -1311,7 +1263,7 @@ function unlock() {
     document.getElementById('lockScreen').classList.add('hidden');
     document.getElementById('appContent').classList.add('visible');
     sessionStorage.setItem(SESSION_KEY, 'ok');
-    loadDashboard();
+    bootDashboard();
 }
 
 document.getElementById('lockBtn').addEventListener('click', tryUnlock);
@@ -1336,64 +1288,122 @@ const CLIENT_CODE = 'billuxembourg';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Mapping plateforme -> ligne du tableau
-const PLATFORM_MAP = {
-    displayce: { rows: [0, 1, 2], label: 'DOOH', progressIdx: 0 },
-    linkedin:  { rows: [3], label: 'LinkedIn', progressIdx: 1 },
-    meta:      { rows: [4], label: 'Meta', progressIdx: 2 },
-    dv360:     { rows: [5], label: 'DV360', progressIdx: 3 },
-    google:    { rows: [6], label: 'YouTube', progressIdx: 4 },
-    teads:     { rows: [7], label: 'Teads', progressIdx: 5 },
+// ===== PERIMETRES (onglets campagne) =====
+// Charges depuis Supabase (RPC get_dashboard_scopes -> table dashboard_scopes).
+// Ajouter une campagne = ajouter une ligne dans dashboard_scopes. Rien a toucher ici.
+let SCOPES = [];
+let currentScope = null;
+
+const CHANNEL_ORDER  = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog', 'ctv'];
+const CHANNEL_LABELS = { displayce: 'DOOH', linkedin: 'LinkedIn', meta: 'Meta', dv360: 'Vidéo Instream',
+                         google: 'YouTube', teads: 'Teads', display_prog: 'Prog. Display', ctv: 'CTV' };
+const CHANNEL_COLORS = { displayce: '#FF6B00', linkedin: '#0A66C2', meta: '#0084FF', dv360: '#34A853',
+                         google: '#FF0000', teads: '#1A1A2E', display_prog: '#702F8A', ctv: '#00A8A8' };
+
+// Regroupement funnel : haut de funnel (notoriete) vs milieu (acquisition)
+const FUNNEL_GROUPS = {
+    notoriete:   ['displayce', 'dv360', 'google', 'ctv'],
+    acquisition: ['linkedin', 'meta', 'teads', 'display_prog'],
 };
 
 // ===== PLANNING : budgets + objectifs impressions =====
 // Alimentes dynamiquement depuis Supabase (RPC get_dashboard_planning -> campaign_tracking)
 // par applyPlanning(). Aucune valeur budget/impression en dur ici.
-let BUDGETS = {};            // budget client annuel par canal
-let OBJECTIVES = {};         // objectif impressions annuel par canal
-let PHASE_OBJECTIVES = { 0: {}, 1: {}, 2: {} }; // { impr, clicks, budget } par canal et par phase
-let TOTAL_BUDGET = 0;        // budget media total (rempli par applyPlanning)
-let TOTAL_IMPR_OBJ = 0;      // objectif impressions total (rempli par applyPlanning)
+let BUDGETS = {};            // budget client par canal, sur le perimetre courant
+let OBJECTIVES = {};         // objectif impressions par canal
+let PHASE_OBJECTIVES = {};   // { impr, clicks, budget } par phase puis par canal
+let TOTAL_BUDGET = 0;
+let TOTAL_IMPR_OBJ = 0;
+let PHASES_DATA = [];        // fenetres de dates par phase, remplies depuis le perimetre
 
-// Objectifs de CLICS par phase : SEULE donnee plan absente de campaign_tracking,
-// donc conservee en dur (a synchroniser le jour ou une colonne obj_clicks existe en base).
-// Recalcules sur la repart v2 (clics ~ impressions a CTR constant ; Habillage coupe en P1). CTV = sans clics.
-const CLICK_OBJECTIVES_PHASE = {
-    0: { linkedin: 601, meta: 2338, dv360: 1637, google: 409, teads: 2697, display_prog: 625 },
-    1: { linkedin: 164, meta: 1910, dv360: 358,  google: 90,  teads: 0,    display_prog: 0 },
-    2: { linkedin: 452, meta: 5278, dv360: 879,  google: 220, teads: 1420, display_prog: 770 },
+// SEULES donnees plan absentes de campaign_tracking, donc conservees en dur, par campagne.
+// A supprimer le jour ou des colonnes obj_clicks / obj_video existent en base.
+const PLAN_OVERRIDES = {
+    belgian: {
+        // Clics ~ impressions a CTR constant (repart v2 ; Habillage coupe en P1 ; CTV sans clics)
+        clicksByPhase: {
+            0: { linkedin: 601, meta: 2338, dv360: 1637, google: 409, teads: 2697, display_prog: 625 },
+            1: { linkedin: 164, meta: 1910, dv360: 358,  google: 90,  teads: 0,    display_prog: 0 },
+            2: { linkedin: 452, meta: 5278, dv360: 879,  google: 220, teads: 1420, display_prog: 770 },
+        },
+        // Courbe cumulee mensuelle validee (prorata des jours reels, ligne a ligne)
+        cumTargets: [1289485, 3635079, 6090898, 6535934, 6980969, 8237216, 9262640, 10221908],
+        videoViews: 2250000,
+    },
 };
-// Objectifs clics annuels = somme des phases
+let CLICK_OBJECTIVES_PHASE = {};
 let CLICK_OBJECTIVES = {};
-Object.values(CLICK_OBJECTIVES_PHASE).forEach(ph => {
-    Object.entries(ph).forEach(([k, v]) => { CLICK_OBJECTIVES[k] = (CLICK_OBJECTIVES[k] || 0) + v; });
-});
+let VIDEO_OBJECTIVE = 0;
 
-const CAMPAIGN_DAYS = 234;
-const CAMPAIGN_START = new Date(2026, 3, 10); // 10 avril 2026
+let CAMPAIGN_START = new Date(2026, 3, 10);
+let CAMPAIGN_END   = new Date(2026, 10, 29);
+let CAMPAIGN_DAYS  = 234;
 
-// Objectifs cumulés par mois (courbe de pacing du timeline ; granularite mensuelle absente de campaign_tracking)
-const MONTHS = ['Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov'];
-// Repart v2, cumul prorata des jours reels de chaque ligne (total 10 221 908)
-const CUM_TARGETS = [1289485, 3635079, 6090898, 6535934, 6980969, 8237216, 9262640, 10221908];
+const MONTH_LABELS = ['Janv', 'Févr', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+let MONTH_LIST  = [];   // 1er jour de chaque mois couvert par la campagne
+let MONTHS      = [];   // libelles affiches sur l'axe du chart
+let MONTH_KEYS  = [];   // annee*12+mois, pour indexer les donnees quotidiennes
+let CUM_TARGETS = [];
 
-// Phases : fenetres de dates (structurelles). budgetMedia/imprObj remplis par applyPlanning.
-// Phase 1 start volontairement en amont pour inclure eventuelles donnees pre-lancement (tests, warm-up)
-const PHASES_DATA = [
-    { idx: 0, start: new Date(2026, 0, 1),  end: new Date(2026, 5, 30),  budgetMedia: 0, imprObj: 0 },
-    { idx: 1, start: new Date(2026, 6, 1),  end: new Date(2026, 7, 31),  budgetMedia: 0, imprObj: 0 },
-    { idx: 2, start: new Date(2026, 8, 1),  end: new Date(2026, 10, 29), budgetMedia: 0, imprObj: 0 },
-];
+// 'YYYY-MM-DD' -> Date locale (evite le decalage UTC d'un new Date(string))
+function parseDate(str, endOfDay) {
+    if (!str) return null;
+    const [y, m, d] = String(str).slice(0, 10).split('-').map(Number);
+    return endOfDay ? new Date(y, m - 1, d, 23, 59, 59) : new Date(y, m - 1, d);
+}
+
+function fmtCompact(n) {
+    if (n == null) return '-';
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.', ',') + 'M';
+    if (n >= 1e3) return Math.round(n / 1e3) + 'k';
+    return String(Math.round(n));
+}
+
+function buildMonths(start, end) {
+    MONTH_LIST = []; MONTHS = []; MONTH_KEYS = [];
+    const cur = new Date(start.getFullYear(), start.getMonth(), 1);
+    const last = new Date(end.getFullYear(), end.getMonth(), 1);
+    while (cur <= last) {
+        MONTH_LIST.push(new Date(cur));
+        MONTHS.push(MONTH_LABELS[cur.getMonth()]);
+        MONTH_KEYS.push(cur.getFullYear() * 12 + cur.getMonth());
+        cur.setMonth(cur.getMonth() + 1);
+    }
+}
+
+// Courbe d'objectif cumule : chaque ligne de planning est etalee au prorata
+// de ses jours reels sur les mois qu'elle couvre.
+function computeCumTargets(rows) {
+    const monthly = new Array(MONTH_LIST.length).fill(0);
+    (rows || []).forEach(r => {
+        const impr = Number(r.impr) || 0;
+        const s = parseDate(r.start_date), e = parseDate(r.end_date);
+        if (!impr || !s || !e) return;
+        const totalDays = Math.max(1, Math.round((e - s) / 86400000) + 1);
+        MONTH_LIST.forEach((m, i) => {
+            const mStart = new Date(m.getFullYear(), m.getMonth(), 1);
+            const mEnd   = new Date(m.getFullYear(), m.getMonth() + 1, 0);
+            const from = s > mStart ? s : mStart;
+            const to   = e < mEnd ? e : mEnd;
+            const days = Math.round((to - from) / 86400000) + 1;
+            if (days > 0) monthly[i] += impr * days / totalDays;
+        });
+    });
+    let cum = 0;
+    return monthly.map(v => Math.round(cum += v));
+}
 
 // Construit BUDGETS / OBJECTIVES / PHASE_OBJECTIVES / PHASES_DATA depuis la RPC planning
 function applyPlanning(rows) {
-    if (!Array.isArray(rows) || rows.length === 0) return;
-    BUDGETS = {}; OBJECTIVES = {};
-    PHASE_OBJECTIVES = { 0: {}, 1: {}, 2: {} };
-    const phaseBudget = [0, 0, 0], phaseImpr = [0, 0, 0];
-    rows.forEach(r => {
-        const ch = r.channel, ph = r.phase_idx;
-        if (!(ph in PHASE_OBJECTIVES)) return;
+    BUDGETS = {}; OBJECTIVES = {}; PHASE_OBJECTIVES = {};
+    const nbPhases = PHASES_DATA.length || 1;
+    const phaseBudget = new Array(nbPhases).fill(0);
+    const phaseImpr   = new Array(nbPhases).fill(0);
+    for (let i = 0; i < nbPhases; i++) PHASE_OBJECTIVES[i] = {};
+
+    (rows || []).forEach(r => {
+        const ch = r.channel;
+        const ph = Math.min(Number(r.phase_idx) || 0, nbPhases - 1);
         const budget = Number(r.budget) || 0, impr = Number(r.impr) || 0;
         BUDGETS[ch] = (BUDGETS[ch] || 0) + budget;
         OBJECTIVES[ch] = (OBJECTIVES[ch] || 0) + impr;
@@ -1401,26 +1411,287 @@ function applyPlanning(rows) {
         PHASE_OBJECTIVES[ph][ch] = { impr, clicks, budget };
         phaseBudget[ph] += budget; phaseImpr[ph] += impr;
     });
-    PHASES_DATA.forEach((p, i) => { p.budgetMedia = phaseBudget[i]; p.imprObj = phaseImpr[i]; });
-    TOTAL_BUDGET = phaseBudget.reduce((a, b) => a + b, 0);
+
+    PHASES_DATA.forEach((p, i) => { p.budgetMedia = phaseBudget[i] || 0; p.imprObj = phaseImpr[i] || 0; });
+    TOTAL_BUDGET   = phaseBudget.reduce((a, b) => a + b, 0);
     TOTAL_IMPR_OBJ = phaseImpr.reduce((a, b) => a + b, 0);
 
-    // Donut repartition budget
+    const activeChannels = CHANNEL_ORDER.filter(c => (BUDGETS[c] || 0) > 0 || (OBJECTIVES[c] || 0) > 0);
+
+    // Donut : une part par canal reellement present au plan
     if (donutChart) {
-        const order = ['displayce', 'linkedin', 'meta', 'dv360', 'google', 'teads', 'display_prog', 'ctv'];
-        donutChart.data.datasets[0].data = order.map(c => Math.round(BUDGETS[c] || 0));
+        donutChart.data.labels = activeChannels.map(c => CHANNEL_LABELS[c] || c);
+        donutChart.data.datasets[0].data = activeChannels.map(c => Math.round(BUDGETS[c] || 0));
+        donutChart.data.datasets[0].backgroundColor = activeChannels.map(c => CHANNEL_COLORS[c] || '#999');
         donutChart.update();
     }
-    // Montants budget encore presents en dur dans le HTML
+    const legend = document.getElementById('donutLegend');
+    if (legend) {
+        legend.innerHTML = activeChannels.map(c =>
+            '<div class="legend-item"><span class="legend-dot" style="background:' + (CHANNEL_COLORS[c] || '#999') + '"></span>' +
+            '<span class="legend-label">' + (CHANNEL_LABELS[c] || c) + '</span>' +
+            '<span class="legend-value">' + fmtEur(BUDGETS[c] || 0) + '</span></div>'
+        ).join('');
+    }
+
+    // Courbe d'objectif cumule : valeur validee si la campagne en a une, prorata sinon
+    const override = (currentScope && PLAN_OVERRIDES[currentScope.key]) || null;
+    CUM_TARGETS = (override && override.cumTargets && override.cumTargets.length === MONTHS.length)
+        ? override.cumTargets.slice()
+        : computeCumTargets(rows);
+    if (timelineChart) {
+        timelineChart.data.labels = MONTHS;
+        timelineChart.data.datasets[0].data = CUM_TARGETS;
+        timelineChart.update();
+    }
+
+    renderFunnel(activeChannels);
+    renderBannerStats(activeChannels.length);
+
     const heroB = document.getElementById('heroBudget');
     if (heroB) heroB.textContent = fmtEur(TOTAL_BUDGET);
     const kpiB = document.getElementById('kpiBudget');
     if (kpiB) kpiB.textContent = fmtEur(TOTAL_BUDGET);
+
+    const objImpr = document.getElementById('kpiObjImpr');
+    if (objImpr) objImpr.textContent = 'Objectif : ' + fmt(TOTAL_IMPR_OBJ);
+    const totalClicks = Object.values(CLICK_OBJECTIVES).reduce((a, b) => a + b, 0);
+    const objClicks = document.getElementById('kpiObjClicks');
+    if (objClicks) objClicks.textContent = totalClicks > 0 ? 'Objectif : ' + fmt(totalClicks) : 'Sans objectif clics';
+    const objCtr = document.getElementById('kpiObjCtr');
+    if (objCtr) objCtr.textContent = (totalClicks > 0 && TOTAL_IMPR_OBJ > 0)
+        ? 'Objectif : ' + fmtPct(totalClicks / TOTAL_IMPR_OBJ * 100) : 'Sans objectif CTR';
+    const objCpm = document.getElementById('kpiObjCpm');
+    if (objCpm) objCpm.textContent = TOTAL_IMPR_OBJ > 0
+        ? 'Objectif : ' + fmtEur(TOTAL_BUDGET / TOTAL_IMPR_OBJ * 1000) : 'Sans objectif';
+    const objVideo = document.getElementById('kpiObjVideo');
+    if (objVideo) objVideo.textContent = VIDEO_OBJECTIVE > 0 ? 'Objectif : ' + fmt(VIDEO_OBJECTIVE) : 'Sans objectif';
+
     document.querySelectorAll('.phase-card').forEach((card, i) => {
         const amt = card.querySelector('.phase-amount');
         if (amt && PHASES_DATA[i]) amt.textContent = fmtEur(PHASES_DATA[i].budgetMedia);
     });
 }
+
+// Cartes funnel : budgets et impressions recalcules par regroupement de canaux
+function renderFunnel(activeChannels) {
+    const override = (currentScope && PLAN_OVERRIDES[currentScope.key]) || {};
+    const extras = {
+        notoriete:   override.videoViews ? { label: 'Vues 100% est.', value: fmt(override.videoViews) } : null,
+        acquisition: null,
+    };
+    const totalClicks = Object.values(CLICK_OBJECTIVES).reduce((a, b) => a + b, 0);
+    if (totalClicks > 0) extras.acquisition = { label: 'Clics est.', value: fmt(totalClicks) };
+
+    [['notoriete', 'funnelNotoriete'], ['acquisition', 'funnelAcquisition']].forEach(([group, id]) => {
+        const card = document.getElementById(id);
+        if (!card) return;
+        const channels = FUNNEL_GROUPS[group].filter(c => activeChannels.includes(c));
+        if (channels.length === 0) { card.hidden = true; return; }
+        card.hidden = false;
+        const budget = channels.reduce((a, c) => a + (BUDGETS[c] || 0), 0);
+        const impr   = channels.reduce((a, c) => a + (OBJECTIVES[c] || 0), 0);
+        let html = '<div><div class="funnel-stat-value">' + fmtEur(budget) + '</div>' +
+                   '<div class="funnel-stat-label">Budget média</div></div>' +
+                   '<div><div class="funnel-stat-value">' + fmtCompact(impr) + '</div>' +
+                   '<div class="funnel-stat-label">Impressions est.</div></div>';
+        if (extras[group]) {
+            html += '<div><div class="funnel-stat-value">' + extras[group].value + '</div>' +
+                    '<div class="funnel-stat-label">' + extras[group].label + '</div></div>';
+        }
+        card.querySelector('.funnel-stats').innerHTML = html;
+        card.querySelector('.funnel-channels').textContent =
+            channels.map(c => CHANNEL_LABELS[c] || c).join(' • ');
+    });
+}
+
+function renderBannerStats(nbChannels) {
+    const el = document.getElementById('bannerStats');
+    if (!el) return;
+    const stats = [
+        { value: String(nbChannels), label: 'Canaux' },
+        { value: fmtCompact(TOTAL_IMPR_OBJ), label: 'Impressions cibles' },
+    ];
+    if (PHASES_DATA.length > 1) stats.push({ value: String(PHASES_DATA.length), label: 'Phases' });
+    el.innerHTML = stats.map(s =>
+        '<div class="banner-stat"><div class="banner-stat-value">' + s.value + '</div>' +
+        '<div class="banner-stat-label">' + s.label + '</div></div>'
+    ).join('');
+}
+
+// ===== COMMUTATEUR DE CAMPAGNE =====
+function renderScopeBar() {
+    const bar = document.getElementById('scopeBar');
+    if (!bar) return;
+    if (SCOPES.length < 2) { bar.hidden = true; bar.innerHTML = ''; return; }
+    const now = new Date();
+    bar.hidden = false;
+    bar.innerHTML = SCOPES.map(sc => {
+        const active = currentScope && sc.key === currentScope.key;
+        const start = parseDate(sc.start_date), end = parseDate(sc.end_date, true);
+        const live = start && end && now >= start && now <= end;
+        return '<button type="button" role="tab" class="scope-btn' + (active ? ' active' : '') + (live ? ' is-live' : '') + '"' +
+               ' data-scope="' + sc.key + '" aria-selected="' + (active ? 'true' : 'false') + '">' +
+               '<span class="scope-dot" aria-hidden="true"></span>' + sc.label + '</button>';
+    }).join('');
+}
+
+// Tout ce qui depend du perimetre et pas des donnees livrees
+function applyScopeMeta(scope) {
+    const phases = Array.isArray(scope.phases) ? scope.phases : [];
+    const start = parseDate(scope.start_date) || new Date();
+    const end   = parseDate(scope.end_date, true) || new Date();
+
+    CAMPAIGN_START = start;
+    CAMPAIGN_END = end;
+    // Duree en jours pleins, bornes incluses (end est a 23:59:59, on repart de minuit)
+    const endMidnight = parseDate(scope.end_date);
+    CAMPAIGN_DAYS = Math.max(1, Math.round((endMidnight - start) / 86400000) + 1);
+
+    // Fenetres de phases. La 1re demarre volontairement en amont pour capter
+    // d'eventuelles donnees pre-lancement (tests, warm-up) et rester coherent avec le Total.
+    PHASES_DATA = phases.map((p, i) => ({
+        idx: i,
+        start: i === 0 ? new Date(2000, 0, 1) : parseDate(p.start),
+        end: parseDate(p.end, true),
+        budgetMedia: 0, imprObj: 0,
+    }));
+    if (PHASES_DATA.length === 0) {
+        PHASES_DATA = [{ idx: 0, start: new Date(2000, 0, 1), end: new Date(2100, 0, 1), budgetMedia: 0, imprObj: 0 }];
+    }
+
+    const override = PLAN_OVERRIDES[scope.key] || {};
+    CLICK_OBJECTIVES_PHASE = override.clicksByPhase || {};
+    CLICK_OBJECTIVES = {};
+    Object.values(CLICK_OBJECTIVES_PHASE).forEach(ph => {
+        Object.entries(ph).forEach(([k, v]) => { CLICK_OBJECTIVES[k] = (CLICK_OBJECTIVES[k] || 0) + v; });
+    });
+    VIDEO_OBJECTIVE = override.videoViews || 0;
+
+    buildMonths(start, end);
+
+    // Header et bandeau
+    const h1 = document.getElementById('headerTitle');
+    if (h1) h1.textContent = scope.label;
+    const sub = document.getElementById('headerSubtitle');
+    if (sub) sub.textContent = scope.subtitle || '';
+    const bTitle = document.getElementById('bannerTitle');
+    if (bTitle) bTitle.textContent = scope.subtitle || scope.label;
+    const dOpt = { day: 'numeric', month: 'long' };
+    const bMeta = document.getElementById('bannerMeta');
+    if (bMeta) {
+        bMeta.innerHTML = 'Campagne digitale du ' + start.toLocaleDateString('fr-FR', dOpt) +
+            ' au ' + end.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) +
+            ' &bull; Budget média : <span id="heroBudget">-</span>';
+    }
+    const foot = document.getElementById('footerCampaign');
+    if (foot) foot.textContent = 'BIL - ' + (scope.subtitle || scope.label);
+
+    // Grille de phases : masquee quand la campagne n'en a pas
+    const block = document.getElementById('phaseBlock');
+    const grid = document.getElementById('phaseGrid');
+    if (grid) {
+        grid.innerHTML = phases.map((p, i) =>
+            '<div class="phase-card" data-phase-start="' + p.start + '" data-phase-end="' + p.end + '">' +
+                '<div class="phase-label">' + p.label + '</div>' +
+                '<div class="phase-dates">' + (p.dates || '') + '</div>' +
+                '<div class="phase-amount">-</div>' +
+                '<div class="phase-status upcoming">À venir</div>' +
+                '<div class="phase-gauges">' +
+                    '<div class="phase-gauge">' +
+                        '<div class="phase-gauge-head"><span class="pg-label">Budget</span><span class="pg-value pg-budget">-</span></div>' +
+                        '<div class="progress-bar"><div class="progress-fill navy pg-budget-fill"></div></div>' +
+                    '</div>' +
+                    '<div class="phase-gauge">' +
+                        '<div class="phase-gauge-head"><span class="pg-label">Impressions</span><span class="pg-value pg-impr">-</span></div>' +
+                        '<div class="progress-bar"><div class="progress-fill bright pg-impr-fill"></div></div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>'
+        ).join('');
+    }
+    if (block) block.hidden = phases.length === 0;
+
+    // Onglets de phase des deux tableaux : Total seul quand il n'y a pas de phases
+    renderPhaseTabs('tabsChannels', 'data-phase', phases);
+    renderPhaseTabs('tabs-languages', 'data-lang-phase', phases);
+
+    updatePhases();
+}
+
+function renderPhaseTabs(barId, attr, phases) {
+    const bar = document.getElementById(barId);
+    if (!bar) return;
+    if (!phases || phases.length === 0) { bar.hidden = true; bar.innerHTML = ''; return; }
+    bar.hidden = false;
+    let html = '<button type="button" class="tab-btn active" ' + attr + '="total" role="tab" aria-selected="true">Total</button>';
+    phases.forEach((p, i) => {
+        html += '<button type="button" class="tab-btn" ' + attr + '="' + i + '" role="tab" aria-selected="false">' + p.label + '</button>';
+    });
+    bar.innerHTML = html;
+}
+
+// Remet le dashboard a blanc avant de charger une autre campagne
+function resetDashboardState() {
+    platformDailyData = null;
+    languageDailyData = null;
+    resetTable();
+    document.querySelectorAll('.kpi-card .kpi-value').forEach(el => {
+        el.textContent = '-';
+        el.classList.add('placeholder');
+    });
+    if (timelineChart) {
+        timelineChart.data.datasets[1].data = new Array(MONTHS.length).fill(null);
+        timelineChart.update();
+    }
+    const langBody = document.querySelector('.lang-channel-table tbody');
+    if (langBody) langBody.innerHTML = '';
+}
+
+async function selectScope(key, opts) {
+    const scope = SCOPES.find(s => s.key === key) || SCOPES[0];
+    if (!scope) return;
+    const isSwitch = currentScope && currentScope.key !== scope.key;
+    currentScope = scope;
+    try { sessionStorage.setItem('bil_dashboard_scope', scope.key); } catch (e) {}
+    if (!opts || opts.push !== false) {
+        if (location.hash.slice(1) !== scope.key) history.replaceState(null, '', '#' + scope.key);
+    }
+    if (isSwitch) document.body.classList.add('is-switching');
+    renderScopeBar();
+    applyScopeMeta(scope);
+    resetDashboardState();
+    await loadDashboard();
+    document.body.classList.remove('is-switching');
+}
+
+async function bootDashboard() {
+    let stored = null;
+    try { stored = sessionStorage.getItem('bil_dashboard_scope'); } catch (e) {}
+    const wanted = location.hash.slice(1) || stored;
+    try {
+        const { data, error } = await sb.rpc('get_dashboard_scopes', { p_client_code: CLIENT_CODE });
+        if (error) throw error;
+        SCOPES = Array.isArray(data) ? data : [];
+    } catch (e) {
+        console.warn('get_dashboard_scopes indisponible, repli sur le perimetre par defaut', e);
+        SCOPES = [];
+    }
+    if (SCOPES.length === 0) {
+        // Repli : un seul perimetre implicite, le dashboard fonctionne comme avant
+        SCOPES = [{ key: null, label: 'Belgian Campaign', subtitle: 'Campagne Branding Belgique - Annuel 2026',
+                    start_date: '2026-04-10', end_date: '2026-11-29', phases: null, is_default: true }];
+    }
+    const def = SCOPES.find(s => s.key === wanted) || SCOPES.find(s => s.is_default) || SCOPES[0];
+    await selectScope(def.key, { push: false });
+}
+
+window.addEventListener('hashchange', () => {
+    const key = location.hash.slice(1);
+    if (key && currentScope && key !== currentScope.key && SCOPES.some(s => s.key === key)) {
+        selectScope(key, { push: false });
+    }
+});
 
 function fmt(n) { return n == null ? '-' : Math.round(n).toLocaleString('fr-FR'); }
 function fmtEur(n) { return n == null ? '-' : Math.round(n).toLocaleString('fr-FR') + ' \u20AC'; }
@@ -1615,6 +1886,7 @@ function updateTable(platforms, phaseIdx) {
         return BUDGETS[platform] ?? 0;
     }
 
+    const channelNotes = (currentScope && currentScope.channel_notes) || {};
     const COLOR_CLASSES = {
         linkedin: 'ch-linkedin', meta: 'ch-meta', dv360: 'ch-dv360',
         google: 'ch-youtube', teads: 'ch-teads', display_prog: 'ch-display',
@@ -1638,8 +1910,8 @@ function updateTable(platforms, phaseIdx) {
         const budget = getBudgetObj(platform);
         const colorClass = COLOR_CLASSES[platform] || '';
 
-        // Masquer la ligne si le canal n'est pas actif dans la phase (aucun objectif)
-        if (phaseObj && imprObj === 0 && clickObj === 0 && budget === 0) {
+        // Masquer la ligne si le canal n'est pas au plan (sur la phase, ou sur toute la campagne)
+        if (imprObj === 0 && clickObj === 0 && budget === 0) {
             row.style.display = 'none';
             return;
         } else {
@@ -1675,6 +1947,20 @@ function updateTable(platforms, phaseIdx) {
                 clickCell.className = 'td-placeholder';
                 clickCell.textContent = '-';
             }
+        }
+
+        // Cellule CTR (idx 4) : sans objectif clics, pas d'objectif CTR a afficher
+        const ctrCell = cells[4];
+        if (ctrCell && clickObj === 0) {
+            ctrCell.className = 'td-placeholder';
+            ctrCell.textContent = '-';
+        }
+
+        // Sous-libelle de canal propre a la campagne (le HTML porte celui de Belgian)
+        const note = channelNotes[platform];
+        if (note) {
+            const sub = row.querySelector('.channel-info span');
+            if (sub) sub.textContent = note;
         }
     });
 
@@ -1887,18 +2173,19 @@ function updateTimeline(daily) {
     // Agréger par mois et calculer le cumul
     const monthMap = {}; // index mois -> total impressions
     daily.forEach(d => {
-        const date = new Date(d.date);
-        const m = date.getMonth(); // 3=avril, 4=mai... 10=novembre
-        const idx = m - 3; // 0=avril, 7=novembre
-        if (idx >= 0 && idx < 8) {
+        const date = parseDate(d.date);
+        if (!date) return;
+        const idx = MONTH_KEYS.indexOf(date.getFullYear() * 12 + date.getMonth());
+        if (idx >= 0) {
             monthMap[idx] = (monthMap[idx] || 0) + d.impressions;
         }
     });
 
     // Cumuler
     let cumul = 0;
-    const cumData = new Array(8).fill(null);
-    for (let i = 0; i < 8; i++) {
+    const nbMonths = MONTH_KEYS.length;
+    const cumData = new Array(nbMonths).fill(null);
+    for (let i = 0; i < nbMonths; i++) {
         if (monthMap[i] != null) {
             cumul += monthMap[i];
             cumData[i] = cumul;
@@ -1959,14 +2246,15 @@ async function loadDashboard() {
     }
 
     try {
+        const args = { p_client_code: CLIENT_CODE, p_scope: currentScope ? currentScope.key : null };
         const results = await Promise.all([
-            sb.rpc('get_dashboard_kpis', { p_client_code: CLIENT_CODE }),
-            sb.rpc('get_dashboard_by_platform', { p_client_code: CLIENT_CODE }),
-            sb.rpc('get_dashboard_daily', { p_client_code: CLIENT_CODE }),
-            sb.rpc('get_dashboard_video_views', { p_client_code: CLIENT_CODE }),
-            sb.rpc('get_dashboard_by_platform_daily', { p_client_code: CLIENT_CODE }),
-            sb.rpc('get_dashboard_by_language_daily', { p_client_code: CLIENT_CODE }),
-            sb.rpc('get_dashboard_planning', { p_client_code: CLIENT_CODE }),
+            sb.rpc('get_dashboard_kpis', args),
+            sb.rpc('get_dashboard_by_platform', args),
+            sb.rpc('get_dashboard_daily', args),
+            sb.rpc('get_dashboard_video_views', args),
+            sb.rpc('get_dashboard_by_platform_daily', args),
+            sb.rpc('get_dashboard_by_language_daily', args),
+            sb.rpc('get_dashboard_planning', args),
         ]);
         const [kpiRes, platRes, dailyRes, videoRes, platDailyRes, langDailyRes, planRes] = results;
 
@@ -1982,10 +2270,19 @@ async function loadDashboard() {
         if (kpiRes.data) updateKpis(kpiRes.data);
         if (platDailyRes.data) platformDailyData = platDailyRes.data;
         if (platRes.data) updateTable(platRes.data, null);
-        if (langDailyRes.data) {
+        const langCard = document.getElementById('languageCard');
+        // Le bloc langue exclut le DOOH : on ne l'affiche que s'il reste du digital ventilable
+        const hasLangData = Array.isArray(langDailyRes.data) && langDailyRes.data.some(
+            d => d.language && d.platform !== 'displayce' && (Number(d.impressions) > 0 || Number(d.spend) > 0)
+        );
+        if (hasLangData) {
             languageDailyData = langDailyRes.data;
+            if (langCard) langCard.hidden = false;
             try { updateLanguageTable(aggregateByLanguage(null)); } catch (e) { console.error('updateLanguageTable:', e); }
             try { updateChannelLanguageTable(aggregateByChannelAndLanguage(null)); } catch (e) { console.error('updateChannelLanguageTable:', e); }
+        } else if (langCard) {
+            // Pas de ventilation par langue sur cette campagne : on masque plutot que d'afficher une carte vide
+            langCard.hidden = true;
         }
         if (dailyRes.data) {
             try { updateTimeline(dailyRes.data); } catch (e) { console.error('updateTimeline:', e); }
@@ -2007,12 +2304,16 @@ async function loadDashboard() {
 
 document.getElementById('loadRetryBtn').addEventListener('click', loadDashboard);
 
-document.querySelectorAll('.tab-btn[data-phase]').forEach(btn => {
-    btn.addEventListener('click', () => handleTabClick(btn));
-});
-
-document.querySelectorAll('.tab-btn[data-lang-phase]').forEach(btn => {
-    btn.addEventListener('click', () => handleLangTabClick(btn));
+// Delegation : les barres d'onglets sont reconstruites a chaque changement de campagne
+document.addEventListener('click', e => {
+    const phaseBtn = e.target.closest('.tab-btn[data-phase]');
+    if (phaseBtn) { handleTabClick(phaseBtn); return; }
+    const langBtn = e.target.closest('.tab-btn[data-lang-phase]');
+    if (langBtn) { handleLangTabClick(langBtn); return; }
+    const scopeBtn = e.target.closest('.scope-btn[data-scope]');
+    if (scopeBtn && (!currentScope || scopeBtn.dataset.scope !== currentScope.key)) {
+        selectScope(scopeBtn.dataset.scope);
+    }
 });
 
 function updatePhases() {
@@ -2040,7 +2341,6 @@ function updatePhases() {
 
 // ===== INIT =====
 initCharts();
-updatePhases();
 checkAccess();
 </script>
 

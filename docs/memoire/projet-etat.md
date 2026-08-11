@@ -114,6 +114,30 @@ Choix d'un filtre **inclusif** (`ILIKE '%BELGIAN%'`) plutot qu'exclusif (`NOT IL
 - Par canal (budget client / impressions) : Displayce 21 173 / 714 691, Teads 11 692 / 3 418 534, DV360 9 417 / 870 505, Google YouTube 9 381 / 3 069 234, LinkedIn 8 247 / 505 333, Meta 8 239 / 3 768 134, CTV 3 347 / 583 379, Habillage 2 507 / 162 109
 - Avant correction, ces totaux etaient de 77 060 EUR et 13 341 544 impressions.
 
+### Dashboard multi-campagnes (2026-08-11, meme journee)
+
+Suite logique : plutot que d'exclure Knokke, on la suit dans le meme dashboard, sur un onglet a part. Choix valide avec l'utilisateur : **commutateur dans le header, onglets independants, pas de vue consolidee** (pas de totaux additionnes entre campagnes).
+
+- Table `dashboard_scopes` : une ligne = un onglet. C'est le seul endroit a modifier pour ajouter une campagne (cf CLAUDE.md).
+- Les 7 RPC prennent un `p_scope`. `get_dashboard_scopes` alimente les onglets.
+- Le planning se rattache par `bdc_number`, le realise par motif de nom. Toujours pas par `platform_campaign_ids` (IDs de lignes cote Displayce).
+- Les phases sortent du code : elles sont dans `dashboard_scopes.phases`. Belgian en a 3, Knokke aucune, donc la grille de pacing par phase et les onglets Phase 1/2/3 disparaissent sur Knokke.
+
+**BDC Knokke : 202607736**, "Wealth Management KNOKKE Summer", devis du 2026-07-16, periode 2026-07-06 au 2026-09-06. Budget media retenu **25 800 EUR**, objectif **2 396 154 impressions**, 5 canaux : DOOH 4 000 / 114 286, DV360 10 000 / 1 000 000, Teads 5 800 / 446 154, Meta 3 000 / 750 000, LinkedIn 3 000 / 85 714.
+
+Deux arbitrages pris avec l'utilisateur sur ce devis :
+- **La presse est hors dashboard** (pleine page Zoute Paper, 3 900 EUR le 2026-07-10). Le dashboard reste 100% digital et mesurable, comme pour Belgian. L'annotation manuscrite "3 250 EUR" sur cette ligne devient donc sans objet.
+- **Les frais de gestion sont exclus** (600 + 585 + 3 270 = 4 455 EUR), pour rester coherent avec Belgian ou l'on affiche le budget media et pas le total HT.
+
+**Attention : les 5 lignes de planning Knokke ont ete saisies A LA MAIN** dans `campaign_tracking` (tracking_id `202607736-MAN01` a `MAN05`), a la demande de l'utilisateur, faute d'etre dans le Sheet. Si le sync reprend un jour ce BDC, il peut **dupliquer ou ecraser** ces lignes, donc doubler les budgets affiches. Pour les retrouver :
+`SELECT * FROM campaign_tracking WHERE bdc_number = '202607736' AND tracking_id LIKE '%-MAN%';`
+La regularisation propre reste : creer le BDC dans "Matt - 26", lancer le sync, verifier qu'on retombe sur 25 800 EUR, puis supprimer les lignes MAN.
+
+**Deux canaux du BDC ne remontent pas** : aucune campagne Meta ni Teads n'existe cote plateformes pour Knokke, soit 8 800 EUR de plan sans campagne en face. Le dashboard les affiche a 0. A verifier cote setup.
+
+### Bug corrige au passage
+`aggregateByPhase` et `updatePhaseGauges` comparaient une date d'insight (parsee en UTC) a une borne de phase a minuit locale, ce qui **excluait le dernier jour de chaque phase**. Les bornes sont desormais parsees en local a 23:59:59 (`parseDate(str, true)`). Impact : le 30 juin remonte enfin dans la phase 1.
+
 ### Coherence des RPC (verifiee le 2026-08-11)
 Les 4 RPC qui lisent `campaign_insights` (`_kpis`, `_daily`, `_by_platform`, `_by_platform_daily`) renvoient exactement 74 004,65 EUR et 13 091 919 impressions. `get_dashboard_by_language_daily` donne 74 004,87 EUR / 13 091 916 impressions : l'ecart (0,22 EUR, 3 impressions) vient de sa lecture d'`ad_group_insights`, une granularite differente, et preexiste au filtre. Normal, ne pas chercher a le reconcilier.
 
