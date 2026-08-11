@@ -92,7 +92,7 @@ Phase 1 terminee (statut `BILAN` dans campaign_tracking, toutes lignes closes au
 ### CTV : OK, syncee
 Les deux campagnes `BIL - 2604 - BELGIAN - CTV - EN` et `- FR` remontent bien dans `campaigns` depuis le 2026-06-19. Bilan de la ligne : 583 379 impressions pour 3 347 EUR client, contre un objectif de 185 889 impressions / 3 346 EUR. Budget consomme au centime pres, impressions livrees a **3,1x l'objectif** (CPM tres en dessous du prevu). Le split par nom de campagne (`ILIKE '%CTV%'`) fonctionne comme prevu.
 
-### PIEGE ACTUEL : la campagne Knokke pollue le dashboard
+### La campagne Knokke polluait le dashboard (corrige le 2026-08-11)
 Depuis le 2026-07-28, un nouveau dispositif tourne sur le meme client Supabase : `2026 - BIL - BELGIQUE - KNOKKE - WEALTH MANAGEMENT` (Displayce, DV360, et une campagne LinkedIn pas encore livree). **Il n'a aucune ligne dans `campaign_tracking`** : ce n'est pas le BDC 202604417.
 
 Or les RPC du dashboard agregent **toutes** les campagnes du client `billuxembourg`, sans filtre de BDC ni de nom. Knokke est donc compte dans les KPIs Belgian alors qu'il n'a pas d'objectif en face :
@@ -100,14 +100,22 @@ Or les RPC du dashboard agregent **toutes** les campagnes du client `billuxembou
 - environ 3 057 EUR de budget client (1 372 Displayce + 1 685 DV360)
 - effet : la depense et les impressions montent sans contrepartie au planning, donc **le pacing affiche est fausse a la hausse**, surtout sur la ligne DOOH.
 
-C'est le sujet a traiter en priorite si les chiffres sont questionnes. Deux pistes : filtrer les RPC sur les `platform_campaign_ids` de `campaign_tracking` (propre, aligne sur le planning), ou exclure par nom (`NOT ILIKE '%KNOKKE%'`, rapide mais fragile, meme piege que l'ancien guard `p_client_code='bil'`).
+**Correction appliquee** (migration `dashboard_scope_exclut_campagnes_hors_perimetre`) : helper `is_dashboard_scope(p_client_code, campaign_name)` appele dans les 6 RPC qui lisent des insights (`_kpis`, `_daily`, `_by_platform`, `_by_platform_daily`, `_by_language_daily`, `_video_views`). Pour `billuxembourg` il ne garde que les campagnes dont le nom contient `BELGIAN` ; pour tout autre client il ne filtre rien.
 
-### Livraison au 2026-08-11 (BDC 202604417 + pollution Knokke)
-- Depense client : 77 060 EUR sur 112 988 EUR de budget total (68%)
-- Impressions : 13 341 544 sur 10 221 908 d'objectif (**130%**, objectif annuel deja depasse en phase 2)
-- Clics 55 291, CTR moyen 0,41%, CPM moyen 5,78 EUR, reach 8 216 465
-- Vues 100% : 3 802 124 pour un objectif de 2 250 000. Attention, ce total agrege desormais CTV et le DV360 Knokke, qui n'etaient pas dans le perimetre des 2,25 M d'origine (DV360 Instream + YouTube Instream seuls). Chiffre a ne pas presenter tel quel sans le retraiter.
-- Par canal (budget client / impressions) : Displayce 22 544 / 769 074, Teads 11 692 / 3 418 534, DV360 11 101 / 1 065 747, Google YouTube 9 381 / 3 069 234, LinkedIn 8 247 / 505 333, Meta 8 239 / 3 768 134, CTV 3 347 / 583 379, Habillage 2 507 / 162 109
+Pourquoi un filtre par NOM et pas par `campaign_tracking.platform_campaign_ids`, qui aurait ete plus propre : **les IDs stockes cote Displayce sont des IDs de lignes, pas le `platform_campaign_id` de la campagne**. La campagne `BIL LUX - 2604 - BELGIAN` (714 691 impressions, tout le DOOH de phase 1) ne matche aucun ID de tracking. Un filtre par IDs supprimerait donc le DOOH entier. A rouvrir si le sync est corrige un jour cote Displayce.
+
+Choix d'un filtre **inclusif** (`ILIKE '%BELGIAN%'`) plutot qu'exclusif (`NOT ILIKE '%KNOKKE%'`) : toute future campagne hors dispositif est ecartee d'office, sans avoir a patcher la RPC a chaque fois. Les 12 campagnes livrantes du BDC contiennent toutes `BELGIAN`, les deux Knokke contiennent `BELGIQUE`. Le helper est fail-safe : il renvoie `true` par defaut, donc un nouveau renommage du code client ramene la pollution (visible) plutot qu'une perte de donnees silencieuse.
+
+### Livraison au 2026-08-11 (BDC 202604417, apres exclusion de Knokke)
+- Depense client : 74 005 EUR sur 112 988 EUR de budget total (65%)
+- Impressions : 13 091 919 sur 10 221 908 d'objectif (**128%**, objectif annuel deja depasse en phase 2)
+- Clics 52 196, CTR moyen 0,40%, CPM moyen 5,65 EUR, reach 8 216 465
+- Vues 100% : 3 717 325 pour un objectif de 2 250 000. Attention, ce total agrege CTV, qui n'etait pas dans le perimetre des 2,25 M d'origine (DV360 Instream + YouTube Instream seuls). Chiffre a retraiter avant presentation client.
+- Par canal (budget client / impressions) : Displayce 21 173 / 714 691, Teads 11 692 / 3 418 534, DV360 9 417 / 870 505, Google YouTube 9 381 / 3 069 234, LinkedIn 8 247 / 505 333, Meta 8 239 / 3 768 134, CTV 3 347 / 583 379, Habillage 2 507 / 162 109
+- Avant correction, ces totaux etaient de 77 060 EUR et 13 341 544 impressions.
+
+### Coherence des RPC (verifiee le 2026-08-11)
+Les 4 RPC qui lisent `campaign_insights` (`_kpis`, `_daily`, `_by_platform`, `_by_platform_daily`) renvoient exactement 74 004,65 EUR et 13 091 919 impressions. `get_dashboard_by_language_daily` donne 74 004,87 EUR / 13 091 916 impressions : l'ecart (0,22 EUR, 3 impressions) vient de sa lecture d'`ad_group_insights`, une granularite differente, et preexiste au filtre. Normal, ne pas chercher a le reconcilier.
 
 ### Budgets par phase : confirmes
 La RPC `get_dashboard_planning` renvoie toujours P1 69 088 / P2 7 400 / P3 36 500 = 112 988 EUR. La repart v2 est bien celle qui pilote le dashboard, `campaign_tracking` n'a pas derive du Sheet.
