@@ -11,6 +11,7 @@ Dashboard de suivi de campagne digitale pour BIL (Banque Internationale a Luxemb
 Le contexte accumule au fil des sessions est versionne dans `docs/memoire/` (index : `docs/memoire/README.md`). Ce CLAUDE.md decrit l'architecture ; `docs/memoire/` decrit le **pourquoi** (decisions, preferences de l'equipe, pieges connus). Trois notes non negociables :
 
 - `docs/memoire/spend-billing-coefs.md` : **CRITIQUE**, ne jamais afficher le spend brut, toujours avec billing coefficients (le dashboard est vu par le client).
+- `docs/memoire/ce-qui-sort-du-dashboard.md` : **CRITIQUE**, le client voit tout ce qui sort du dashboard. Ni investi reel, ni structure interne (line items, ciblages, nommage). Filtrer cote RPC et pas cote affichage.
 - `docs/memoire/budgets-source-de-verite.md` : les budgets viennent du Sheet "Matt - 26" via le sync vers `campaign_tracking`. Avant de toucher au code sur un budget faux, comparer Sheet vs `campaign_tracking`.
 - `docs/memoire/design-approche.md` : pas de refonte, garder les sections et le violet BIL.
 

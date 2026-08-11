@@ -15,7 +15,8 @@ Ces notes-ci portent sur le **pourquoi** : décisions prises, préférences de l
 | [design-approche.md](design-approche.md) | Comment itérer sur le design : garder les sections et le violet BIL, artisanat plutôt que refonte |
 | [redaction-tirets-cadratins.md](redaction-tirets-cadratins.md) | Pas de tirets cadratins dans le contenu visible |
 | [spend-billing-coefs.md](spend-billing-coefs.md) | CRITIQUE : jamais de spend brut affiché, toujours avec les billing coefficients |
-| [export-bilan.md](export-bilan.md) | Export xlsx / csv : granularité, bouclage exact avec le dashboard, pièges de données |
+| [ce-qui-sort-du-dashboard.md](ce-qui-sort-du-dashboard.md) | CRITIQUE : ce que le client ne doit pas voir, ni investi réel ni line items. Filtrer côté RPC |
+| [export-bilan.md](export-bilan.md) | Export xlsx / csv : dimensions, bouclage exact avec le dashboard, pièges de données |
 
 ## Convention
 
