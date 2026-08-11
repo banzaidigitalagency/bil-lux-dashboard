@@ -129,9 +129,11 @@ Deux arbitrages pris avec l'utilisateur sur ce devis :
 - **La presse est hors dashboard** (pleine page Zoute Paper, 3 900 EUR le 2026-07-10). Le dashboard reste 100% digital et mesurable, comme pour Belgian. L'annotation manuscrite "3 250 EUR" sur cette ligne devient donc sans objet.
 - **Les frais de gestion sont exclus** (600 + 585 + 3 270 = 4 455 EUR), pour rester coherent avec Belgian ou l'on affiche le budget media et pas le total HT.
 
-**Attention : les 5 lignes de planning Knokke ont ete saisies A LA MAIN** dans `campaign_tracking` (tracking_id `202607736-MAN01` a `MAN05`), a la demande de l'utilisateur, faute d'etre dans le Sheet. Si le sync reprend un jour ce BDC, il peut **dupliquer ou ecraser** ces lignes, donc doubler les budgets affiches. Pour les retrouver :
-`SELECT * FROM campaign_tracking WHERE bdc_number = '202607736' AND tracking_id LIKE '%-MAN%';`
-La regularisation propre reste : creer le BDC dans "Matt - 26", lancer le sync, verifier qu'on retombe sur 25 800 EUR, puis supprimer les lignes MAN.
+**Les tracking_id Knokke sont en `202607736-MAN01` a `MAN05`** (`MAN` pour "manuel"). Ils ont ete crees a la main dans `campaign_tracking` avant que le BDC n'existe dans le Sheet.
+
+**Regularise le 2026-08-11 : ne PAS les supprimer.** Le BDC a ete ajoute au Sheet "Matt - 26" (lignes 299 a 303) en reprenant ces memes tracking_id, et le sync les a rattachees (elles portent maintenant leur `sheet_row`). Le Sheet et la base sont donc alignes sur les memes cles : plus de risque de doublon, et le sync met desormais ces lignes a jour normalement. Le prefixe `MAN` n'est plus qu'un vestige de nommage, ce sont des lignes de planning ordinaires.
+
+Verification apres regularisation : 5 lignes, 25 800 EUR, 2 396 154 impressions, aucune ligne sans `sheet_row`. Cote Sheet, les 5 lignes portent bien MONTANT CLIENT 4 000 / 3 000 / 3 000 / 10 000 / 5 800 et les coefs 0,50 / 1,00 / 1,00 / 0,20 / 0,38, identiques a la base. Pas de ligne presse dans le Sheet non plus, conforme a l'arbitrage.
 
 **Deux canaux du BDC ne remontent pas** : aucune campagne Meta ni Teads n'existe cote plateformes pour Knokke, soit 8 800 EUR de plan sans campagne en face. Le dashboard les affiche a 0. A verifier cote setup.
 
