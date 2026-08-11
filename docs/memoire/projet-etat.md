@@ -135,7 +135,11 @@ Deux arbitrages pris avec l'utilisateur sur ce devis :
 
 Verification apres regularisation : 5 lignes, 25 800 EUR, 2 396 154 impressions, aucune ligne sans `sheet_row`. Cote Sheet, les 5 lignes portent bien MONTANT CLIENT 4 000 / 3 000 / 3 000 / 10 000 / 5 800 et les coefs 0,50 / 1,00 / 1,00 / 0,20 / 0,38, identiques a la base. Pas de ligne presse dans le Sheet non plus, conforme a l'arbitrage.
 
-**Deux canaux du BDC ne remontent pas** : aucune campagne Meta ni Teads n'existe cote plateformes pour Knokke, soit 8 800 EUR de plan sans campagne en face. Le dashboard les affiche a 0. A verifier cote setup.
+**Etat des canaux Knokke au 2026-08-11 (fin de journee)** : DOOH, DV360 et Teads livrent, LinkedIn est cree mais a zero, **Meta n'existe pas du tout** cote plateformes (3 000 EUR de plan sans campagne en face, a verifier cote setup).
+
+Teads a ete creee et syncee en cours de journee : `BIL - BELGIQUE - KNOKKE - WEALTH MANAGEMENT - TEADS`. **Le rattachement par nom a fonctionne tout seul**, sans aucune intervention : `is_dashboard_scope` l'a classee dans `knokke` et pas dans `belgian`, et la ligne du tableau s'est remplie sans toucher au code. C'est la validation de bout en bout du modele `dashboard_scopes` sur une campagne creee APRES sa mise en place. Confirme au passage que la convention de nommage des campagnes Knokke porte bien `KNOKKE`, ce qui etait l'hypothese du `name_pattern`.
+
+Livraison Knokke a cette date : 4 839 EUR sur 25 800 EUR (19%), 372 530 impressions sur 2 396 154 (16%), 3 638 clics, reach 76 854. Detail : Teads 1 784 EUR / 122 905, DV360 1 684 EUR / 195 242, DOOH 1 372 EUR / 54 383.
 
 ### Bug corrige au passage
 `aggregateByPhase` et `updatePhaseGauges` comparaient une date d'insight (parsee en UTC) a une borne de phase a minuit locale, ce qui **excluait le dernier jour de chaque phase**. Les bornes sont desormais parsees en local a 23:59:59 (`parseDate(str, true)`). Impact : le 30 juin remonte enfin dans la phase 1.
