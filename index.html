@@ -2501,7 +2501,7 @@ function sheetSynthese(rows) {
         [(currentScope && currentScope.subtitle) || ''],
         ['Période de la campagne', start + ' au ' + end],
         ['Export généré le', new Date().toLocaleDateString('fr-FR')],
-        ['Montants', 'Budget client en euros'],
+        ['Montants', 'Budget média en euros'],
         [],
         ['Canal', 'Budget planifié (€)', 'Budget consommé (€)', '% budget',
          'Objectif impressions', 'Impressions', '% objectif',
@@ -2546,7 +2546,7 @@ function sheetSynthese(rows) {
 }
 
 function sheetFromRows(rows, keys, headers) {
-    const aoa = [headers.concat(['Impressions', 'Clics', 'CTR (%)', 'Budget client (€)', 'CPM (€)',
+    const aoa = [headers.concat(['Impressions', 'Clics', 'CTR (%)', 'Budget média (€)', 'CPM (€)',
                                  'Vues / diffusions', 'Vues 100 %', 'Taux de complétion (%)',
                                  'Clics sortants', 'Engagements'])];
     aggregateRows(rows, keys)
@@ -2568,7 +2568,7 @@ function sheetMethodo(rows) {
     return [
         ['Lecture du fichier'],
         [],
-        ['Montants', 'Tous les montants sont en budget client (euros), coefficients de facturation appliqués.'],
+        ['Montants', 'Tous les montants sont exprimés en budget média (euros).'],
         ['Périmètre', 'Uniquement la campagne "' + ((currentScope && currentScope.label) || '') + '"' +
                       ((currentScope && currentScope.bdc_number) ? ' (BDC ' + currentScope.bdc_number + ')' : '') + '.'],
         ['Granularité', 'Le fichier descend jusqu\'à la créa, la variante de texte et le format. ' +
