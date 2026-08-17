@@ -37,9 +37,20 @@ Le vocabulaire est fermé, extrait du nommage par des helpers SQL :
 | `dashboard_lang_of` | FR / NL / EN |
 | `dashboard_crea_of` | Cadre, Couple, Entrepreneur, Jeune |
 | `dashboard_variante_of` | V1 à V4 (`TEXTE Vx`) |
-| `dashboard_format_of` | Shorts, 1920x1080, 1280x720, In-feed, Habillage, Instream, Outstream, Non désactivable, Display, Vidéo, DOOH |
+| `dashboard_format_of` | Shorts, 1920x1080, 1280x720, In-feed, Habillage, Non désactivable, Display, Vidéo, Vidéo responsive, DOOH |
 
 Un token non prévu ne sort pas du fichier : c'est ce qui garantit qu'aucun nom interne ne fuit.
+
+**Instream et Outstream ont été retirés du vocabulaire le 2026-08-17.** Ce ne sont pas des formats
+créa mais notre découpage d'achat DV360 : sur Knokke le canal ressortait en trois lignes
+(Instream + Outstream 400 265 impr, Outstream 25 847, Instream 12 024) parce que les lignes broad
+sont achetées en inventaire mixte et les lignes SirData séparées. Le client y lisait trois
+placements là où il n'y a qu'un dispositif vidéo, et surtout il y lisait notre structure : c'est
+exactement ce qu'interdit [[ce-qui-sort-du-dashboard]]. DV360 retombe donc sur `ads.format`
+(`video_default` -> Vidéo) et sort en une seule ligne par jour x langue (Knokke : 438 136 impr,
+3 840,30 EUR, total inchangé ; Belgian passe de Instream à Vidéo, mêmes totaux).
+Le même raisonnement s'appliquerait à tout token de ciblage ou d'inventaire : si ça décrit la
+façon dont on achète et pas ce que l'internaute voit, ça n'a rien à faire dans le fichier.
 Une cellule vide veut dire que la plateforme ne permet pas de distinguer la dimension
 (Meta ne porte pas le format dans son nommage, DV360 et DOOH n'ont pas de créa déclinée).
 
